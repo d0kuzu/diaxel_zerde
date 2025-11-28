@@ -59,7 +59,7 @@ func GetMessages(userId string) ([]openai.ChatCompletionMessage, error) {
 func StartMessages() []openai.ChatCompletionMessage {
 	log.Printf("Принял системный промпт")
 
-	return constants.BytemachineMessages
+	return constants.SystemMessages
 }
 
 func AddMessage(messages *[]openai.ChatCompletionMessage, role string, message string) {
