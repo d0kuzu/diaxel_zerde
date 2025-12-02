@@ -1,4 +1,4 @@
-package ai_controllers
+package ai
 
 import (
 	"diaxel/config"

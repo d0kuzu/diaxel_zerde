@@ -19,6 +19,7 @@ func RouterStart(app *appModule.App) {
 	}))
 
 	rest.ChatRoutes(r, app)
+	rest.TwilioWebhookRoutes(r, app)
 
 	err := r.Run(":8080")
 	if err != nil {
