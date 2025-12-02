@@ -1,12 +1,12 @@
 package llm
 
 import (
+	"context"
 	"diaxel/constants"
-	"github.com/gin-gonic/gin"
 	"github.com/sashabaranov/go-openai"
 )
 
-func (c *Client) GetAnswer(ctx *gin.Context, messages []openai.ChatCompletionMessage) (openai.ChatCompletionResponse, error) {
+func (c *Client) GetAnswer(ctx context.Context, messages []openai.ChatCompletionMessage) (openai.ChatCompletionResponse, error) {
 	response, err := c.client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model:    c.model,
 		Messages: messages,
