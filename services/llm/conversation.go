@@ -33,7 +33,10 @@ func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage strin
 			if err != nil {
 				return "", err
 			}
-			fmt.Println(bookUrl)
+
+			answer := fmt.Sprintf("your appointment link: %s", bookUrl)
+
+			AddMessage(&messages, "assistant", answer)
 		}
 	}
 	log.Printf("Ответ пользователю %s от ИИ: %s\n", userId, response.Choices[0].Message.Content)
