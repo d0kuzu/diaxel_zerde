@@ -6,6 +6,7 @@ import (
 	"diaxel/cleanup"
 	"diaxel/config"
 	"diaxel/services/llm"
+	"diaxel/services/twilio"
 	"log"
 )
 
@@ -17,11 +18,13 @@ func main() {
 
 	llmClient := llm.InitClient(settings.OpenaiApiKey)
 
+	twilioClient := twilio.InitClient(settings.TwilioAccountSID, settings.TwilioAuthToken)
+
 	cm := &cleanup.CleanupManager{}
 	//cm.Add(chromeClient.Close)
 	go cm.Start()
 
-	app := appModule.NewApp(llmClient, settings)
+	app := appModule.NewApp(llmClient, twilioClient, settings)
 
 	api.RouterStart(app)
 }

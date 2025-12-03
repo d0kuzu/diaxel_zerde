@@ -7,7 +7,7 @@ import (
 )
 
 func TwilioWebhookRoutes(router *gin.Engine, app *appModule.App) {
-	twilioWebhookHandler := twilio.NewTwilioWebhookHandler(app.Cfg, app.LLM)
+	twilioWebhookHandler := twilio.NewTwilioWebhookHandler(app.Cfg, app.LLM, app.Twilio)
 	productGroup := router.Group("twilio")
 	{
 		productGroup.POST("/webhook", twilioWebhookHandler.HandleWebhook)

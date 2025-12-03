@@ -3,16 +3,19 @@ package app
 import (
 	"diaxel/config"
 	"diaxel/services/llm"
+	"diaxel/services/twilio"
 )
 
 type App struct {
-	LLM *llm.Client
-	Cfg *config.Settings
+	LLM    *llm.Client
+	Twilio *twilio.Client
+	Cfg    *config.Settings
 }
 
-func NewApp(llmClient *llm.Client, cfg *config.Settings) *App {
+func NewApp(llmClient *llm.Client, twilioClient *twilio.Client, cfg *config.Settings) *App {
 	return &App{
-		LLM: llmClient,
-		Cfg: cfg,
+		LLM:    llmClient,
+		Twilio: twilioClient,
+		Cfg:    cfg,
 	}
 }
