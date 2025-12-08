@@ -20,9 +20,6 @@ type Settings struct {
 	BaseID    string
 	TableName string
 
-	AccountSID string
-	AuthToken  string
-
 	TwilioAccountSID string
 	TwilioAuthToken  string
 }
@@ -43,9 +40,6 @@ func LoadConfig() (*Settings, error) {
 		ApiKey:    os.Getenv("API_KEY"),
 		BaseID:    os.Getenv("BASE_ID"),
 		TableName: os.Getenv("TABLE_NAME"),
-
-		AccountSID: os.Getenv("ACCOUNT_SID"),
-		AuthToken:  os.Getenv("AUTH_TOKEN"),
 
 		TwilioAccountSID: os.Getenv("TWILIO_ACCOUNT_SID"),
 		TwilioAuthToken:  os.Getenv("TWILIO_AUTH_TOKEN"),
