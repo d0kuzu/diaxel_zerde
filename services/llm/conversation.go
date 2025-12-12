@@ -1,9 +1,6 @@
 package llm
 
 import (
-	"diaxel/constants"
-	"diaxel/services/webhooks/make"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -14,6 +11,8 @@ func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage strin
 	if err != nil {
 		return "", err
 	}
+
+	AddMessage(&messages, "user", userMessage)
 
 	response, err := c.GetAnswer(ctx, messages)
 	if err != nil {
@@ -28,15 +27,16 @@ func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage strin
 
 		switch toolCalls[0].Function.Name {
 		case "bookcampussanjose", "bookcampussanfrancisco":
-			makeClient := make.New()
-			bookUrl, err := makeClient.SanJoseBook(ctx, constants.SanJoseBookingWebhook)
-			if err != nil {
-				return "", err
-			}
-
-			answer := fmt.Sprintf("your appointment link: %s", bookUrl)
-
-			AddMessage(&messages, "assistant", answer)
+			log.Printf("____________BOOKING_________")
+			//makeClient := make.New()
+			//bookUrl, err := makeClient.SanJoseBook(ctx, constants.SanJoseBookingWebhook)
+			//if err != nil {
+			//	return "", err
+			//}
+			//
+			//answer := fmt.Sprintf("your appointment link: %s", bookUrl)
+			//
+			//AddMessage(&messages, "assistant", answer)
 		}
 	}
 	log.Printf("Ответ пользователю %s от ИИ: %s\n", userId, response.Choices[0].Message.Content)

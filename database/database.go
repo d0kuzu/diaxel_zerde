@@ -10,7 +10,7 @@ import (
 
 var db *gorm.DB
 
-func Connect(settings config.Settings) {
+func Connect(settings *config.Settings) {
 	host := settings.DbHost
 	user := settings.DbUser
 	password := settings.DbPassword
@@ -18,20 +18,26 @@ func Connect(settings config.Settings) {
 	port := settings.DbPort
 	sslmode := settings.Ssl
 
-	var err error
 	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=" + sslmode
 
+	var err error
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
+
+	//err = db.Migrator().DropTable(&Chat{}, &Message{})
+	//if err != nil {
+	//	log.Fatalf("Не удалось удалить таблицы: %v", err)
+	//}
+	//log.Println("Таблицы успешно удалены")
 
 	err = db.AutoMigrate(&Chat{}, &Message{})
 	if err != nil {
 		log.Fatalf("Не удалось создать таблицы: %v", err)
 	}
 
-	log.Println("Таблицы успешно созданы или уже существуют")
+	log.Println("Таблицы успешно созданы")
 }
 
 func Disconnect() {
