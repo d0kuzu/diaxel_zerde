@@ -2,6 +2,7 @@ package repository
 
 type User struct {
 	ID       string
+	Role     string
 	Email    string
 	Password string
 }
@@ -24,5 +25,10 @@ func NewUserRepo() *UserRepo {
 
 func (r *UserRepo) FindByEmail(email string) (User, bool) {
 	u, ok := r.users[email]
+	return u, ok
+}
+
+func (r *UserRepo) FindByID(userID string) (User, bool) {
+	u, ok := r.users["test@mail.com"] //TODO: пока глушилка
 	return u, ok
 }

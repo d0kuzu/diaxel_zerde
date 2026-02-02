@@ -33,6 +33,7 @@ func (s *AuthService) Login(email, password string) (string, string, error) {
 
 	access, _ := jwt.GenerateAccessToken(
 		user.ID,
+		user.Role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
 	)
@@ -60,9 +61,14 @@ func (s *AuthService) Refresh(token string) (string, string, error) {
 	}
 
 	s.refresh.Delete(token)
+	user, ok := s.users.FindByID(userID)
+	if !ok {
+		return "", "", ErrInvalidCredentials
+	}
 
 	newAccess, _ := jwt.GenerateAccessToken(
 		userID,
+		user.Role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
 	)
