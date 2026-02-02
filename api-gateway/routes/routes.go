@@ -10,15 +10,23 @@ import (
 
 func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 	r.Use(gin.LoggerWithFormatter(logger.Formatter))
-	r.Use(auth.AuthMiddleware())
 
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok"})
-	})
+	public := r.Group("/")
+	{
+		public.GET("/health", func(c *gin.Context) {
+			c.JSON(200, gin.H{"status": "ok"})
+		})
 
-	users := r.Group("/users")
-	users.Any("/*any", proxy.NewReverseProxy(cfg.UserServiceURL, "/users"))
+		public.Any("/auth/*any",
+			proxy.NewReverseProxy(cfg.AuthServiceURL, "/auth"),
+		)
+	}
 
-	// Здесь можно добавить аггрегацию запросов позже, например:
-	// r.GET("/dashboard", aggregateHandler)
+	private := r.Group("/")
+	private.Use(auth.AuthMiddleware())
+	{
+		private.Any("/users/*any",
+			proxy.NewReverseProxy(cfg.UserServiceURL, "/users"),
+		)
+	}
 }
