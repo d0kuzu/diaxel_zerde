@@ -17,7 +17,7 @@ func NewUserRepo() *UserRepo {
 			"test@mail.com": {
 				ID:       "user-1",
 				Email:    "test@mail.com",
-				Password: "$2a$10$QZ3...", // заглушка
+				Password: "$2a$10$hh4dO8M3eAEFRzwmAF.kku3yi5yzMw9qyL8Gu3orEHsQyIWdnk556", // asd123
 			},
 		},
 	}
