@@ -1,12 +1,11 @@
 package service
 
 import (
-	"errors"
-
 	"auth-service/internal/config"
 	"auth-service/internal/crypto"
 	"auth-service/internal/jwt"
 	"auth-service/internal/repository"
+	"errors"
 
 	"github.com/google/uuid"
 )

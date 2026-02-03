@@ -77,8 +77,8 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 
 func (h *AuthHandler) Register(c *gin.Context) {
 	type RegisterRequest struct {
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required,min=8"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	var req RegisterRequest
 
@@ -90,7 +90,6 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 
 	access, refresh, err := h.auth.Register(
-		c.Request.Context(),
 		req.Email,
 		req.Password,
 	)
