@@ -3,6 +3,7 @@ package auth
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -10,7 +11,7 @@ import (
 
 var jwtSecret = []byte("SUPER_SECRET")
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(jwtSecret []byte) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -32,7 +33,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-				return nil, jwt.ErrSignatureInvalid
+				return nil, jwt.ErrTokenSignatureInvalid
 			}
 			return jwtSecret, nil
 		})
@@ -52,8 +53,47 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user_id", claims["sub"])
-		c.Set("role", claims["role"])
+		if claims["type"] != "access" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid token type",
+			})
+			return
+		}
+
+		exp, ok := claims["exp"].(float64)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "exp claim missing",
+			})
+			return
+		}
+
+		if time.Now().Unix() > int64(exp) {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "token expired",
+			})
+			return
+		}
+
+		userID, ok := claims["sub"].(string)
+		if !ok || userID == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid subject",
+			})
+			return
+		}
+
+		// ✅ ДОСТАЁМ role
+		role, ok := claims["role"].(string)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "invalid role",
+			})
+			return
+		}
+
+		c.Set("user_id", userID)
+		c.Set("role", role)
 
 		c.Next()
 	}
