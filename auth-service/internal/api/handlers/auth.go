@@ -74,3 +74,40 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	h.auth.Logout(req.RefreshToken)
 	c.Status(http.StatusNoContent)
 }
+
+func (h *AuthHandler) Register(c *gin.Context) {
+	type RegisterRequest struct {
+		Email    string `json:"email" binding:"required,email"`
+		Password string `json:"password" binding:"required,min=8"`
+	}
+	var req RegisterRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	access, refresh, err := h.auth.Register(
+		c.Request.Context(),
+		req.Email,
+		req.Password,
+	)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	type RegisterResponse struct { //TODO перенести в DTO все структуры энпоинтов
+		AccessToken  string `json:"access_token"`
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	c.JSON(http.StatusCreated, RegisterResponse{
+		AccessToken:  access,
+		RefreshToken: refresh,
+	})
+}

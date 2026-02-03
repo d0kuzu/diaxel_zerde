@@ -7,6 +7,8 @@ import (
 	"auth-service/internal/crypto"
 	"auth-service/internal/jwt"
 	"auth-service/internal/repository"
+
+	"github.com/google/uuid"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
@@ -86,4 +88,50 @@ func (s *AuthService) Refresh(token string) (string, string, error) {
 
 func (s *AuthService) Logout(token string) {
 	s.refresh.Delete(token)
+}
+
+func (s *AuthService) Register(email, password string) (string, string, error) {
+	_, ok := s.users.FindByEmail(email)
+	if ok {
+		return "", "", errors.New("user already exists")
+	}
+
+	hash, err := crypto.Hash(password)
+	if err != nil {
+		return "", "", err
+	}
+
+	userID := uuid.NewString()
+	role := "user"
+
+	ok = s.users.Create(repository.User{
+		ID:       userID,
+		Email:    email,
+		Password: hash,
+		Role:     role,
+	})
+	if !ok {
+		return "", "", err
+	}
+
+	access, err := jwt.GenerateAccessToken(
+		userID,
+		role,
+		s.cfg.AccessTokenTTL,
+		s.cfg.AccessSecret,
+	)
+	if err != nil {
+		return "", "", err
+	}
+
+	refresh, err := jwt.GenerateRefreshToken(
+		userID,
+		s.cfg.RefreshTokenTTL,
+		s.cfg.RefreshSecret,
+	)
+	if err != nil {
+		return "", "", err
+	}
+
+	return access, refresh, nil
 }

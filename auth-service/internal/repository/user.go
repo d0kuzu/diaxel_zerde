@@ -29,6 +29,11 @@ func (r *UserRepo) FindByEmail(email string) (User, bool) {
 }
 
 func (r *UserRepo) FindByID(userID string) (User, bool) {
-	u, ok := r.users["test@mail.com"] //TODO: пока глушилка
+	u, ok := r.users["test@mail.com"] //пока глушилка
 	return u, ok
+}
+
+func (r *UserRepo) Create(user User) bool {
+	r.users[user.Email] = user
+	return true
 }
