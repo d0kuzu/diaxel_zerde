@@ -4,8 +4,9 @@ import (
 	"context"
 	"sync"
 
+	"diaxel/database/app/models"
+
 	"github.com/google/uuid"
-	"DIAXEL-ZERDE-MASTER/database/app/models"
 )
 
 type UserRepository struct {
