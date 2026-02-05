@@ -1,11 +1,36 @@
 version: "3.9"
 
 services:
-  app:
-    build: .
-    container_name: diaxel
-    ports:
-      - "8081:8080"
+  postgres:
+    image: postgres:16
+    container_name: diaxel_postgres
     restart: unless-stopped
+    environment:
+      POSTGRES_DB: diaxel
+      POSTGRES_USER: diaxel_user
+      POSTGRES_PASSWORD: diaxel_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  database-service:
+    build: ./database-service
+    container_name: database-service
+    depends_on:
+      - postgres
     env_file:
       - .env
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database-service
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
