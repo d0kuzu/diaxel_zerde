@@ -7,9 +7,9 @@ import (
 )
 
 type RefreshToken struct {
-	ID        uuid.UUID
-	UserID    uuid.UUID
-	Token     string
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	UserID    uuid.UUID `gorm:"type:uuid;not null"`
+	Token     string    `gorm:"not null"`
 	ExpiresAt time.Time
 	CreatedAt time.Time
 }

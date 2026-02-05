@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"diaxel/database/app/models"
+	"github.com/tr1ki/diaxel_zerde_master/database-service/internal/models"
 
 	"github.com/google/uuid"
 )

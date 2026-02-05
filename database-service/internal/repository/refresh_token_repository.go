@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"diaxel/database/app/models"
+	"github.com/tr1ki/diaxel_zerde_master/database-service/internal/models"
 
 	"github.com/google/uuid"
 )
