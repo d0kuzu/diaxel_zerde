@@ -4,33 +4,61 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"time"
 
 	"github.com/tr1ki/diaxel_zerde_master/database-service/internal/models"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
+// InitPostgres инициализирует подключение к PostgreSQL и мигрирует модели
 func InitPostgres() (*gorm.DB, error) {
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=UTC",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_SSLMODE"),
-	)
-
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("failed to connect to database:", err)
-		return nil, err
+	// Читаем настройки из .env или стандартные
+	host := os.Getenv("POSTGRES_HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	port := os.Getenv("POSTGRES_PORT")
+	if port == "" {
+		port = "5432"
+	}
+	user := os.Getenv("POSTGRES_USER")
+	if user == "" {
+		user = "postgres"
+	}
+	password := os.Getenv("POSTGRES_PASSWORD")
+	if password == "" {
+		password = "postgres"
+	}
+	dbName := os.Getenv("POSTGRES_DB")
+	if dbName == "" {
+		dbName = "diaxel_db"
 	}
 
-	log.Println("Connected to PostgreSQL")
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbName,
+	)
 
-	// Создаём таблицы, если их нет
+	// Настройки логирования GORM
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: time.Second,
+			LogLevel:      logger.Info,
+			Colorful:      true,
+		},
+	)
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to postgres: %w", err)
+	}
+
+	// Автоматическая миграция моделей
 	err = db.AutoMigrate(
 		&models.User{},
 		&models.RefreshToken{},
@@ -40,10 +68,9 @@ func InitPostgres() (*gorm.DB, error) {
 		&models.Analytics{},
 	)
 	if err != nil {
-		log.Fatal("failed to migrate tables:", err)
-		return nil, err
+		return nil, fmt.Errorf("failed to migrate models: %w", err)
 	}
 
-	log.Println("Tables migrated successfully")
+	log.Println("Postgres initialized and models migrated successfully")
 	return db, nil
 }
