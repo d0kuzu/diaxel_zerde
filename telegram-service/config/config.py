@@ -1,3 +1,4 @@
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -47,7 +48,15 @@ class RedisConfig:
 
 
 @dataclass(frozen=True)
+class ServiceConfig:
+    target_endpoint: str = env.str("TARGET_ENDPOINT")
+    secret: str = env.str("SECRET")
+    exp: str = int(time.time()) + 300
+
+
+@dataclass(frozen=True)
 class Environ:
     bot: BotConfig = BotConfig()
+    service: ServiceConfig = ServiceConfig()
     # db: DatabaseConfig = DatabaseConfig()
     # redis: RedisConfig = RedisConfig()

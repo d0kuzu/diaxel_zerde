@@ -3,10 +3,6 @@ import logging
 
 import coloredlogs
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.fsm.storage.redis import RedisStorage
-from aiogram.types import BotCommand
-from redis.asyncio import Redis
 
 from config.config import Environ
 from telegram.register import TgRegister
