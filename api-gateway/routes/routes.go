@@ -5,6 +5,7 @@ import (
 	"api-gateway/middleware/auth"
 	"api-gateway/middleware/logger"
 	"api-gateway/proxy"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,21 +21,29 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 		public.Any("/auth/*any",
 			proxy.NewReverseProxy(cfg.AuthServiceURL, "/auth"),
 		)
+
+		public.Any("/webhooks/telegram/*any",
+			proxy.NewReverseProxy(cfg.AIServiceURL, "/webhooks/telegram"),
+		)
 	}
 
-userPrivate := r.Group("/")
+	userPrivate := r.Group("/")
 	userPrivate.Use(auth.UserMiddleware([]byte(cfg.AccessSecret)))
 	{
 		userPrivate.Any("/users/*any",
 			proxy.NewReverseProxy(cfg.UserServiceURL, "/users"),
+		)
+
+		userPrivate.Any("/api/analytics/*any",
+			proxy.NewReverseProxy(cfg.AIServiceURL, "/api/analytics"),
 		)
 	}
 
 	servicePrivate := r.Group("/")
 	servicePrivate.Use(auth.ServiceMiddleware([]byte(cfg.TelegramServiceSecret), "telegram-service", "ai-service"))
 	{
-		servicePrivate.Any("/webhooks/telegram",
-			proxy.NewReverseProxy(cfg.TelegramWebhook, ""),
+		servicePrivate.Any("/internal/analytics/*any",
+			proxy.NewReverseProxy(cfg.AIServiceURL, "/api/analytics"),
 		)
 	}
 }
