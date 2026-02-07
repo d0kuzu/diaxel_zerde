@@ -7,10 +7,14 @@ import (
 )
 
 type Config struct {
-	GatewayPort           string
-	UserServiceURL        string
-	AuthServiceURL        string
-	AIServiceURL          string
+	GatewayPort string
+
+	UserServiceURL string
+	AuthServiceURL string
+	AIServiceURL   string
+
+	TelegramWebhook string
+
 	AccessSecret          string
 	TelegramServiceSecret string
 }
@@ -27,6 +31,8 @@ func LoadConfig() (*Config, error) {
 		UserServiceURL: os.Getenv("USER_SERVICE_URL"),
 		AuthServiceURL: os.Getenv("AUTH_SERVICE_URL"),
 		AIServiceURL:   os.Getenv("AI_SERVICE_URL"),
+
+		TelegramWebhook: os.Getenv("TELEGRAM_WEBHOOK"),
 
 		AccessSecret:          os.Getenv("ACCESS_SECRET"),
 		TelegramServiceSecret: os.Getenv("TELEGRAM_SERVICE_SECRET"),
