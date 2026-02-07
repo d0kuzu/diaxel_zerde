@@ -3,6 +3,7 @@ package main
 import (
 	"api-gateway/config"
 	"api-gateway/server"
+	"fmt"
 	"log"
 )
 
@@ -13,5 +14,6 @@ func main() {
 	}
 
 	s := server.NewServer(cfg)
+	fmt.Println([]byte(cfg.AccessSecret))
 	s.Run()
 }

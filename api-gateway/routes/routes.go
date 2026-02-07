@@ -23,7 +23,7 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 	}
 
 	private := r.Group("/")
-	private.Use(auth.AuthMiddleware(cfg.Secret))
+	private.Use(auth.AuthMiddleware([]byte(cfg.AccessSecret)))
 	{
 		private.Any("/users/*any",
 			proxy.NewReverseProxy(cfg.UserServiceURL, "/users"),

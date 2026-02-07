@@ -9,6 +9,8 @@ import (
 type Config struct {
 	GatewayPort    string
 	UserServiceURL string
+	AuthServiceURL string
+	AccessSecret   string
 }
 
 func LoadConfig() (*Config, error) {
@@ -18,7 +20,11 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return &Config{
-		GatewayPort:    os.Getenv("GATEWAY_PORT"),
+		GatewayPort: os.Getenv("GATEWAY_PORT"),
+
 		UserServiceURL: os.Getenv("USER_SERVICE_URL"),
+		AuthServiceURL: os.Getenv("AUTH_SERVICE_URL"),
+
+		AccessSecret: os.Getenv("ACCESS_SECRET"),
 	}, nil
 }

@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	cfg := config.MustLoad()
+	cfg, err := config.MustLoad()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 
 	application := app.New(cfg)
 
