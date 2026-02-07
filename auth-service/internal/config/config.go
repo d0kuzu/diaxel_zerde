@@ -1,6 +1,11 @@
 package config
 
-import "time"
+import (
+	"os"
+	"time"
+
+	"github.com/joho/godotenv"
+)
 
 type Config struct {
 	HTTPPort string
@@ -12,14 +17,19 @@ type Config struct {
 	RefreshSecret string
 }
 
-func MustLoad() *Config {
+func MustLoad() (*Config, error) {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return nil, err
+	}
+
 	return &Config{
-		HTTPPort: "8080",
+		HTTPPort: os.Getenv("HTTP_PORT"),
 
 		AccessTokenTTL:  15 * time.Minute,
 		RefreshTokenTTL: 30 * 24 * time.Hour,
 
-		AccessSecret:  "ACCESS_SECRET",
-		RefreshSecret: "REFRESH_SECRET",
-	}
+		AccessSecret:  os.Getenv("ACCESS_SECRET"),
+		RefreshSecret: os.Getenv("REFRESH_SECRET"),
+	}, nil
 }

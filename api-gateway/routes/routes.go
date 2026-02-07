@@ -22,11 +22,19 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 		)
 	}
 
-	private := r.Group("/")
-	private.Use(auth.AuthMiddleware(cfg.Secret))
+userPrivate := r.Group("/")
+	userPrivate.Use(auth.UserMiddleware([]byte(cfg.AccessSecret)))
 	{
-		private.Any("/users/*any",
+		userPrivate.Any("/users/*any",
 			proxy.NewReverseProxy(cfg.UserServiceURL, "/users"),
+		)
+	}
+
+	servicePrivate := r.Group("/")
+	servicePrivate.Use(auth.ServiceMiddleware([]byte(cfg.TelegramServiceSecret), "telegram-service", "ai-service"))
+	{
+		servicePrivate.Any("/webhooks/telegram",
+			proxy.NewReverseProxy(cfg.TelegramWebhook, ""),
 		)
 	}
 }
