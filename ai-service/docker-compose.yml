@@ -9,3 +9,21 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: diaxel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: diaxel_zerde
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dokuzu_desu
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
