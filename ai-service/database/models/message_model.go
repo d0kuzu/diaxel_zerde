@@ -8,4 +8,5 @@ type Message struct {
 	Role       string    `gorm:"column:role;type:text;not null"`
 	Content    string    `gorm:"column:message;type:text;not null"`
 	Time       time.Time `gorm:"column:time;autoCreateTime"`
+	Platform   string    `gorm:"column:platform;type:text;not null;default:'web'"`
 }

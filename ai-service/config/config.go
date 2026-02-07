@@ -22,6 +22,9 @@ type Settings struct {
 
 	TwilioAccountSID string
 	TwilioAuthToken  string
+
+	TelegramBotToken      string
+	TelegramWebhookSecret string
 }
 
 func LoadConfig() (*Settings, error) {
@@ -43,5 +46,8 @@ func LoadConfig() (*Settings, error) {
 
 		TwilioAccountSID: os.Getenv("TWILIO_ACCOUNT_SID"),
 		TwilioAuthToken:  os.Getenv("TWILIO_AUTH_TOKEN"),
+
+		TelegramBotToken:      os.Getenv("TELEGRAM_BOT_TOKEN"),
+		TelegramWebhookSecret: os.Getenv("TELEGRAM_WEBHOOK_SECRET"),
 	}, nil
 }
