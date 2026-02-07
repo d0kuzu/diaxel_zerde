@@ -5,8 +5,6 @@ import (
 	"sync"
 
 	"github.com/tr1ki/diaxel_zerde_master/database-service/internal/models"
-
-	"github.com/google/uuid"
 )
 
 type RefreshTokenRepository struct {
@@ -39,7 +37,7 @@ func (r *RefreshTokenRepository) FindByToken(ctx context.Context, token string) 
 	return rt, nil
 }
 
-func (r *RefreshTokenRepository) DeleteByUserID(ctx context.Context, userID uuid.UUID) error {
+func (r *RefreshTokenRepository) DeleteByUserID(ctx context.Context, userID string) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 

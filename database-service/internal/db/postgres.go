@@ -74,3 +74,31 @@ func InitPostgres() (*gorm.DB, error) {
 	log.Println("Postgres initialized and models migrated successfully")
 	return db, nil
 }
+
+// InitPostgresWithRetry инициализирует подключение с retry логикой
+func InitPostgresWithRetry() (*gorm.DB, error) {
+	var db *gorm.DB
+	var err error
+
+	maxRetries := 10
+	retryDelay := 3 * time.Second
+
+	for i := 0; i < maxRetries; i++ {
+		log.Printf("Attempting to connect to PostgreSQL (attempt %d/%d)...", i+1, maxRetries)
+
+		db, err = InitPostgres()
+		if err == nil {
+			log.Println("Successfully connected to PostgreSQL!")
+			return db, nil
+		}
+
+		log.Printf("Failed to connect to PostgreSQL: %v", err)
+
+		if i < maxRetries-1 {
+			log.Printf("Waiting %v before retrying...", retryDelay)
+			time.Sleep(retryDelay)
+		}
+	}
+
+	return nil, fmt.Errorf("failed to connect to PostgreSQL after %d attempts: %w", maxRetries, err)
+}

@@ -1,15 +1,7 @@
 package models
 
-import (
-	"time"
-
-	"github.com/google/uuid"
-)
-
 type Chat struct {
-	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
-	AssistantID uuid.UUID `gorm:"type:uuid;not null"`
-	CustomerID  string
-	UserID      uuid.UUID `gorm:"type:uuid;not null"`
-	StartedAt   time.Time
+	UserID   string    `gorm:"column:user_id;primaryKey"`
+	Messages []Message `gorm:"foreignKey:ChatUserID;references:UserID"`
+	IsClient bool      `gorm:"column:is_client;default:false"`
 }

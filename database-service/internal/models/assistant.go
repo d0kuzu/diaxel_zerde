@@ -1,10 +1,15 @@
 package models
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Assistant struct {
 	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Name          string    `gorm:"not null"`
 	Configuration string
-	UserID        uuid.UUID `gorm:"type:uuid;not null"`
+	UserID        string `gorm:"not null"`
+	CreatedAt     time.Time
 }
