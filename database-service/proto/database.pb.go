@@ -863,7 +863,7 @@ func (x *ChatResponse) GetUpdatedAt() string {
 
 type SaveMessageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ChatUserId    string                 `protobuf:"bytes,1,opt,name=chat_user_id,json=chatUserId,proto3" json:"chat_user_id,omitempty"`
+	ChatId        string                 `protobuf:"bytes,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
 	Role          string                 `protobuf:"bytes,2,opt,name=role,proto3" json:"role,omitempty"`
 	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
 	Platform      string                 `protobuf:"bytes,4,opt,name=platform,proto3" json:"platform,omitempty"`
@@ -901,9 +901,9 @@ func (*SaveMessageRequest) Descriptor() ([]byte, []int) {
 	return file_proto_database_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *SaveMessageRequest) GetChatUserId() string {
+func (x *SaveMessageRequest) GetChatId() string {
 	if x != nil {
-		return x.ChatUserId
+		return x.ChatId
 	}
 	return ""
 }
@@ -932,7 +932,7 @@ func (x *SaveMessageRequest) GetPlatform() string {
 type MessageResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ChatUserId    string                 `protobuf:"bytes,2,opt,name=chat_user_id,json=chatUserId,proto3" json:"chat_user_id,omitempty"`
+	ChatId        string                 `protobuf:"bytes,2,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
 	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
 	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
 	Platform      string                 `protobuf:"bytes,5,opt,name=platform,proto3" json:"platform,omitempty"`
@@ -978,9 +978,9 @@ func (x *MessageResponse) GetId() string {
 	return ""
 }
 
-func (x *MessageResponse) GetChatUserId() string {
+func (x *MessageResponse) GetChatId() string {
 	if x != nil {
-		return x.ChatUserId
+		return x.ChatId
 	}
 	return ""
 }
@@ -1015,7 +1015,7 @@ func (x *MessageResponse) GetCreatedAt() string {
 
 type GetChatMessagesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ChatUserId    string                 `protobuf:"bytes,1,opt,name=chat_user_id,json=chatUserId,proto3" json:"chat_user_id,omitempty"`
+	ChatId        string                 `protobuf:"bytes,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
 	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
 	Offset        int32                  `protobuf:"varint,3,opt,name=offset,proto3" json:"offset,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -1052,9 +1052,9 @@ func (*GetChatMessagesRequest) Descriptor() ([]byte, []int) {
 	return file_proto_database_proto_rawDescGZIP(), []int{16}
 }
 
-func (x *GetChatMessagesRequest) GetChatUserId() string {
+func (x *GetChatMessagesRequest) GetChatId() string {
 	if x != nil {
-		return x.ChatUserId
+		return x.ChatId
 	}
 	return ""
 }
@@ -1192,25 +1192,22 @@ const file_proto_database_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"\x80\x01\n" +
-	"\x12SaveMessageRequest\x12 \n" +
-	"\fchat_user_id\x18\x01 \x01(\tR\n" +
-	"chatUserId\x12\x12\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"w\n" +
+	"\x12SaveMessageRequest\x12\x17\n" +
+	"\achat_id\x18\x01 \x01(\tR\x06chatId\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x18\n" +
 	"\acontent\x18\x03 \x01(\tR\acontent\x12\x1a\n" +
-	"\bplatform\x18\x04 \x01(\tR\bplatform\"\xac\x01\n" +
+	"\bplatform\x18\x04 \x01(\tR\bplatform\"\xa3\x01\n" +
 	"\x0fMessageResponse\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12 \n" +
-	"\fchat_user_id\x18\x02 \x01(\tR\n" +
-	"chatUserId\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\achat_id\x18\x02 \x01(\tR\x06chatId\x12\x12\n" +
 	"\x04role\x18\x03 \x01(\tR\x04role\x12\x18\n" +
 	"\acontent\x18\x04 \x01(\tR\acontent\x12\x1a\n" +
 	"\bplatform\x18\x05 \x01(\tR\bplatform\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\tR\tcreatedAt\"h\n" +
-	"\x16GetChatMessagesRequest\x12 \n" +
-	"\fchat_user_id\x18\x01 \x01(\tR\n" +
-	"chatUserId\x12\x14\n" +
+	"created_at\x18\x06 \x01(\tR\tcreatedAt\"_\n" +
+	"\x16GetChatMessagesRequest\x12\x17\n" +
+	"\achat_id\x18\x01 \x01(\tR\x06chatId\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x16\n" +
 	"\x06offset\x18\x03 \x01(\x05R\x06offset\"I\n" +
 	"\x10MessagesResponse\x125\n" +
