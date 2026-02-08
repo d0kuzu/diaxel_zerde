@@ -21,6 +21,14 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	DatabaseService_GetAnalytics_FullMethodName            = "/database.DatabaseService/GetAnalytics"
 	DatabaseService_GetAnalyticsByAssistant_FullMethodName = "/database.DatabaseService/GetAnalyticsByAssistant"
+	DatabaseService_CreateUser_FullMethodName              = "/database.DatabaseService/CreateUser"
+	DatabaseService_GetUser_FullMethodName                 = "/database.DatabaseService/GetUser"
+	DatabaseService_SaveRefreshToken_FullMethodName        = "/database.DatabaseService/SaveRefreshToken"
+	DatabaseService_GetRefreshToken_FullMethodName         = "/database.DatabaseService/GetRefreshToken"
+	DatabaseService_DeleteRefreshToken_FullMethodName      = "/database.DatabaseService/DeleteRefreshToken"
+	DatabaseService_CreateChat_FullMethodName              = "/database.DatabaseService/CreateChat"
+	DatabaseService_SaveMessage_FullMethodName             = "/database.DatabaseService/SaveMessage"
+	DatabaseService_GetChatMessages_FullMethodName         = "/database.DatabaseService/GetChatMessages"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -29,6 +37,14 @@ const (
 type DatabaseServiceClient interface {
 	GetAnalytics(ctx context.Context, in *AnalyticsRequest, opts ...grpc.CallOption) (*AnalyticsResponse, error)
 	GetAnalyticsByAssistant(ctx context.Context, in *AnalyticsByAssistantRequest, opts ...grpc.CallOption) (*AnalyticsResponse, error)
+	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	SaveRefreshToken(ctx context.Context, in *SaveRefreshTokenRequest, opts ...grpc.CallOption) (*SaveRefreshTokenResponse, error)
+	GetRefreshToken(ctx context.Context, in *GetRefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
+	DeleteRefreshToken(ctx context.Context, in *DeleteRefreshTokenRequest, opts ...grpc.CallOption) (*DeleteRefreshTokenResponse, error)
+	CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
+	SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
+	GetChatMessages(ctx context.Context, in *GetChatMessagesRequest, opts ...grpc.CallOption) (*MessagesResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -59,12 +75,100 @@ func (c *databaseServiceClient) GetAnalyticsByAssistant(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *databaseServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_CreateUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) SaveRefreshToken(ctx context.Context, in *SaveRefreshTokenRequest, opts ...grpc.CallOption) (*SaveRefreshTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SaveRefreshTokenResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_SaveRefreshToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetRefreshToken(ctx context.Context, in *GetRefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RefreshTokenResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetRefreshToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) DeleteRefreshToken(ctx context.Context, in *DeleteRefreshTokenRequest, opts ...grpc.CallOption) (*DeleteRefreshTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteRefreshTokenResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_DeleteRefreshToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_CreateChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MessageResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_SaveMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetChatMessages(ctx context.Context, in *GetChatMessagesRequest, opts ...grpc.CallOption) (*MessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MessagesResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetChatMessages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DatabaseServiceServer is the server API for DatabaseService service.
 // All implementations must embed UnimplementedDatabaseServiceServer
 // for forward compatibility.
 type DatabaseServiceServer interface {
 	GetAnalytics(context.Context, *AnalyticsRequest) (*AnalyticsResponse, error)
 	GetAnalyticsByAssistant(context.Context, *AnalyticsByAssistantRequest) (*AnalyticsResponse, error)
+	CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error)
+	GetUser(context.Context, *GetUserRequest) (*UserResponse, error)
+	SaveRefreshToken(context.Context, *SaveRefreshTokenRequest) (*SaveRefreshTokenResponse, error)
+	GetRefreshToken(context.Context, *GetRefreshTokenRequest) (*RefreshTokenResponse, error)
+	DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error)
+	CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error)
+	SaveMessage(context.Context, *SaveMessageRequest) (*MessageResponse, error)
+	GetChatMessages(context.Context, *GetChatMessagesRequest) (*MessagesResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -80,6 +184,30 @@ func (UnimplementedDatabaseServiceServer) GetAnalytics(context.Context, *Analyti
 }
 func (UnimplementedDatabaseServiceServer) GetAnalyticsByAssistant(context.Context, *AnalyticsByAssistantRequest) (*AnalyticsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAnalyticsByAssistant not implemented")
+}
+func (UnimplementedDatabaseServiceServer) CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetUser(context.Context, *GetUserRequest) (*UserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedDatabaseServiceServer) SaveRefreshToken(context.Context, *SaveRefreshTokenRequest) (*SaveRefreshTokenResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SaveRefreshToken not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetRefreshToken(context.Context, *GetRefreshTokenRequest) (*RefreshTokenResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRefreshToken not implemented")
+}
+func (UnimplementedDatabaseServiceServer) DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteRefreshToken not implemented")
+}
+func (UnimplementedDatabaseServiceServer) CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateChat not implemented")
+}
+func (UnimplementedDatabaseServiceServer) SaveMessage(context.Context, *SaveMessageRequest) (*MessageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SaveMessage not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetChatMessages(context.Context, *GetChatMessagesRequest) (*MessagesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChatMessages not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -138,6 +266,150 @@ func _DatabaseService_GetAnalyticsByAssistant_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).CreateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_CreateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_SaveRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveRefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).SaveRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_SaveRefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).SaveRefreshToken(ctx, req.(*SaveRefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetRefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetRefreshToken(ctx, req.(*GetRefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_DeleteRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).DeleteRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_DeleteRefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).DeleteRefreshToken(ctx, req.(*DeleteRefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_CreateChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).CreateChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_CreateChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).CreateChat(ctx, req.(*CreateChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_SaveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).SaveMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_SaveMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).SaveMessage(ctx, req.(*SaveMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetChatMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatMessagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetChatMessages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetChatMessages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetChatMessages(ctx, req.(*GetChatMessagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DatabaseService_ServiceDesc is the grpc.ServiceDesc for DatabaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +424,38 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAnalyticsByAssistant",
 			Handler:    _DatabaseService_GetAnalyticsByAssistant_Handler,
+		},
+		{
+			MethodName: "CreateUser",
+			Handler:    _DatabaseService_CreateUser_Handler,
+		},
+		{
+			MethodName: "GetUser",
+			Handler:    _DatabaseService_GetUser_Handler,
+		},
+		{
+			MethodName: "SaveRefreshToken",
+			Handler:    _DatabaseService_SaveRefreshToken_Handler,
+		},
+		{
+			MethodName: "GetRefreshToken",
+			Handler:    _DatabaseService_GetRefreshToken_Handler,
+		},
+		{
+			MethodName: "DeleteRefreshToken",
+			Handler:    _DatabaseService_DeleteRefreshToken_Handler,
+		},
+		{
+			MethodName: "CreateChat",
+			Handler:    _DatabaseService_CreateChat_Handler,
+		},
+		{
+			MethodName: "SaveMessage",
+			Handler:    _DatabaseService_SaveMessage_Handler,
+		},
+		{
+			MethodName: "GetChatMessages",
+			Handler:    _DatabaseService_GetChatMessages_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
