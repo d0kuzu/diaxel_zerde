@@ -6,15 +6,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateRefreshToken(userID string, ttl time.Duration, secret string) (string, error) {
+func GenerateRefreshToken(userID string, ttl time.Duration, secret string) (string, time.Time, error) {
+	expirationTime := time.Now().Add(ttl)
 	claims := jwt.MapClaims{
 		"sub":  userID,
 		"type": "refresh",
-		"exp":  time.Now().Add(ttl).Unix(),
+		"exp":  expirationTime.Unix(),
 	}
 
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).
 		SignedString([]byte(secret))
+	return token, expirationTime, err
 }
 
 func ParseRefreshToken(token, secret string) (string, error) {

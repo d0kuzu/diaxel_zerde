@@ -93,13 +93,14 @@ func (c *Client) CreateUser(email, passwordHash, role string) (*dbpb.UserRespons
 	return resp, nil
 }
 
-func (c *Client) SaveRefreshToken(token, userID string) error {
+func (c *Client) SaveRefreshToken(token, userID string, expiresAt time.Time) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := &dbpb.SaveRefreshTokenRequest{
 		TokenHash: token,
 		UserId:    userID,
+		ExpiresAt: expiresAt.Format(time.RFC3339),
 	}
 
 	_, err := c.DB.SaveRefreshToken(ctx, req)

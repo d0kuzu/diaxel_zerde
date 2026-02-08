@@ -41,14 +41,14 @@ func (s *AuthService) Login(email, password string) (string, string, error) {
 		s.cfg.AccessSecret,
 	)
 
-	refreshToken, _ := jwt.GenerateRefreshToken(
+	refreshToken, expiresAt, _ := jwt.GenerateRefreshToken(
 		user.Id,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
 
 	// Сохраняем refresh токен через gRPC
-	err = s.db.SaveRefreshToken(refreshToken, user.Id)
+	err = s.db.SaveRefreshToken(refreshToken, user.Id, expiresAt)
 	if err != nil {
 		return "", "", err
 	}
@@ -75,7 +75,7 @@ func (s *AuthService) Refresh(token string) (string, string, error) {
 		s.cfg.AccessSecret,
 	)
 
-	refreshToken, _ := jwt.GenerateRefreshToken(
+	refreshToken, expiresAt, _ := jwt.GenerateRefreshToken(
 		userID,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
@@ -84,7 +84,7 @@ func (s *AuthService) Refresh(token string) (string, string, error) {
 	// Удаляем старый токен
 	s.db.DeleteRefreshToken(token)
 	// Сохраняем новый токен
-	s.db.SaveRefreshToken(refreshToken, userID)
+	s.db.SaveRefreshToken(refreshToken, userID, expiresAt)
 
 	return access, refreshToken, nil
 }
@@ -118,7 +118,7 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 		return "", "", err
 	}
 
-	refresh, err := jwt.GenerateRefreshToken(
+	refresh, expiresAt, err := jwt.GenerateRefreshToken(
 		userID,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
@@ -128,7 +128,7 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 	}
 
 	// Сохраняем refresh токен
-	err = s.db.SaveRefreshToken(refresh, userID)
+	err = s.db.SaveRefreshToken(refresh, userID, expiresAt)
 	if err != nil {
 		return "", "", err
 	}
