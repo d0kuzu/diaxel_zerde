@@ -1,4 +1,4 @@
-package chat
+package webhook
 
 import (
 	"diaxel/internal/config"
