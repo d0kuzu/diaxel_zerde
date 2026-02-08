@@ -1,10 +1,10 @@
 package service
 
 import (
+	"auth-service/grpc/db"
 	"auth-service/internal/config"
 	"auth-service/internal/crypto"
 	"auth-service/internal/jwt"
-	"auth-service/internal/repository"
 	"errors"
 
 	"github.com/google/uuid"
@@ -13,88 +13,87 @@ import (
 var ErrInvalidCredentials = errors.New("invalid credentials")
 
 type AuthService struct {
-	users   *repository.UserRepo
-	refresh *repository.RefreshRepo
-	cfg     *config.Config
+	db  *db.Client
+	cfg *config.Config
 }
 
 func NewAuthService(
-	users *repository.UserRepo,
-	refresh *repository.RefreshRepo,
+	db *db.Client,
 	cfg *config.Config,
 ) *AuthService {
-	return &AuthService{users, refresh, cfg}
+	return &AuthService{db, cfg}
 }
 
 func (s *AuthService) Login(email, password string) (string, string, error) {
-	user, ok := s.users.FindByEmail(email)
-	if !ok || !crypto.Compare(user.Password, password) {
+	user, err := s.db.GetUserByEmail(email)
+	if err != nil {
+		return "", "", err
+	}
+
+	if !crypto.Compare(user.PasswordHash, password) {
 		return "", "", ErrInvalidCredentials
 	}
 
 	access, _ := jwt.GenerateAccessToken(
-		user.ID,
+		user.Id,
 		user.Role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
 	)
 
 	refreshToken, _ := jwt.GenerateRefreshToken(
-		user.ID,
+		user.Id,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
 
-	s.refresh.Save(refreshToken, user.ID)
+	// Сохраняем refresh токен через gRPC
+	err = s.db.SaveRefreshToken(refreshToken, user.Id)
+	if err != nil {
+		return "", "", err
+	}
 
 	return access, refreshToken, nil
 }
 
 func (s *AuthService) Refresh(token string) (string, string, error) {
-	userID, ok := s.refresh.Get(token)
-	if !ok {
+	userID, err := s.db.GetRefreshToken(token)
+	if err != nil {
 		return "", "", ErrInvalidCredentials
 	}
 
-	sub, err := jwt.ParseRefreshToken(token, s.cfg.RefreshSecret)
-	if err != nil || sub != userID {
-		return "", "", ErrInvalidCredentials
+	// Получаем данные пользователя для генерации нового access токена
+	user, err := s.db.GetUserByID(userID)
+	if err != nil {
+		return "", "", err
 	}
 
-	s.refresh.Delete(token)
-	user, ok := s.users.FindByID(userID)
-	if !ok {
-		return "", "", ErrInvalidCredentials
-	}
-
-	newAccess, _ := jwt.GenerateAccessToken(
+	access, _ := jwt.GenerateAccessToken(
 		userID,
 		user.Role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
 	)
 
-	newRefresh, _ := jwt.GenerateRefreshToken(
+	refreshToken, _ := jwt.GenerateRefreshToken(
 		userID,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
 
-	s.refresh.Save(newRefresh, userID)
+	// Удаляем старый токен
+	s.db.DeleteRefreshToken(token)
+	// Сохраняем новый токен
+	s.db.SaveRefreshToken(refreshToken, userID)
 
-	return newAccess, newRefresh, nil
+	return access, refreshToken, nil
 }
 
-func (s *AuthService) Logout(token string) {
-	s.refresh.Delete(token)
+func (s *AuthService) Logout(token string) error {
+	return s.db.DeleteRefreshToken(token)
 }
 
 func (s *AuthService) Register(email, password string) (string, string, error) {
-	_, ok := s.users.FindByEmail(email)
-	if ok {
-		return "", "", errors.New("user already exists")
-	}
-
 	hash, err := crypto.Hash(password)
 	if err != nil {
 		return "", "", err
@@ -103,13 +102,9 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 	userID := uuid.NewString()
 	role := "user"
 
-	ok = s.users.Create(repository.User{
-		ID:       userID,
-		Email:    email,
-		Password: hash,
-		Role:     role,
-	})
-	if !ok {
+	// Создаем пользователя через gRPC
+	_, err = s.db.CreateUser(email, hash, role)
+	if err != nil {
 		return "", "", err
 	}
 
@@ -132,5 +127,39 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 		return "", "", err
 	}
 
+	// Сохраняем refresh токен
+	err = s.db.SaveRefreshToken(refresh, userID)
+	if err != nil {
+		return "", "", err
+	}
+
 	return access, refresh, nil
+}
+
+func (s *AuthService) CreateAssistant(assistantID, botToken string) (bool, error) {
+	// Check if assistant exists, if so update, otherwise create
+	assistant, err := s.db.GetAssistant(assistantID)
+	if err != nil {
+		// Assistant doesn't exist, create new one
+		_, err = s.db.CreateAssistant(assistantID, botToken, "")
+		if err != nil {
+			return false, err
+		}
+		return true, nil
+	}
+
+	// Assistant exists, update bot token
+	_, err = s.db.UpdateAssistant(assistantID, assistant.Name, botToken, assistant.UserId)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+func (s *AuthService) GetBotToken(assistantID string) (string, error) {
+	assistant, err := s.db.GetAssistant(assistantID)
+	if err != nil {
+		return "", err
+	}
+	return assistant.BotToken, nil
 }

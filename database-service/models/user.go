@@ -20,25 +20,28 @@ type Assistant struct {
 	ID            string    `json:"id" db:"id"`
 	Name          string    `json:"name" db:"name"`
 	Configuration string    `json:"configuration" db:"configuration"`
+	BotToken      string    `json:"bot_token" db:"bot_token"`
 	UserID        string    `json:"user_id" db:"user_id"`
 	CreatedAt     time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Chat - соответствует таблице chats в БД (из AI сервиса)
 type Chat struct {
-	ID          string    `json:"id" db:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	UserID      string    `json:"user_id" db:"user_id" gorm:"type:uuid;not null;index"`
-	AssistantID string    `json:"assistant_id" db:"assistant_id" gorm:"type:uuid;not null"`
-	CustomerID  string    `json:"customer_id" db:"customer_id" gorm:"type:uuid"`
-	StartedAt   time.Time `json:"started_at" db:"started_at" gorm:"default:now()"`
-	CreatedAt   time.Time `json:"created_at" db:"created_at" gorm:"default:now()"`
-	UpdatedAt   time.Time `json:"updated_at" db:"updated_at" gorm:"default:now()"`
+	ID           string    `json:"id" db:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	UserID       string    `json:"user_id" db:"user_id" gorm:"type:uuid;not null;index;references:users(id)"`
+	AssistantID  string    `json:"assistant_id" db:"assistant_id" gorm:"type:uuid;not null;references:assistants(id)"`
+	CustomerID   *string   `json:"customer_id" db:"customer_id" gorm:"type:uuid"`
+	MessageCount int32     `json:"message_count" db:"message_count" gorm:"default:0"`
+	StartedAt    time.Time `json:"started_at" db:"started_at" gorm:"default:now()"`
+	CreatedAt    time.Time `json:"created_at" db:"created_at" gorm:"default:now()"`
+	UpdatedAt    time.Time `json:"updated_at" db:"updated_at" gorm:"default:now()"`
 }
 
 // Message - соответствует таблице messages в БД (из AI сервиса)
 type Message struct {
 	ID        uint      `json:"id" db:"id" gorm:"primaryKey;autoIncrement"`
-	ChatID    string    `json:"chat_id" db:"chat_id" gorm:"type:uuid;not null;index"`
+	ChatID    string    `json:"chat_id" db:"chat_id" gorm:"type:uuid;not null;index;references:chats(id)"`
 	Role      string    `json:"role" db:"role" gorm:"type:varchar(20);not null"`
 	Content   string    `json:"content" db:"content" gorm:"type:text;not null"`
 	Time      time.Time `json:"time" db:"time" gorm:"default:now()"`

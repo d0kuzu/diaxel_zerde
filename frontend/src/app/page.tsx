@@ -34,6 +34,9 @@ export default function HomePage() {
               <Button asChild variant="secondary">
                 <Link href="/pricing">Начать сейчас</Link>
               </Button>
+              <Button asChild variant="outline">
+                <Link href="/bot-test">Тест ботов</Link>
+              </Button>
             </div>
 
             <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">

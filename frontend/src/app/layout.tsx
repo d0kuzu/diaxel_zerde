@@ -10,14 +10,14 @@ const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
   title: {
-    default: 'Diaxel — AI‑ассистенты для автоматизации общения и поддержки',
-    template: '%s — Diaxel'
+    default: 'SD Nexus — AI‑ассистенты для автоматизации общения и поддержки',
+    template: '%s — SD Nexus'
   },
   description:
     'Платформа для создания, управления и анализа AI‑ассистентов: мультиканальная интеграция, настраиваемые инструкции и прозрачная аналитика.',
   metadataBase: new URL('https://example.com'),
   openGraph: {
-    title: 'Diaxel — управление AI‑ассистентами',
+    title: 'SD Nexus — управление AI‑ассистентами',
     description:
       'Создавайте и масштабируйте AI‑ассистентов без глубоких знаний ML. Аналитика, чаты, интеграции.',
     type: 'website'

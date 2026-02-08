@@ -130,10 +130,15 @@ func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRe
 	return &proto.ChatResponse{
 		Id:          chat.ID,
 		AssistantId: chat.AssistantID,
-		CustomerId:  chat.CustomerID,
-		Platform:    req.Platform,
-		CreatedAt:   chat.StartedAt.Format(time.RFC3339),
-		UpdatedAt:   chat.StartedAt.Format(time.RFC3339),
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		Platform:  req.Platform,
+		CreatedAt: chat.StartedAt.Format(time.RFC3339),
+		UpdatedAt: chat.StartedAt.Format(time.RFC3339),
 	}, nil
 }
 
@@ -173,5 +178,98 @@ func (s *DatabaseServer) GetChatMessages(ctx context.Context, req *proto.GetChat
 
 	return &proto.MessagesResponse{
 		Messages: protoMessages,
+	}, nil
+}
+
+func (s *DatabaseServer) GetAllChatMessages(ctx context.Context, req *proto.GetAllChatMessagesRequest) (*proto.MessagesResponse, error) {
+	messages, err := s.messageRepo.GetAllChatMessages(ctx, req.ChatId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get all messages: %v", err)
+	}
+
+	var protoMessages []*proto.MessageResponse
+	for _, msg := range messages {
+		protoMessages = append(protoMessages, &proto.MessageResponse{
+			Id:        fmt.Sprintf("%d", msg.ID),
+			ChatId:    msg.ChatID,
+			Role:      msg.Role,
+			Content:   msg.Content,
+			Platform:  "", // Platform not stored in message model
+			CreatedAt: msg.Time.Format(time.RFC3339),
+		})
+	}
+
+	return &proto.MessagesResponse{
+		Messages: protoMessages,
+	}, nil
+}
+
+func (s *DatabaseServer) GetChatPagesCount(ctx context.Context, req *proto.GetChatPagesCountRequest) (*proto.ChatPagesCountResponse, error) {
+	pagesCount, err := s.chatRepo.GetChatPagesCount(ctx, req.AssistantId, req.ChatsPerPage)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get chat pages count: %v", err)
+	}
+
+	return &proto.ChatPagesCountResponse{
+		PagesCount: pagesCount,
+	}, nil
+}
+
+func (s *DatabaseServer) GetChatPage(ctx context.Context, req *proto.GetChatPageRequest) (*proto.ChatsResponse, error) {
+	chats, err := s.chatRepo.GetChatPage(ctx, req.AssistantId, req.Page, req.ChatsPerPage)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get chat page: %v", err)
+	}
+
+	var protoChats []*proto.ChatResponse
+	for _, chat := range chats {
+		customerId := ""
+		if chat.CustomerID != nil {
+			customerId = *chat.CustomerID
+		}
+
+		protoChats = append(protoChats, &proto.ChatResponse{
+			Id:           chat.ID,
+			AssistantId:  chat.AssistantID,
+			CustomerId:   customerId,
+			Platform:     "", // Platform not stored in chat model
+			CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+			MessageCount: chat.MessageCount,
+		})
+	}
+
+	return &proto.ChatsResponse{
+		Chats: protoChats,
+	}, nil
+}
+
+func (s *DatabaseServer) SearchChatsByUser(ctx context.Context, req *proto.SearchChatsByUserRequest) (*proto.SearchChatsResponse, error) {
+	chats, totalCount, err := s.chatRepo.SearchChatsByUser(ctx, req.AssistantId, req.Search)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to search chats: %v", err)
+	}
+
+	var protoChats []*proto.ChatResponse
+	for _, chat := range chats {
+		customerId := ""
+		if chat.CustomerID != nil {
+			customerId = *chat.CustomerID
+		}
+
+		protoChats = append(protoChats, &proto.ChatResponse{
+			Id:           chat.ID,
+			AssistantId:  chat.AssistantID,
+			CustomerId:   customerId,
+			Platform:     "", // Platform not stored in chat model
+			CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+			MessageCount: chat.MessageCount,
+		})
+	}
+
+	return &proto.SearchChatsResponse{
+		Chats:      protoChats,
+		TotalCount: totalCount,
 	}, nil
 }

@@ -1,0 +1,53 @@
+import * as React from "react"
+
+interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+  src?: string
+  alt?: string
+}
+
+const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
+  ({ className, src, alt, children, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={`relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-slate-100 ${className || ''}`}
+      {...props}
+    >
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className="aspect-square h-full w-full object-cover"
+        />
+      ) : (
+        children
+      )}
+    </div>
+  )
+)
+Avatar.displayName = "Avatar"
+
+const AvatarImage = React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<HTMLImageElement>>(
+  ({ className, ...props }, ref) => (
+    <img
+      ref={ref}
+      className={`aspect-square h-full w-full object-cover ${className || ''}`}
+      {...props}
+    />
+  )
+)
+AvatarImage.displayName = "AvatarImage"
+
+const AvatarFallback = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, children, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={`flex h-full w-full items-center justify-center rounded-full bg-slate-100 text-slate-600 ${className || ''}`}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+)
+AvatarFallback.displayName = "AvatarFallback"
+
+export { Avatar, AvatarImage, AvatarFallback }

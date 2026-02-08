@@ -13,6 +13,7 @@ import (
 type MessageRepository interface {
 	SaveMessage(ctx context.Context, chatID, role, content, platform string) (*models.Message, error)
 	GetMessagesByChatID(ctx context.Context, chatID string, limit, offset int32) ([]*models.Message, error)
+	GetAllChatMessages(ctx context.Context, chatID string) ([]*models.Message, error)
 }
 
 type messageRepository struct {
@@ -42,6 +43,15 @@ func (r *messageRepository) GetMessagesByChatID(ctx context.Context, chatID stri
 	var messages []*models.Message
 	if err := r.db.WithContext(ctx).Where("chat_id = ?", chatID).Order("time ASC").Limit(int(limit)).Offset(int(offset)).Find(&messages).Error; err != nil {
 		return nil, fmt.Errorf("failed to get messages: %w", err)
+	}
+
+	return messages, nil
+}
+
+func (r *messageRepository) GetAllChatMessages(ctx context.Context, chatID string) ([]*models.Message, error) {
+	var messages []*models.Message
+	if err := r.db.WithContext(ctx).Where("chat_id = ?", chatID).Order("time ASC").Find(&messages).Error; err != nil {
+		return nil, fmt.Errorf("failed to get all messages: %w", err)
 	}
 
 	return messages, nil

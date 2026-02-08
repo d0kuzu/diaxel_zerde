@@ -18,6 +18,19 @@ export type AnalyticsTimeseriesPoint = {
   engagementRate: number;
 };
 
+export interface SaveAssistantTokenRequest {
+  assistant_id: string;
+  bot_token: string;
+}
+
+export interface SaveAssistantTokenResponse {
+  success: boolean;
+}
+
+export interface GetBotTokenResponse {
+  bot_token: string;
+}
+
 function buildQuery(filters: AnalyticsFilters) {
   const params = new URLSearchParams();
   if (filters.assistantId) params.set('assistantId', filters.assistantId);
@@ -76,4 +89,49 @@ export async function fetchAnalyticsTimeseries(
   }
 
   return res.json() as Promise<AnalyticsTimeseriesPoint[]>;
+}
+
+export async function saveAssistantToken(
+  data: SaveAssistantTokenRequest
+): Promise<SaveAssistantTokenResponse> {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!base) {
+    // Mock response for development
+    return { success: true };
+  }
+
+  const res = await fetch(`${base}/api/assistants/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    cache: 'no-store'
+  });
+
+  if (!res.ok) {
+    throw new Error(`Save assistant token request failed: ${res.status}`);
+  }
+
+  return res.json() as Promise<SaveAssistantTokenResponse>;
+}
+
+export async function getBotToken(
+  assistantId: string
+): Promise<GetBotTokenResponse> {
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!base) {
+    // Mock response for development
+    return { bot_token: '123456789:ABCdefGHIjklmnoPQRstuVWXyz' };
+  }
+
+  const res = await fetch(`${base}/api/assistants/${assistantId}/token`, {
+    cache: 'no-store'
+  });
+
+  if (!res.ok) {
+    throw new Error(`Get bot token request failed: ${res.status}`);
+  }
+
+  return res.json() as Promise<GetBotTokenResponse>;
 }
