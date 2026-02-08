@@ -56,3 +56,91 @@ func (c *Client) GetUserByEmail(email string) (*dbpb.UserResponse, error) {
 
 	return resp, nil
 }
+
+func (c *Client) GetUserByID(userID string) (*dbpb.UserResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetUserRequest{
+		Id: userID,
+	}
+
+	resp, err := c.DB.GetUser(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка получения пользователя:", err)
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Client) CreateUser(email, passwordHash, role string) (*dbpb.UserResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.CreateUserRequest{
+		Email:        email,
+		PasswordHash: passwordHash,
+		Role:         role,
+	}
+
+	resp, err := c.DB.CreateUser(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка создания пользователя:", err)
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Client) SaveRefreshToken(token, userID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.SaveRefreshTokenRequest{
+		TokenHash: token,
+		UserId:    userID,
+	}
+
+	_, err := c.DB.SaveRefreshToken(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка сохранения refresh токена:", err)
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) GetRefreshToken(token string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetRefreshTokenRequest{
+		TokenHash: token,
+	}
+
+	resp, err := c.DB.GetRefreshToken(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка получения refresh токена:", err)
+		return "", err
+	}
+
+	return resp.UserId, nil
+}
+
+func (c *Client) DeleteRefreshToken(token string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.DeleteRefreshTokenRequest{
+		TokenHash: token,
+	}
+
+	_, err := c.DB.DeleteRefreshToken(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка удаления refresh токена:", err)
+		return err
+	}
+
+	return nil
+}

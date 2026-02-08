@@ -785,6 +785,7 @@ type ChatResponse struct {
 	Platform      string                 `protobuf:"bytes,4,opt,name=platform,proto3" json:"platform,omitempty"`
 	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	MessageCount  int32                  `protobuf:"varint,7,opt,name=message_count,json=messageCount,proto3" json:"message_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -859,6 +860,13 @@ func (x *ChatResponse) GetUpdatedAt() string {
 		return x.UpdatedAt
 	}
 	return ""
+}
+
+func (x *ChatResponse) GetMessageCount() int32 {
+	if x != nil {
+		return x.MessageCount
+	}
+	return 0
 }
 
 type SaveMessageRequest struct {
@@ -1073,6 +1081,50 @@ func (x *GetChatMessagesRequest) GetOffset() int32 {
 	return 0
 }
 
+type GetAllChatMessagesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ChatId        string                 `protobuf:"bytes,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetAllChatMessagesRequest) Reset() {
+	*x = GetAllChatMessagesRequest{}
+	mi := &file_proto_database_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetAllChatMessagesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetAllChatMessagesRequest) ProtoMessage() {}
+
+func (x *GetAllChatMessagesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetAllChatMessagesRequest.ProtoReflect.Descriptor instead.
+func (*GetAllChatMessagesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetAllChatMessagesRequest) GetChatId() string {
+	if x != nil {
+		return x.ChatId
+	}
+	return ""
+}
+
 type MessagesResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Messages      []*MessageResponse     `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
@@ -1082,7 +1134,7 @@ type MessagesResponse struct {
 
 func (x *MessagesResponse) Reset() {
 	*x = MessagesResponse{}
-	mi := &file_proto_database_proto_msgTypes[17]
+	mi := &file_proto_database_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1094,7 +1146,7 @@ func (x *MessagesResponse) String() string {
 func (*MessagesResponse) ProtoMessage() {}
 
 func (x *MessagesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[17]
+	mi := &file_proto_database_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1107,7 +1159,7 @@ func (x *MessagesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MessagesResponse.ProtoReflect.Descriptor instead.
 func (*MessagesResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{17}
+	return file_proto_database_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *MessagesResponse) GetMessages() []*MessageResponse {
@@ -1115,6 +1167,942 @@ func (x *MessagesResponse) GetMessages() []*MessageResponse {
 		return x.Messages
 	}
 	return nil
+}
+
+type GetUserByEmailRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserByEmailRequest) Reset() {
+	*x = GetUserByEmailRequest{}
+	mi := &file_proto_database_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserByEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserByEmailRequest) ProtoMessage() {}
+
+func (x *GetUserByEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserByEmailRequest.ProtoReflect.Descriptor instead.
+func (*GetUserByEmailRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetUserByEmailRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+type UpdateUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	PasswordHash  string                 `protobuf:"bytes,3,opt,name=password_hash,json=passwordHash,proto3" json:"password_hash,omitempty"`
+	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateUserRequest) Reset() {
+	*x = UpdateUserRequest{}
+	mi := &file_proto_database_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUserRequest) ProtoMessage() {}
+
+func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
+func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *UpdateUserRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateUserRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UpdateUserRequest) GetPasswordHash() string {
+	if x != nil {
+		return x.PasswordHash
+	}
+	return ""
+}
+
+func (x *UpdateUserRequest) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+type DeleteUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserRequest) Reset() {
+	*x = DeleteUserRequest{}
+	mi := &file_proto_database_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserRequest) ProtoMessage() {}
+
+func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
+func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *DeleteUserRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteUserResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteUserResponse) Reset() {
+	*x = DeleteUserResponse{}
+	mi := &file_proto_database_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteUserResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteUserResponse) ProtoMessage() {}
+
+func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteUserResponse.ProtoReflect.Descriptor instead.
+func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *DeleteUserResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type GetChatRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatRequest) Reset() {
+	*x = GetChatRequest{}
+	mi := &file_proto_database_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatRequest) ProtoMessage() {}
+
+func (x *GetChatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatRequest.ProtoReflect.Descriptor instead.
+func (*GetChatRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetChatRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetChatsByUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AssistantId   string                 `protobuf:"bytes,2,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset        int32                  `protobuf:"varint,4,opt,name=offset,proto3" json:"offset,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatsByUserRequest) Reset() {
+	*x = GetChatsByUserRequest{}
+	mi := &file_proto_database_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatsByUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatsByUserRequest) ProtoMessage() {}
+
+func (x *GetChatsByUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatsByUserRequest.ProtoReflect.Descriptor instead.
+func (*GetChatsByUserRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *GetChatsByUserRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetChatsByUserRequest) GetAssistantId() string {
+	if x != nil {
+		return x.AssistantId
+	}
+	return ""
+}
+
+func (x *GetChatsByUserRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *GetChatsByUserRequest) GetOffset() int32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+type ChatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Chats         []*ChatResponse        `protobuf:"bytes,1,rep,name=chats,proto3" json:"chats,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatsResponse) Reset() {
+	*x = ChatsResponse{}
+	mi := &file_proto_database_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatsResponse) ProtoMessage() {}
+
+func (x *ChatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatsResponse.ProtoReflect.Descriptor instead.
+func (*ChatsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *ChatsResponse) GetChats() []*ChatResponse {
+	if x != nil {
+		return x.Chats
+	}
+	return nil
+}
+
+type UpdateChatRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	AssistantId   string                 `protobuf:"bytes,2,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	CustomerId    string                 `protobuf:"bytes,3,opt,name=customer_id,json=customerId,proto3" json:"customer_id,omitempty"`
+	Platform      string                 `protobuf:"bytes,4,opt,name=platform,proto3" json:"platform,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateChatRequest) Reset() {
+	*x = UpdateChatRequest{}
+	mi := &file_proto_database_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateChatRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateChatRequest) ProtoMessage() {}
+
+func (x *UpdateChatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateChatRequest.ProtoReflect.Descriptor instead.
+func (*UpdateChatRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *UpdateChatRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateChatRequest) GetAssistantId() string {
+	if x != nil {
+		return x.AssistantId
+	}
+	return ""
+}
+
+func (x *UpdateChatRequest) GetCustomerId() string {
+	if x != nil {
+		return x.CustomerId
+	}
+	return ""
+}
+
+func (x *UpdateChatRequest) GetPlatform() string {
+	if x != nil {
+		return x.Platform
+	}
+	return ""
+}
+
+type DeleteChatRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteChatRequest) Reset() {
+	*x = DeleteChatRequest{}
+	mi := &file_proto_database_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteChatRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChatRequest) ProtoMessage() {}
+
+func (x *DeleteChatRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChatRequest.ProtoReflect.Descriptor instead.
+func (*DeleteChatRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *DeleteChatRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteChatResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteChatResponse) Reset() {
+	*x = DeleteChatResponse{}
+	mi := &file_proto_database_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteChatResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteChatResponse) ProtoMessage() {}
+
+func (x *DeleteChatResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteChatResponse.ProtoReflect.Descriptor instead.
+func (*DeleteChatResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *DeleteChatResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type UpdateMessageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ChatId        string                 `protobuf:"bytes,2,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	Platform      string                 `protobuf:"bytes,5,opt,name=platform,proto3" json:"platform,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateMessageRequest) Reset() {
+	*x = UpdateMessageRequest{}
+	mi := &file_proto_database_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateMessageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateMessageRequest) ProtoMessage() {}
+
+func (x *UpdateMessageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateMessageRequest.ProtoReflect.Descriptor instead.
+func (*UpdateMessageRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *UpdateMessageRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateMessageRequest) GetChatId() string {
+	if x != nil {
+		return x.ChatId
+	}
+	return ""
+}
+
+func (x *UpdateMessageRequest) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+func (x *UpdateMessageRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *UpdateMessageRequest) GetPlatform() string {
+	if x != nil {
+		return x.Platform
+	}
+	return ""
+}
+
+type DeleteMessageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteMessageRequest) Reset() {
+	*x = DeleteMessageRequest{}
+	mi := &file_proto_database_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteMessageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteMessageRequest) ProtoMessage() {}
+
+func (x *DeleteMessageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteMessageRequest.ProtoReflect.Descriptor instead.
+func (*DeleteMessageRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *DeleteMessageRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteMessageResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteMessageResponse) Reset() {
+	*x = DeleteMessageResponse{}
+	mi := &file_proto_database_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteMessageResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteMessageResponse) ProtoMessage() {}
+
+func (x *DeleteMessageResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteMessageResponse.ProtoReflect.Descriptor instead.
+func (*DeleteMessageResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *DeleteMessageResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type GetChatPagesCountRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	ChatsPerPage  int32                  `protobuf:"varint,2,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatPagesCountRequest) Reset() {
+	*x = GetChatPagesCountRequest{}
+	mi := &file_proto_database_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatPagesCountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatPagesCountRequest) ProtoMessage() {}
+
+func (x *GetChatPagesCountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatPagesCountRequest.ProtoReflect.Descriptor instead.
+func (*GetChatPagesCountRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *GetChatPagesCountRequest) GetAssistantId() string {
+	if x != nil {
+		return x.AssistantId
+	}
+	return ""
+}
+
+func (x *GetChatPagesCountRequest) GetChatsPerPage() int32 {
+	if x != nil {
+		return x.ChatsPerPage
+	}
+	return 0
+}
+
+type ChatPagesCountResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PagesCount    int32                  `protobuf:"varint,1,opt,name=pages_count,json=pagesCount,proto3" json:"pages_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ChatPagesCountResponse) Reset() {
+	*x = ChatPagesCountResponse{}
+	mi := &file_proto_database_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatPagesCountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatPagesCountResponse) ProtoMessage() {}
+
+func (x *ChatPagesCountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatPagesCountResponse.ProtoReflect.Descriptor instead.
+func (*ChatPagesCountResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *ChatPagesCountResponse) GetPagesCount() int32 {
+	if x != nil {
+		return x.PagesCount
+	}
+	return 0
+}
+
+type GetChatPageRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	ChatsPerPage  int32                  `protobuf:"varint,3,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatPageRequest) Reset() {
+	*x = GetChatPageRequest{}
+	mi := &file_proto_database_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatPageRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatPageRequest) ProtoMessage() {}
+
+func (x *GetChatPageRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatPageRequest.ProtoReflect.Descriptor instead.
+func (*GetChatPageRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *GetChatPageRequest) GetAssistantId() string {
+	if x != nil {
+		return x.AssistantId
+	}
+	return ""
+}
+
+func (x *GetChatPageRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetChatPageRequest) GetChatsPerPage() int32 {
+	if x != nil {
+		return x.ChatsPerPage
+	}
+	return 0
+}
+
+type SearchChatsByUserRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	Search        string                 `protobuf:"bytes,2,opt,name=search,proto3" json:"search,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchChatsByUserRequest) Reset() {
+	*x = SearchChatsByUserRequest{}
+	mi := &file_proto_database_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchChatsByUserRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchChatsByUserRequest) ProtoMessage() {}
+
+func (x *SearchChatsByUserRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchChatsByUserRequest.ProtoReflect.Descriptor instead.
+func (*SearchChatsByUserRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *SearchChatsByUserRequest) GetAssistantId() string {
+	if x != nil {
+		return x.AssistantId
+	}
+	return ""
+}
+
+func (x *SearchChatsByUserRequest) GetSearch() string {
+	if x != nil {
+		return x.Search
+	}
+	return ""
+}
+
+type SearchChatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Chats         []*ChatResponse        `protobuf:"bytes,1,rep,name=chats,proto3" json:"chats,omitempty"`
+	TotalCount    int32                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchChatsResponse) Reset() {
+	*x = SearchChatsResponse{}
+	mi := &file_proto_database_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchChatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchChatsResponse) ProtoMessage() {}
+
+func (x *SearchChatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchChatsResponse.ProtoReflect.Descriptor instead.
+func (*SearchChatsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *SearchChatsResponse) GetChats() []*ChatResponse {
+	if x != nil {
+		return x.Chats
+	}
+	return nil
+}
+
+func (x *SearchChatsResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
 }
 
 var File_proto_database_proto protoreflect.FileDescriptor
@@ -1182,7 +2170,7 @@ const file_proto_database_proto_rawDesc = "" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x1f\n" +
 	"\vcustomer_id\x18\x02 \x01(\tR\n" +
 	"customerId\x12\x1a\n" +
-	"\bplatform\x18\x03 \x01(\tR\bplatform\"\xbc\x01\n" +
+	"\bplatform\x18\x03 \x01(\tR\bplatform\"\xe1\x01\n" +
 	"\fChatResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
 	"\fassistant_id\x18\x02 \x01(\tR\vassistantId\x12\x1f\n" +
@@ -1192,7 +2180,8 @@ const file_proto_database_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"w\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt\x12#\n" +
+	"\rmessage_count\x18\a \x01(\x05R\fmessageCount\"w\n" +
 	"\x12SaveMessageRequest\x12\x17\n" +
 	"\achat_id\x18\x01 \x01(\tR\x06chatId\x12\x12\n" +
 	"\x04role\x18\x02 \x01(\tR\x04role\x12\x18\n" +
@@ -1209,22 +2198,98 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x16GetChatMessagesRequest\x12\x17\n" +
 	"\achat_id\x18\x01 \x01(\tR\x06chatId\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x16\n" +
-	"\x06offset\x18\x03 \x01(\x05R\x06offset\"I\n" +
+	"\x06offset\x18\x03 \x01(\x05R\x06offset\"4\n" +
+	"\x19GetAllChatMessagesRequest\x12\x17\n" +
+	"\achat_id\x18\x01 \x01(\tR\x06chatId\"I\n" +
 	"\x10MessagesResponse\x125\n" +
-	"\bmessages\x18\x01 \x03(\v2\x19.database.MessageResponseR\bmessages2\xa6\x06\n" +
+	"\bmessages\x18\x01 \x03(\v2\x19.database.MessageResponseR\bmessages\"-\n" +
+	"\x15GetUserByEmailRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\"r\n" +
+	"\x11UpdateUserRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12#\n" +
+	"\rpassword_hash\x18\x03 \x01(\tR\fpasswordHash\x12\x12\n" +
+	"\x04role\x18\x04 \x01(\tR\x04role\"#\n" +
+	"\x11DeleteUserRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\".\n" +
+	"\x12DeleteUserResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\" \n" +
+	"\x0eGetChatRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"\x81\x01\n" +
+	"\x15GetChatsByUserRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12!\n" +
+	"\fassistant_id\x18\x02 \x01(\tR\vassistantId\x12\x14\n" +
+	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
+	"\x06offset\x18\x04 \x01(\x05R\x06offset\"=\n" +
+	"\rChatsResponse\x12,\n" +
+	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\"\x83\x01\n" +
+	"\x11UpdateChatRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
+	"\fassistant_id\x18\x02 \x01(\tR\vassistantId\x12\x1f\n" +
+	"\vcustomer_id\x18\x03 \x01(\tR\n" +
+	"customerId\x12\x1a\n" +
+	"\bplatform\x18\x04 \x01(\tR\bplatform\"#\n" +
+	"\x11DeleteChatRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\".\n" +
+	"\x12DeleteChatResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\x89\x01\n" +
+	"\x14UpdateMessageRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\achat_id\x18\x02 \x01(\tR\x06chatId\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x12\x18\n" +
+	"\acontent\x18\x04 \x01(\tR\acontent\x12\x1a\n" +
+	"\bplatform\x18\x05 \x01(\tR\bplatform\"&\n" +
+	"\x14DeleteMessageRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"1\n" +
+	"\x15DeleteMessageResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"c\n" +
+	"\x18GetChatPagesCountRequest\x12!\n" +
+	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12$\n" +
+	"\x0echats_per_page\x18\x02 \x01(\x05R\fchatsPerPage\"9\n" +
+	"\x16ChatPagesCountResponse\x12\x1f\n" +
+	"\vpages_count\x18\x01 \x01(\x05R\n" +
+	"pagesCount\"q\n" +
+	"\x12GetChatPageRequest\x12!\n" +
+	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12$\n" +
+	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"U\n" +
+	"\x18SearchChatsByUserRequest\x12!\n" +
+	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x16\n" +
+	"\x06search\x18\x02 \x01(\tR\x06search\"d\n" +
+	"\x13SearchChatsResponse\x12,\n" +
+	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x05R\n" +
+	"totalCount2\x80\x0e\n" +
 	"\x0fDatabaseService\x12G\n" +
 	"\fGetAnalytics\x12\x1a.database.AnalyticsRequest\x1a\x1b.database.AnalyticsResponse\x12]\n" +
 	"\x17GetAnalyticsByAssistant\x12%.database.AnalyticsByAssistantRequest\x1a\x1b.database.AnalyticsResponse\x12A\n" +
 	"\n" +
 	"CreateUser\x12\x1b.database.CreateUserRequest\x1a\x16.database.UserResponse\x12;\n" +
-	"\aGetUser\x12\x18.database.GetUserRequest\x1a\x16.database.UserResponse\x12Y\n" +
+	"\aGetUser\x12\x18.database.GetUserRequest\x1a\x16.database.UserResponse\x12I\n" +
+	"\x0eGetUserByEmail\x12\x1f.database.GetUserByEmailRequest\x1a\x16.database.UserResponse\x12A\n" +
+	"\n" +
+	"UpdateUser\x12\x1b.database.UpdateUserRequest\x1a\x16.database.UserResponse\x12G\n" +
+	"\n" +
+	"DeleteUser\x12\x1b.database.DeleteUserRequest\x1a\x1c.database.DeleteUserResponse\x12Y\n" +
 	"\x10SaveRefreshToken\x12!.database.SaveRefreshTokenRequest\x1a\".database.SaveRefreshTokenResponse\x12S\n" +
 	"\x0fGetRefreshToken\x12 .database.GetRefreshTokenRequest\x1a\x1e.database.RefreshTokenResponse\x12_\n" +
 	"\x12DeleteRefreshToken\x12#.database.DeleteRefreshTokenRequest\x1a$.database.DeleteRefreshTokenResponse\x12A\n" +
 	"\n" +
-	"CreateChat\x12\x1b.database.CreateChatRequest\x1a\x16.database.ChatResponse\x12F\n" +
+	"CreateChat\x12\x1b.database.CreateChatRequest\x1a\x16.database.ChatResponse\x12;\n" +
+	"\aGetChat\x12\x18.database.GetChatRequest\x1a\x16.database.ChatResponse\x12J\n" +
+	"\x0eGetChatsByUser\x12\x1f.database.GetChatsByUserRequest\x1a\x17.database.ChatsResponse\x12A\n" +
+	"\n" +
+	"UpdateChat\x12\x1b.database.UpdateChatRequest\x1a\x16.database.ChatResponse\x12G\n" +
+	"\n" +
+	"DeleteChat\x12\x1b.database.DeleteChatRequest\x1a\x1c.database.DeleteChatResponse\x12F\n" +
 	"\vSaveMessage\x12\x1c.database.SaveMessageRequest\x1a\x19.database.MessageResponse\x12O\n" +
-	"\x0fGetChatMessages\x12 .database.GetChatMessagesRequest\x1a\x1a.database.MessagesResponseB+Z)diaxel_zerde/database-service/proto;protob\x06proto3"
+	"\x0fGetChatMessages\x12 .database.GetChatMessagesRequest\x1a\x1a.database.MessagesResponse\x12U\n" +
+	"\x12GetAllChatMessages\x12#.database.GetAllChatMessagesRequest\x1a\x1a.database.MessagesResponse\x12J\n" +
+	"\rUpdateMessage\x12\x1e.database.UpdateMessageRequest\x1a\x19.database.MessageResponse\x12P\n" +
+	"\rDeleteMessage\x12\x1e.database.DeleteMessageRequest\x1a\x1f.database.DeleteMessageResponse\x12Y\n" +
+	"\x11GetChatPagesCount\x12\".database.GetChatPagesCountRequest\x1a .database.ChatPagesCountResponse\x12D\n" +
+	"\vGetChatPage\x12\x1c.database.GetChatPageRequest\x1a\x17.database.ChatsResponse\x12V\n" +
+	"\x11SearchChatsByUser\x12\".database.SearchChatsByUserRequest\x1a\x1d.database.SearchChatsResponseB+Z)diaxel_zerde/database-service/proto;protob\x06proto3"
 
 var (
 	file_proto_database_proto_rawDescOnce sync.Once
@@ -1238,7 +2303,7 @@ func file_proto_database_proto_rawDescGZIP() []byte {
 	return file_proto_database_proto_rawDescData
 }
 
-var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 37)
 var file_proto_database_proto_goTypes = []any{
 	(*AnalyticsRequest)(nil),            // 0: database.AnalyticsRequest
 	(*AnalyticsByAssistantRequest)(nil), // 1: database.AnalyticsByAssistantRequest
@@ -1257,35 +2322,82 @@ var file_proto_database_proto_goTypes = []any{
 	(*SaveMessageRequest)(nil),          // 14: database.SaveMessageRequest
 	(*MessageResponse)(nil),             // 15: database.MessageResponse
 	(*GetChatMessagesRequest)(nil),      // 16: database.GetChatMessagesRequest
-	(*MessagesResponse)(nil),            // 17: database.MessagesResponse
+	(*GetAllChatMessagesRequest)(nil),   // 17: database.GetAllChatMessagesRequest
+	(*MessagesResponse)(nil),            // 18: database.MessagesResponse
+	(*GetUserByEmailRequest)(nil),       // 19: database.GetUserByEmailRequest
+	(*UpdateUserRequest)(nil),           // 20: database.UpdateUserRequest
+	(*DeleteUserRequest)(nil),           // 21: database.DeleteUserRequest
+	(*DeleteUserResponse)(nil),          // 22: database.DeleteUserResponse
+	(*GetChatRequest)(nil),              // 23: database.GetChatRequest
+	(*GetChatsByUserRequest)(nil),       // 24: database.GetChatsByUserRequest
+	(*ChatsResponse)(nil),               // 25: database.ChatsResponse
+	(*UpdateChatRequest)(nil),           // 26: database.UpdateChatRequest
+	(*DeleteChatRequest)(nil),           // 27: database.DeleteChatRequest
+	(*DeleteChatResponse)(nil),          // 28: database.DeleteChatResponse
+	(*UpdateMessageRequest)(nil),        // 29: database.UpdateMessageRequest
+	(*DeleteMessageRequest)(nil),        // 30: database.DeleteMessageRequest
+	(*DeleteMessageResponse)(nil),       // 31: database.DeleteMessageResponse
+	(*GetChatPagesCountRequest)(nil),    // 32: database.GetChatPagesCountRequest
+	(*ChatPagesCountResponse)(nil),      // 33: database.ChatPagesCountResponse
+	(*GetChatPageRequest)(nil),          // 34: database.GetChatPageRequest
+	(*SearchChatsByUserRequest)(nil),    // 35: database.SearchChatsByUserRequest
+	(*SearchChatsResponse)(nil),         // 36: database.SearchChatsResponse
 }
 var file_proto_database_proto_depIdxs = []int32{
 	15, // 0: database.MessagesResponse.messages:type_name -> database.MessageResponse
-	0,  // 1: database.DatabaseService.GetAnalytics:input_type -> database.AnalyticsRequest
-	1,  // 2: database.DatabaseService.GetAnalyticsByAssistant:input_type -> database.AnalyticsByAssistantRequest
-	3,  // 3: database.DatabaseService.CreateUser:input_type -> database.CreateUserRequest
-	4,  // 4: database.DatabaseService.GetUser:input_type -> database.GetUserRequest
-	6,  // 5: database.DatabaseService.SaveRefreshToken:input_type -> database.SaveRefreshTokenRequest
-	8,  // 6: database.DatabaseService.GetRefreshToken:input_type -> database.GetRefreshTokenRequest
-	10, // 7: database.DatabaseService.DeleteRefreshToken:input_type -> database.DeleteRefreshTokenRequest
-	12, // 8: database.DatabaseService.CreateChat:input_type -> database.CreateChatRequest
-	14, // 9: database.DatabaseService.SaveMessage:input_type -> database.SaveMessageRequest
-	16, // 10: database.DatabaseService.GetChatMessages:input_type -> database.GetChatMessagesRequest
-	2,  // 11: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
-	2,  // 12: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
-	5,  // 13: database.DatabaseService.CreateUser:output_type -> database.UserResponse
-	5,  // 14: database.DatabaseService.GetUser:output_type -> database.UserResponse
-	7,  // 15: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
-	9,  // 16: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
-	11, // 17: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
-	13, // 18: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
-	15, // 19: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
-	17, // 20: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
-	11, // [11:21] is the sub-list for method output_type
-	1,  // [1:11] is the sub-list for method input_type
-	1,  // [1:1] is the sub-list for extension type_name
-	1,  // [1:1] is the sub-list for extension extendee
-	0,  // [0:1] is the sub-list for field type_name
+	13, // 1: database.ChatsResponse.chats:type_name -> database.ChatResponse
+	13, // 2: database.SearchChatsResponse.chats:type_name -> database.ChatResponse
+	0,  // 3: database.DatabaseService.GetAnalytics:input_type -> database.AnalyticsRequest
+	1,  // 4: database.DatabaseService.GetAnalyticsByAssistant:input_type -> database.AnalyticsByAssistantRequest
+	3,  // 5: database.DatabaseService.CreateUser:input_type -> database.CreateUserRequest
+	4,  // 6: database.DatabaseService.GetUser:input_type -> database.GetUserRequest
+	19, // 7: database.DatabaseService.GetUserByEmail:input_type -> database.GetUserByEmailRequest
+	20, // 8: database.DatabaseService.UpdateUser:input_type -> database.UpdateUserRequest
+	21, // 9: database.DatabaseService.DeleteUser:input_type -> database.DeleteUserRequest
+	6,  // 10: database.DatabaseService.SaveRefreshToken:input_type -> database.SaveRefreshTokenRequest
+	8,  // 11: database.DatabaseService.GetRefreshToken:input_type -> database.GetRefreshTokenRequest
+	10, // 12: database.DatabaseService.DeleteRefreshToken:input_type -> database.DeleteRefreshTokenRequest
+	12, // 13: database.DatabaseService.CreateChat:input_type -> database.CreateChatRequest
+	23, // 14: database.DatabaseService.GetChat:input_type -> database.GetChatRequest
+	24, // 15: database.DatabaseService.GetChatsByUser:input_type -> database.GetChatsByUserRequest
+	26, // 16: database.DatabaseService.UpdateChat:input_type -> database.UpdateChatRequest
+	27, // 17: database.DatabaseService.DeleteChat:input_type -> database.DeleteChatRequest
+	14, // 18: database.DatabaseService.SaveMessage:input_type -> database.SaveMessageRequest
+	16, // 19: database.DatabaseService.GetChatMessages:input_type -> database.GetChatMessagesRequest
+	17, // 20: database.DatabaseService.GetAllChatMessages:input_type -> database.GetAllChatMessagesRequest
+	29, // 21: database.DatabaseService.UpdateMessage:input_type -> database.UpdateMessageRequest
+	30, // 22: database.DatabaseService.DeleteMessage:input_type -> database.DeleteMessageRequest
+	32, // 23: database.DatabaseService.GetChatPagesCount:input_type -> database.GetChatPagesCountRequest
+	34, // 24: database.DatabaseService.GetChatPage:input_type -> database.GetChatPageRequest
+	35, // 25: database.DatabaseService.SearchChatsByUser:input_type -> database.SearchChatsByUserRequest
+	2,  // 26: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
+	2,  // 27: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
+	5,  // 28: database.DatabaseService.CreateUser:output_type -> database.UserResponse
+	5,  // 29: database.DatabaseService.GetUser:output_type -> database.UserResponse
+	5,  // 30: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
+	5,  // 31: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
+	22, // 32: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
+	7,  // 33: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
+	9,  // 34: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
+	11, // 35: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
+	13, // 36: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
+	13, // 37: database.DatabaseService.GetChat:output_type -> database.ChatResponse
+	25, // 38: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
+	13, // 39: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
+	28, // 40: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
+	15, // 41: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
+	18, // 42: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
+	18, // 43: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
+	15, // 44: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
+	31, // 45: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
+	33, // 46: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
+	25, // 47: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
+	36, // 48: database.DatabaseService.SearchChatsByUser:output_type -> database.SearchChatsResponse
+	26, // [26:49] is the sub-list for method output_type
+	3,  // [3:26] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_proto_database_proto_init() }
@@ -1299,7 +2411,7 @@ func file_proto_database_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_database_proto_rawDesc), len(file_proto_database_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   37,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

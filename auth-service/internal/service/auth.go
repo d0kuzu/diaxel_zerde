@@ -5,7 +5,6 @@ import (
 	"auth-service/internal/config"
 	"auth-service/internal/crypto"
 	"auth-service/internal/jwt"
-	"auth-service/internal/repository"
 	"errors"
 
 	"github.com/google/uuid"
@@ -48,56 +47,53 @@ func (s *AuthService) Login(email, password string) (string, string, error) {
 		s.cfg.RefreshSecret,
 	)
 
-	s.refresh.Save(refreshToken, user.Id)
+	// Сохраняем refresh токен через gRPC
+	err = s.db.SaveRefreshToken(refreshToken, user.Id)
+	if err != nil {
+		return "", "", err
+	}
 
 	return access, refreshToken, nil
 }
 
 func (s *AuthService) Refresh(token string) (string, string, error) {
-	userID, ok := s.refresh.Get(token)
-	if !ok {
+	userID, err := s.db.GetRefreshToken(token)
+	if err != nil {
 		return "", "", ErrInvalidCredentials
 	}
 
-	sub, err := jwt.ParseRefreshToken(token, s.cfg.RefreshSecret)
-	if err != nil || sub != userID {
-		return "", "", ErrInvalidCredentials
+	// Получаем данные пользователя для генерации нового access токена
+	user, err := s.db.GetUserByID(userID)
+	if err != nil {
+		return "", "", err
 	}
 
-	s.refresh.Delete(token)
-	user, ok := s.users.FindByID(userID)
-	if !ok {
-		return "", "", ErrInvalidCredentials
-	}
-
-	newAccess, _ := jwt.GenerateAccessToken(
+	access, _ := jwt.GenerateAccessToken(
 		userID,
 		user.Role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
 	)
 
-	newRefresh, _ := jwt.GenerateRefreshToken(
+	refreshToken, _ := jwt.GenerateRefreshToken(
 		userID,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
 
-	s.refresh.Save(newRefresh, userID)
+	// Удаляем старый токен
+	s.db.DeleteRefreshToken(token)
+	// Сохраняем новый токен
+	s.db.SaveRefreshToken(refreshToken, userID)
 
-	return newAccess, newRefresh, nil
+	return access, refreshToken, nil
 }
 
-func (s *AuthService) Logout(token string) {
-	s.refresh.Delete(token)
+func (s *AuthService) Logout(token string) error {
+	return s.db.DeleteRefreshToken(token)
 }
 
 func (s *AuthService) Register(email, password string) (string, string, error) {
-	_, ok := s.users.FindByEmail(email)
-	if ok {
-		return "", "", errors.New("user already exists")
-	}
-
 	hash, err := crypto.Hash(password)
 	if err != nil {
 		return "", "", err
@@ -106,13 +102,9 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 	userID := uuid.NewString()
 	role := "user"
 
-	ok = s.users.Create(repository.User{
-		ID:       userID,
-		Email:    email,
-		Password: hash,
-		Role:     role,
-	})
-	if !ok {
+	// Создаем пользователя через gRPC
+	_, err = s.db.CreateUser(email, hash, role)
+	if err != nil {
 		return "", "", err
 	}
 
@@ -131,6 +123,12 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
+	if err != nil {
+		return "", "", err
+	}
+
+	// Сохраняем refresh токен
+	err = s.db.SaveRefreshToken(refresh, userID)
 	if err != nil {
 		return "", "", err
 	}

@@ -23,12 +23,25 @@ const (
 	DatabaseService_GetAnalyticsByAssistant_FullMethodName = "/database.DatabaseService/GetAnalyticsByAssistant"
 	DatabaseService_CreateUser_FullMethodName              = "/database.DatabaseService/CreateUser"
 	DatabaseService_GetUser_FullMethodName                 = "/database.DatabaseService/GetUser"
+	DatabaseService_GetUserByEmail_FullMethodName          = "/database.DatabaseService/GetUserByEmail"
+	DatabaseService_UpdateUser_FullMethodName              = "/database.DatabaseService/UpdateUser"
+	DatabaseService_DeleteUser_FullMethodName              = "/database.DatabaseService/DeleteUser"
 	DatabaseService_SaveRefreshToken_FullMethodName        = "/database.DatabaseService/SaveRefreshToken"
 	DatabaseService_GetRefreshToken_FullMethodName         = "/database.DatabaseService/GetRefreshToken"
 	DatabaseService_DeleteRefreshToken_FullMethodName      = "/database.DatabaseService/DeleteRefreshToken"
 	DatabaseService_CreateChat_FullMethodName              = "/database.DatabaseService/CreateChat"
+	DatabaseService_GetChat_FullMethodName                 = "/database.DatabaseService/GetChat"
+	DatabaseService_GetChatsByUser_FullMethodName          = "/database.DatabaseService/GetChatsByUser"
+	DatabaseService_UpdateChat_FullMethodName              = "/database.DatabaseService/UpdateChat"
+	DatabaseService_DeleteChat_FullMethodName              = "/database.DatabaseService/DeleteChat"
 	DatabaseService_SaveMessage_FullMethodName             = "/database.DatabaseService/SaveMessage"
 	DatabaseService_GetChatMessages_FullMethodName         = "/database.DatabaseService/GetChatMessages"
+	DatabaseService_GetAllChatMessages_FullMethodName      = "/database.DatabaseService/GetAllChatMessages"
+	DatabaseService_UpdateMessage_FullMethodName           = "/database.DatabaseService/UpdateMessage"
+	DatabaseService_DeleteMessage_FullMethodName           = "/database.DatabaseService/DeleteMessage"
+	DatabaseService_GetChatPagesCount_FullMethodName       = "/database.DatabaseService/GetChatPagesCount"
+	DatabaseService_GetChatPage_FullMethodName             = "/database.DatabaseService/GetChatPage"
+	DatabaseService_SearchChatsByUser_FullMethodName       = "/database.DatabaseService/SearchChatsByUser"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -39,12 +52,25 @@ type DatabaseServiceClient interface {
 	GetAnalyticsByAssistant(ctx context.Context, in *AnalyticsByAssistantRequest, opts ...grpc.CallOption) (*AnalyticsResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
 	SaveRefreshToken(ctx context.Context, in *SaveRefreshTokenRequest, opts ...grpc.CallOption) (*SaveRefreshTokenResponse, error)
 	GetRefreshToken(ctx context.Context, in *GetRefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	DeleteRefreshToken(ctx context.Context, in *DeleteRefreshTokenRequest, opts ...grpc.CallOption) (*DeleteRefreshTokenResponse, error)
 	CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
+	GetChat(ctx context.Context, in *GetChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
+	GetChatsByUser(ctx context.Context, in *GetChatsByUserRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
+	UpdateChat(ctx context.Context, in *UpdateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
+	DeleteChat(ctx context.Context, in *DeleteChatRequest, opts ...grpc.CallOption) (*DeleteChatResponse, error)
 	SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
 	GetChatMessages(ctx context.Context, in *GetChatMessagesRequest, opts ...grpc.CallOption) (*MessagesResponse, error)
+	GetAllChatMessages(ctx context.Context, in *GetAllChatMessagesRequest, opts ...grpc.CallOption) (*MessagesResponse, error)
+	UpdateMessage(ctx context.Context, in *UpdateMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
+	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*DeleteMessageResponse, error)
+	GetChatPagesCount(ctx context.Context, in *GetChatPagesCountRequest, opts ...grpc.CallOption) (*ChatPagesCountResponse, error)
+	GetChatPage(ctx context.Context, in *GetChatPageRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
+	SearchChatsByUser(ctx context.Context, in *SearchChatsByUserRequest, opts ...grpc.CallOption) (*SearchChatsResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -95,6 +121,36 @@ func (c *databaseServiceClient) GetUser(ctx context.Context, in *GetUserRequest,
 	return out, nil
 }
 
+func (c *databaseServiceClient) GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetUserByEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_UpdateUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteUserResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_DeleteUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *databaseServiceClient) SaveRefreshToken(ctx context.Context, in *SaveRefreshTokenRequest, opts ...grpc.CallOption) (*SaveRefreshTokenResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SaveRefreshTokenResponse)
@@ -135,6 +191,46 @@ func (c *databaseServiceClient) CreateChat(ctx context.Context, in *CreateChatRe
 	return out, nil
 }
 
+func (c *databaseServiceClient) GetChat(ctx context.Context, in *GetChatRequest, opts ...grpc.CallOption) (*ChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetChatsByUser(ctx context.Context, in *GetChatsByUserRequest, opts ...grpc.CallOption) (*ChatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatsResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetChatsByUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) UpdateChat(ctx context.Context, in *UpdateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_UpdateChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) DeleteChat(ctx context.Context, in *DeleteChatRequest, opts ...grpc.CallOption) (*DeleteChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_DeleteChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *databaseServiceClient) SaveMessage(ctx context.Context, in *SaveMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(MessageResponse)
@@ -155,6 +251,66 @@ func (c *databaseServiceClient) GetChatMessages(ctx context.Context, in *GetChat
 	return out, nil
 }
 
+func (c *databaseServiceClient) GetAllChatMessages(ctx context.Context, in *GetAllChatMessagesRequest, opts ...grpc.CallOption) (*MessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MessagesResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetAllChatMessages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) UpdateMessage(ctx context.Context, in *UpdateMessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MessageResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_UpdateMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*DeleteMessageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteMessageResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_DeleteMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetChatPagesCount(ctx context.Context, in *GetChatPagesCountRequest, opts ...grpc.CallOption) (*ChatPagesCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatPagesCountResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetChatPagesCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetChatPage(ctx context.Context, in *GetChatPageRequest, opts ...grpc.CallOption) (*ChatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatsResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetChatPage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) SearchChatsByUser(ctx context.Context, in *SearchChatsByUserRequest, opts ...grpc.CallOption) (*SearchChatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchChatsResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_SearchChatsByUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DatabaseServiceServer is the server API for DatabaseService service.
 // All implementations must embed UnimplementedDatabaseServiceServer
 // for forward compatibility.
@@ -163,12 +319,25 @@ type DatabaseServiceServer interface {
 	GetAnalyticsByAssistant(context.Context, *AnalyticsByAssistantRequest) (*AnalyticsResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*UserResponse, error)
 	GetUser(context.Context, *GetUserRequest) (*UserResponse, error)
+	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*UserResponse, error)
+	UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error)
+	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
 	SaveRefreshToken(context.Context, *SaveRefreshTokenRequest) (*SaveRefreshTokenResponse, error)
 	GetRefreshToken(context.Context, *GetRefreshTokenRequest) (*RefreshTokenResponse, error)
 	DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error)
 	CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error)
+	GetChat(context.Context, *GetChatRequest) (*ChatResponse, error)
+	GetChatsByUser(context.Context, *GetChatsByUserRequest) (*ChatsResponse, error)
+	UpdateChat(context.Context, *UpdateChatRequest) (*ChatResponse, error)
+	DeleteChat(context.Context, *DeleteChatRequest) (*DeleteChatResponse, error)
 	SaveMessage(context.Context, *SaveMessageRequest) (*MessageResponse, error)
 	GetChatMessages(context.Context, *GetChatMessagesRequest) (*MessagesResponse, error)
+	GetAllChatMessages(context.Context, *GetAllChatMessagesRequest) (*MessagesResponse, error)
+	UpdateMessage(context.Context, *UpdateMessageRequest) (*MessageResponse, error)
+	DeleteMessage(context.Context, *DeleteMessageRequest) (*DeleteMessageResponse, error)
+	GetChatPagesCount(context.Context, *GetChatPagesCountRequest) (*ChatPagesCountResponse, error)
+	GetChatPage(context.Context, *GetChatPageRequest) (*ChatsResponse, error)
+	SearchChatsByUser(context.Context, *SearchChatsByUserRequest) (*SearchChatsResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -191,6 +360,15 @@ func (UnimplementedDatabaseServiceServer) CreateUser(context.Context, *CreateUse
 func (UnimplementedDatabaseServiceServer) GetUser(context.Context, *GetUserRequest) (*UserResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUser not implemented")
 }
+func (UnimplementedDatabaseServiceServer) GetUserByEmail(context.Context, *GetUserByEmailRequest) (*UserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserByEmail not implemented")
+}
+func (UnimplementedDatabaseServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*UserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateUser not implemented")
+}
+func (UnimplementedDatabaseServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteUser not implemented")
+}
 func (UnimplementedDatabaseServiceServer) SaveRefreshToken(context.Context, *SaveRefreshTokenRequest) (*SaveRefreshTokenResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SaveRefreshToken not implemented")
 }
@@ -203,11 +381,41 @@ func (UnimplementedDatabaseServiceServer) DeleteRefreshToken(context.Context, *D
 func (UnimplementedDatabaseServiceServer) CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateChat not implemented")
 }
+func (UnimplementedDatabaseServiceServer) GetChat(context.Context, *GetChatRequest) (*ChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChat not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetChatsByUser(context.Context, *GetChatsByUserRequest) (*ChatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChatsByUser not implemented")
+}
+func (UnimplementedDatabaseServiceServer) UpdateChat(context.Context, *UpdateChatRequest) (*ChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateChat not implemented")
+}
+func (UnimplementedDatabaseServiceServer) DeleteChat(context.Context, *DeleteChatRequest) (*DeleteChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteChat not implemented")
+}
 func (UnimplementedDatabaseServiceServer) SaveMessage(context.Context, *SaveMessageRequest) (*MessageResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SaveMessage not implemented")
 }
 func (UnimplementedDatabaseServiceServer) GetChatMessages(context.Context, *GetChatMessagesRequest) (*MessagesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetChatMessages not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetAllChatMessages(context.Context, *GetAllChatMessagesRequest) (*MessagesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAllChatMessages not implemented")
+}
+func (UnimplementedDatabaseServiceServer) UpdateMessage(context.Context, *UpdateMessageRequest) (*MessageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateMessage not implemented")
+}
+func (UnimplementedDatabaseServiceServer) DeleteMessage(context.Context, *DeleteMessageRequest) (*DeleteMessageResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteMessage not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetChatPagesCount(context.Context, *GetChatPagesCountRequest) (*ChatPagesCountResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChatPagesCount not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetChatPage(context.Context, *GetChatPageRequest) (*ChatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChatPage not implemented")
+}
+func (UnimplementedDatabaseServiceServer) SearchChatsByUser(context.Context, *SearchChatsByUserRequest) (*SearchChatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchChatsByUser not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -302,6 +510,60 @@ func _DatabaseService_GetUser_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetUserByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetUserByEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetUserByEmail(ctx, req.(*GetUserByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_UpdateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).UpdateUser(ctx, req.(*UpdateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).DeleteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_DeleteUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).DeleteUser(ctx, req.(*DeleteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DatabaseService_SaveRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SaveRefreshTokenRequest)
 	if err := dec(in); err != nil {
@@ -374,6 +636,78 @@ func _DatabaseService_CreateChat_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_GetChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetChat(ctx, req.(*GetChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetChatsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatsByUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetChatsByUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetChatsByUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetChatsByUser(ctx, req.(*GetChatsByUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_UpdateChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).UpdateChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_UpdateChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).UpdateChat(ctx, req.(*UpdateChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_DeleteChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).DeleteChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_DeleteChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).DeleteChat(ctx, req.(*DeleteChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DatabaseService_SaveMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SaveMessageRequest)
 	if err := dec(in); err != nil {
@@ -410,6 +744,114 @@ func _DatabaseService_GetChatMessages_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_GetAllChatMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAllChatMessagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetAllChatMessages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetAllChatMessages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetAllChatMessages(ctx, req.(*GetAllChatMessagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_UpdateMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).UpdateMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_UpdateMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).UpdateMessage(ctx, req.(*UpdateMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_DeleteMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).DeleteMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_DeleteMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).DeleteMessage(ctx, req.(*DeleteMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetChatPagesCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatPagesCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetChatPagesCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetChatPagesCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetChatPagesCount(ctx, req.(*GetChatPagesCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetChatPage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatPageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetChatPage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetChatPage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetChatPage(ctx, req.(*GetChatPageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_SearchChatsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchChatsByUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).SearchChatsByUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_SearchChatsByUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).SearchChatsByUser(ctx, req.(*SearchChatsByUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DatabaseService_ServiceDesc is the grpc.ServiceDesc for DatabaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -434,6 +876,18 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DatabaseService_GetUser_Handler,
 		},
 		{
+			MethodName: "GetUserByEmail",
+			Handler:    _DatabaseService_GetUserByEmail_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _DatabaseService_UpdateUser_Handler,
+		},
+		{
+			MethodName: "DeleteUser",
+			Handler:    _DatabaseService_DeleteUser_Handler,
+		},
+		{
 			MethodName: "SaveRefreshToken",
 			Handler:    _DatabaseService_SaveRefreshToken_Handler,
 		},
@@ -450,12 +904,52 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DatabaseService_CreateChat_Handler,
 		},
 		{
+			MethodName: "GetChat",
+			Handler:    _DatabaseService_GetChat_Handler,
+		},
+		{
+			MethodName: "GetChatsByUser",
+			Handler:    _DatabaseService_GetChatsByUser_Handler,
+		},
+		{
+			MethodName: "UpdateChat",
+			Handler:    _DatabaseService_UpdateChat_Handler,
+		},
+		{
+			MethodName: "DeleteChat",
+			Handler:    _DatabaseService_DeleteChat_Handler,
+		},
+		{
 			MethodName: "SaveMessage",
 			Handler:    _DatabaseService_SaveMessage_Handler,
 		},
 		{
 			MethodName: "GetChatMessages",
 			Handler:    _DatabaseService_GetChatMessages_Handler,
+		},
+		{
+			MethodName: "GetAllChatMessages",
+			Handler:    _DatabaseService_GetAllChatMessages_Handler,
+		},
+		{
+			MethodName: "UpdateMessage",
+			Handler:    _DatabaseService_UpdateMessage_Handler,
+		},
+		{
+			MethodName: "DeleteMessage",
+			Handler:    _DatabaseService_DeleteMessage_Handler,
+		},
+		{
+			MethodName: "GetChatPagesCount",
+			Handler:    _DatabaseService_GetChatPagesCount_Handler,
+		},
+		{
+			MethodName: "GetChatPage",
+			Handler:    _DatabaseService_GetChatPage_Handler,
+		},
+		{
+			MethodName: "SearchChatsByUser",
+			Handler:    _DatabaseService_SearchChatsByUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
