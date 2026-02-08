@@ -2,11 +2,19 @@ syntax = "proto3";
 
 package database;
 
-option go_package = "github.com/tr1ki/diaxel_zerde_master/database-service/proto";
+option go_package = "diaxel_zerde/database-service/proto;proto";
 
 service DatabaseService {
   rpc GetAnalytics(AnalyticsRequest) returns (AnalyticsResponse);
   rpc GetAnalyticsByAssistant(AnalyticsByAssistantRequest) returns (AnalyticsResponse);
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc SaveRefreshToken(SaveRefreshTokenRequest) returns (SaveRefreshTokenResponse);
+  rpc GetRefreshToken(GetRefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc DeleteRefreshToken(DeleteRefreshTokenRequest) returns (DeleteRefreshTokenResponse);
+  rpc CreateChat(CreateChatRequest) returns (ChatResponse);
+  rpc SaveMessage(SaveMessageRequest) returns (MessageResponse);
+  rpc GetChatMessages(GetChatMessagesRequest) returns (MessagesResponse);
 }
 
 message AnalyticsRequest {
@@ -28,4 +36,93 @@ message AnalyticsResponse {
   int32 total_chats = 2;
   int32 active_users = 3;
   double engagement_rate = 4;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string password_hash = 2;
+  string role = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string email = 2;
+  string password_hash = 3;
+  string role = 4;
+  string created_at = 5;
+}
+
+message SaveRefreshTokenRequest {
+  string user_id = 1;
+  string token_hash = 2;
+  string expires_at = 3;
+}
+
+message SaveRefreshTokenResponse {
+  bool success = 1;
+}
+
+message GetRefreshTokenRequest {
+  string token_hash = 1;
+}
+
+message RefreshTokenResponse {
+  string id = 1;
+  string user_id = 2;
+  string token_hash = 3;
+  string expires_at = 4;
+  string created_at = 5;
+}
+
+message DeleteRefreshTokenRequest {
+  string token_hash = 1;
+}
+
+message DeleteRefreshTokenResponse {
+  bool success = 1;
+}
+
+message CreateChatRequest {
+  string assistant_id = 1;
+  string customer_id = 2;
+  string platform = 3;
+}
+
+message ChatResponse {
+  string id = 1;
+  string assistant_id = 2;
+  string customer_id = 3;
+  string platform = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message SaveMessageRequest {
+  string chat_user_id = 1;
+  string role = 2;
+  string content = 3;
+  string platform = 4;
+}
+
+message MessageResponse {
+  string id = 1;
+  string chat_user_id = 2;
+  string role = 3;
+  string content = 4;
+  string platform = 5;
+  string created_at = 6;
+}
+
+message GetChatMessagesRequest {
+  string chat_user_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message MessagesResponse {
+  repeated MessageResponse messages = 1;
 }

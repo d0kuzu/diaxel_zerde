@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"diaxel/config"
 	"diaxel/database/models"
 	"diaxel/services/llm"
 
@@ -21,6 +22,10 @@ type MockLLMClient struct {
 func (m *MockLLMClient) Conversation(ctx interface{}, userID, message string) (string, error) {
 	args := m.Called(ctx, userID, message)
 	return args.String(0), args.Error(1)
+}
+
+func (m *MockLLMClient) toLLMClient() *llm.Client {
+	return &llm.Client{}
 }
 
 func setupTestDB(t *testing.T) *gorm.DB {
@@ -48,7 +53,7 @@ func TestTelegramClient_HandleWebhook(t *testing.T) {
 		TelegramWebhookSecret: "test_secret",
 	}
 
-	client := NewClient(db, mockLLM, cfg)
+	client := NewClient(mockLLM.toLLMClient(), cfg)
 
 	update := TelegramUpdate{
 		UpdateID: 123,
@@ -118,7 +123,7 @@ func TestTelegramClient_ValidateWebhookSecret(t *testing.T) {
 		TelegramWebhookSecret: "test_secret",
 	}
 
-	client := NewClient(nil, nil, cfg)
+	client := NewClient((&MockLLMClient{}).toLLMClient(), cfg)
 
 	assert.True(t, client.ValidateWebhookSecret("test_secret"))
 	assert.False(t, client.ValidateWebhookSecret("wrong_secret"))

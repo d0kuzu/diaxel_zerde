@@ -11,18 +11,19 @@ import (
 	"time"
 
 	"diaxel/config"
-	"diaxel/database/models"
 	"diaxel/services/llm"
+	pb "diaxel/services/telegram/proto"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type Client struct {
-	db   *gorm.DB
-	llm  *llm.Client
-	cfg  *config.Settings
-	http *http.Client
+	llm      *llm.Client
+	cfg      *config.Settings
+	http     *http.Client
+	dbClient pb.DatabaseServiceClient
 }
 
 type TelegramUpdate struct {
@@ -51,14 +52,22 @@ type SendMessageRequest struct {
 	ParseMode string `json:"parse_mode,omitempty"`
 }
 
-func NewClient(db *gorm.DB, llmClient *llm.Client, cfg *config.Settings) *Client {
+func NewClient(llmClient *llm.Client, cfg *config.Settings) *Client {
+	// Connect to database service
+	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Failed to connect to database service: %v", err)
+	}
+
+	dbClient := pb.NewDatabaseServiceClient(conn)
+
 	return &Client{
-		db:  db,
 		llm: llmClient,
 		cfg: cfg,
 		http: &http.Client{
 			Timeout: 30 * time.Second,
 		},
+		dbClient: dbClient,
 	}
 }
 
@@ -129,16 +138,16 @@ func (c *Client) saveMessageWithRetry(ctx context.Context, chatUserID, role, con
 }
 
 func (c *Client) saveMessage(ctx context.Context, chatUserID, role, content, platform string) error {
-	message := models.Message{
-		ChatUserID: chatUserID,
+	req := &pb.SaveMessageRequest{
+		ChatUserId: chatUserID,
 		Role:       role,
 		Content:    content,
 		Platform:   platform,
 	}
 
-	result := c.db.WithContext(ctx).Create(&message)
-	if result.Error != nil {
-		return fmt.Errorf("failed to create message: %w", result.Error)
+	_, err := c.dbClient.SaveMessage(ctx, req)
+	if err != nil {
+		return fmt.Errorf("failed to save message via gRPC: %w", err)
 	}
 
 	log.Printf("Saved %s message for chat %s on platform %s", role, chatUserID, platform)

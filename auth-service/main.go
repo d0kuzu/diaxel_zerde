@@ -10,7 +10,7 @@ import (
 func main() {
 	cfg, err := config.MustLoad()
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatalf("Failed to load config: %v", err)
 	}
 
 	application := app.New(cfg)
