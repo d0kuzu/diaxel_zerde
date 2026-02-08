@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  database-service:
+    build: .
+    container_name: database-service
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: database-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: database_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
