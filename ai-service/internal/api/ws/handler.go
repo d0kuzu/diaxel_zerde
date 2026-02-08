@@ -2,6 +2,7 @@ package ws
 
 import (
 	"diaxel/internal/config"
+	"diaxel/internal/modules/ws"
 	"log"
 	"net/http"
 
@@ -34,30 +35,11 @@ func (h *WSHandler) ChatPolling(c *gin.Context) {
 		return
 	}
 
-	client := &Client{conn: conn, chat: chatID}
-	RegisterClient(client)
+	client := ws.NewWSClient(conn, chatID)
+	ws.RegisterClient(client)
 	log.Println("new client connected to chat", chatID)
 
 	go client.PollTwilio(chatID, h.cfg.AccountSID, h.cfg.AuthToken)
 
 	go client.Listen(h.cfg.AccountSID, h.cfg.AuthToken)
-}
-
-func (c *Client) Listen(accountSID, authToken string) {
-	defer UnregisterClient(c)
-
-	for {
-		_, msg, err := c.conn.ReadMessage()
-		if err != nil {
-			log.Println("client disconnected:", err)
-			return
-		}
-		log.Printf("[Operator → Twilio] Chat %s: %s\n", c.chat, string(msg))
-
-		twilioClient := twilio.NewClient(accountSID, authToken)
-		_, err = twilioClient.SendMessage(config.BotNumber, c.chat, string(msg))
-		if err != nil {
-			log.Println("ws twillio message send error:", err)
-		}
-	}
 }

@@ -44,30 +44,3 @@ func (c *Client) PollTwilio(chatID, accountSID, authToken string) {
 		time.Sleep(500 * time.Millisecond)
 	}
 }
-
-func fetchMessagesFromTwilio(chatID, lastSID, accountSID, authToken string) ([]twilio.Message, error) {
-
-	twilioClient := twilio.NewClient(accountSID, authToken)
-
-	messages, err := twilioClient.GetConversation(chatID, config.BotNumber, 1000)
-	if err != nil {
-		return nil, err
-	}
-
-	if lastSID == "" {
-		return messages, nil
-	}
-
-	var result []twilio.Message
-	found := false
-	for _, msg := range messages {
-		if found {
-			result = append(result, msg)
-		}
-		if msg.Sid == lastSID {
-			found = true
-		}
-	}
-
-	return result, nil
-}
