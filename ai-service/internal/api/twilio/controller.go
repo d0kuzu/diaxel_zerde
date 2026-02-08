@@ -3,6 +3,7 @@ package twilio
 import (
 	"diaxel/internal/config"
 	"diaxel/internal/modules/llm"
+	twilio2 "diaxel/internal/modules/twilio"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -10,10 +11,10 @@ import (
 type TwilioWebhookHandler struct {
 	cfg    *config.Settings
 	LLM    *llm.Client
-	twilio *Client
+	twilio *twilio2.Client
 }
 
-func NewTwilioWebhookHandler(cfg *config.Settings, llmClient *llm.Client, twilioClient *Client) *TwilioWebhookHandler {
+func NewTwilioWebhookHandler(cfg *config.Settings, llmClient *llm.Client, twilioClient *twilio2.Client) *TwilioWebhookHandler {
 	return &TwilioWebhookHandler{cfg: cfg, LLM: llmClient, twilio: twilioClient}
 }
 

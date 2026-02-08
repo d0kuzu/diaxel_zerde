@@ -6,6 +6,12 @@ import (
 	"diaxel/internal/modules/twilio"
 )
 
+type LLM interface {
+}
+
+type Twilio interface {
+}
+
 type App struct {
 	LLM    *llm.Client
 	Twilio *twilio.Client

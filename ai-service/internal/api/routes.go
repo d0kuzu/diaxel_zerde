@@ -1,12 +1,12 @@
 package api
 
 import (
+	"diaxel/internal/api/analytics"
+	"diaxel/internal/api/chat"
+	"diaxel/internal/api/telegram"
+	"diaxel/internal/api/twilio"
 	appModule "diaxel/internal/app"
 	"diaxel/internal/database"
-	"diaxel/internal/modules/analytics"
-	"diaxel/internal/modules/chat"
-	"diaxel/internal/modules/twilio"
-	"diaxel/internal/modules/webhooks/telegram"
 	"log"
 
 	"github.com/gin-contrib/cors"

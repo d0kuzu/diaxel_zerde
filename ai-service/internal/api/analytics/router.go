@@ -1,6 +1,7 @@
 package analytics
 
 import (
+	analytics2 "diaxel/internal/modules/analytics"
 	"net/http"
 	"time"
 
@@ -9,12 +10,12 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine, db *gorm.DB) {
-	analyticsService := NewAnalyticsService(db)
+	analyticsService := analytics2.NewAnalyticsService(db)
 
 	api := r.Group("/api/analytics")
 	{
 		api.GET("/metrics", func(c *gin.Context) {
-			filter := AnalyticsFilter{
+			filter := analytics2.AnalyticsFilter{
 				AssistantID: c.Query("assistant_id"),
 				Platform:    c.Query("platform"),
 			}
@@ -43,7 +44,7 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 		api.GET("/metrics/assistant/:assistant_id", func(c *gin.Context) {
 			assistantID := c.Param("assistant_id")
 
-			filter := AnalyticsFilter{
+			filter := analytics2.AnalyticsFilter{
 				Platform: c.Query("platform"),
 			}
 

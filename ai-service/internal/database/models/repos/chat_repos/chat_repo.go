@@ -1,7 +1,6 @@
 package chat_repos
 
 import (
-	. "diaxel/database/models"
 	"diaxel/internal/database"
 	. "diaxel/internal/database/models"
 	"errors"
