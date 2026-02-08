@@ -1,6 +1,7 @@
 package service
 
 import (
+	"auth-service/grpc/db"
 	"auth-service/internal/config"
 	"auth-service/internal/crypto"
 	"auth-service/internal/jwt"
@@ -13,39 +14,41 @@ import (
 var ErrInvalidCredentials = errors.New("invalid credentials")
 
 type AuthService struct {
-	users   *repository.UserRepo
-	refresh *repository.RefreshRepo
-	cfg     *config.Config
+	db  *db.Client
+	cfg *config.Config
 }
 
 func NewAuthService(
-	users *repository.UserRepo,
-	refresh *repository.RefreshRepo,
+	db *db.Client,
 	cfg *config.Config,
 ) *AuthService {
-	return &AuthService{users, refresh, cfg}
+	return &AuthService{db, cfg}
 }
 
 func (s *AuthService) Login(email, password string) (string, string, error) {
-	user, ok := s.users.FindByEmail(email)
-	if !ok || !crypto.Compare(user.Password, password) {
+	user, err := s.db.GetUserByEmail(email)
+	if err != nil {
+		return "", "", err
+	}
+
+	if !crypto.Compare(user.PasswordHash, password) {
 		return "", "", ErrInvalidCredentials
 	}
 
 	access, _ := jwt.GenerateAccessToken(
-		user.ID,
+		user.Id,
 		user.Role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
 	)
 
 	refreshToken, _ := jwt.GenerateRefreshToken(
-		user.ID,
+		user.Id,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
 
-	s.refresh.Save(refreshToken, user.ID)
+	s.refresh.Save(refreshToken, user.Id)
 
 	return access, refreshToken, nil
 }
