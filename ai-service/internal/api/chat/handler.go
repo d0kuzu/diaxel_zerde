@@ -15,8 +15,6 @@ func NewChatHandler(cfg *config.Settings) *ChatHandler {
 }
 
 func (h *ChatHandler) GetAllChats(c *gin.Context) {
-	client := airtable.NewClient(h.cfg.ApiKey, h.cfg.BaseID)
-
 	page, err := strconv.ParseInt(c.Query("page"), 10, 32)
 	if err != nil {
 		c.JSON(400, gin.H{"error": "invalid page parameter"})
@@ -41,8 +39,6 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 }
 
 func (h *ChatHandler) GetPagination(c *gin.Context) {
-	client := airtable.NewClient(h.cfg.ApiKey, h.cfg.BaseID)
-
 	pages, err := client.GetTotalPages(h.cfg.TableName, 10)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
