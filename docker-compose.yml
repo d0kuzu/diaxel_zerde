@@ -25,8 +25,17 @@ services:
     container_name: database-service
     depends_on:
       - postgres
+    ports:
+      - "50051:50051"
     env_file:
       - .env
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=diaxel_user
+      - POSTGRES_PASSWORD=diaxel_password
+      - POSTGRES_DB=diaxel
+      - DB_SSL=disable
     networks:
       - diaxel_net
 

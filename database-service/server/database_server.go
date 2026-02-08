@@ -128,6 +128,7 @@ func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRe
 	}
 
 	return &proto.ChatResponse{
+		Id:          chat.ID,
 		AssistantId: chat.AssistantID,
 		CustomerId:  chat.CustomerID,
 		Platform:    req.Platform,
@@ -137,23 +138,23 @@ func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRe
 }
 
 func (s *DatabaseServer) SaveMessage(ctx context.Context, req *proto.SaveMessageRequest) (*proto.MessageResponse, error) {
-	message, err := s.messageRepo.SaveMessage(ctx, req.ChatUserId, req.Role, req.Content, req.Platform)
+	message, err := s.messageRepo.SaveMessage(ctx, req.GetChatId(), req.GetRole(), req.GetContent(), req.GetPlatform())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to save message: %v", err)
 	}
 
 	return &proto.MessageResponse{
-		Id:         fmt.Sprintf("%d", message.ID),
-		ChatUserId: message.ChatUserID,
-		Role:       message.Role,
-		Content:    message.Content,
-		Platform:   req.Platform,
-		CreatedAt:  message.Time.Format(time.RFC3339),
+		Id:        fmt.Sprintf("%d", message.ID),
+		ChatId:    message.ChatID,
+		Role:      message.Role,
+		Content:   message.Content,
+		Platform:  req.GetPlatform(),
+		CreatedAt: message.Time.Format(time.RFC3339),
 	}, nil
 }
 
 func (s *DatabaseServer) GetChatMessages(ctx context.Context, req *proto.GetChatMessagesRequest) (*proto.MessagesResponse, error) {
-	messages, err := s.messageRepo.GetMessagesByChatUserID(ctx, req.ChatUserId, req.Limit, req.Offset)
+	messages, err := s.messageRepo.GetMessagesByChatID(ctx, req.GetChatId(), req.GetLimit(), req.GetOffset())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get messages: %v", err)
 	}
@@ -161,12 +162,12 @@ func (s *DatabaseServer) GetChatMessages(ctx context.Context, req *proto.GetChat
 	var protoMessages []*proto.MessageResponse
 	for _, msg := range messages {
 		protoMessages = append(protoMessages, &proto.MessageResponse{
-			Id:         fmt.Sprintf("%d", msg.ID),
-			ChatUserId: msg.ChatUserID,
-			Role:       msg.Role,
-			Content:    msg.Content,
-			Platform:   "", // Platform not stored in message model
-			CreatedAt:  msg.Time.Format(time.RFC3339),
+			Id:        fmt.Sprintf("%d", msg.ID),
+			ChatId:    msg.ChatID,
+			Role:      msg.Role,
+			Content:   msg.Content,
+			Platform:  "", // Platform not stored in message model
+			CreatedAt: msg.Time.Format(time.RFC3339),
 		})
 	}
 

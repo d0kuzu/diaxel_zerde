@@ -26,7 +26,7 @@ func RouterStart(app *appModule.App) {
 	chat.ChatRoutes(r, app)
 	twilio.TwilioWebhookRoutes(r, app)
 
-	telegram.SetupRoutes(r, database.GetDB(), app.LLM, app.Cfg)
+	telegram.SetupRoutes(r, app.LLM, app.Cfg)
 	analytics.SetupRoutes(r, database.GetDB())
 
 	err := r.Run(":8080")

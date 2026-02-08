@@ -2,13 +2,13 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"time"
 
 	"diaxel_zerde/database-service/models"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type ChatRepository interface {
@@ -18,30 +18,23 @@ type ChatRepository interface {
 }
 
 type chatRepository struct {
-	db *sqlx.DB
+	db *gorm.DB
 }
 
-func NewChatRepository(db *sqlx.DB) ChatRepository {
+func NewChatRepository(db *gorm.DB) ChatRepository {
 	return &chatRepository{db: db}
 }
 
 func (r *chatRepository) CreateChat(ctx context.Context, assistantID, customerID, platform string) (*models.Chat, error) {
-	now := time.Now()
+	chat := models.Chat{
+		ID:          uuid.New().String(),
+		UserID:      uuid.New().String(), // TODO: получить реальный user_id из контекста
+		AssistantID: assistantID,
+		CustomerID:  customerID,
+		StartedAt:   time.Now(),
+	}
 
-	query := `
-		INSERT INTO chats (assistant_id, customer_id, platform, started_at)
-		VALUES ($1, $2, $3, $4)
-		RETURNING assistant_id, customer_id, started_at
-	`
-
-	var chat models.Chat
-	err := r.db.QueryRowContext(ctx, query, assistantID, customerID, platform, now).Scan(
-		&chat.AssistantID,
-		&chat.CustomerID,
-		&chat.StartedAt,
-	)
-
-	if err != nil {
+	if err := r.db.WithContext(ctx).Create(&chat).Error; err != nil {
 		return nil, fmt.Errorf("failed to create chat: %w", err)
 	}
 
@@ -49,21 +42,9 @@ func (r *chatRepository) CreateChat(ctx context.Context, assistantID, customerID
 }
 
 func (r *chatRepository) GetChatByID(ctx context.Context, id string) (*models.Chat, error) {
-	query := `
-		SELECT assistant_id, customer_id, started_at
-		FROM chats
-		WHERE id = $1
-	`
-
 	var chat models.Chat
-	err := r.db.QueryRowContext(ctx, query, id).Scan(
-		&chat.AssistantID,
-		&chat.CustomerID,
-		&chat.StartedAt,
-	)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&chat).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
 			return nil, fmt.Errorf("chat not found")
 		}
 		return nil, fmt.Errorf("failed to get chat: %w", err)
@@ -73,35 +54,9 @@ func (r *chatRepository) GetChatByID(ctx context.Context, id string) (*models.Ch
 }
 
 func (r *chatRepository) GetChatsByCustomerID(ctx context.Context, customerID string) ([]*models.Chat, error) {
-	query := `
-		SELECT assistant_id, customer_id, started_at
-		FROM chats
-		WHERE customer_id = $1
-		ORDER BY started_at DESC
-	`
-
-	rows, err := r.db.QueryContext(ctx, query, customerID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get chats: %w", err)
-	}
-	defer rows.Close()
-
 	var chats []*models.Chat
-	for rows.Next() {
-		var chat models.Chat
-		err := rows.Scan(
-			&chat.AssistantID,
-			&chat.CustomerID,
-			&chat.StartedAt,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan chat: %w", err)
-		}
-		chats = append(chats, &chat)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating chats: %w", err)
+	if err := r.db.WithContext(ctx).Where("customer_id = ?", customerID).Order("started_at DESC").Find(&chats).Error; err != nil {
+		return nil, fmt.Errorf("failed to get chats: %w", err)
 	}
 
 	return chats, nil

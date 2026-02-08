@@ -22,7 +22,7 @@ WORKDIR /app
 RUN apk --no-cache add ca-certificates
 
 # Копируем бинарник из builder
-COPY --from=builder /internal/app/server .
+COPY --from=builder /app/server .
 
 # Порт, который слушает приложение
 EXPOSE 8080

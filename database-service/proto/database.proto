@@ -102,7 +102,7 @@ message ChatResponse {
 }
 
 message SaveMessageRequest {
-  string chat_user_id = 1;
+  string chat_id = 1;
   string role = 2;
   string content = 3;
   string platform = 4;
@@ -110,7 +110,7 @@ message SaveMessageRequest {
 
 message MessageResponse {
   string id = 1;
-  string chat_user_id = 2;
+  string chat_id = 2;
   string role = 3;
   string content = 4;
   string platform = 5;
@@ -118,7 +118,7 @@ message MessageResponse {
 }
 
 message GetChatMessagesRequest {
-  string chat_user_id = 1;
+  string chat_id = 1;
   int32 limit = 2;
   int32 offset = 3;
 }

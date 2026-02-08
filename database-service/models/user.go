@@ -26,19 +26,24 @@ type Assistant struct {
 
 // Chat - соответствует таблице chats в БД (из AI сервиса)
 type Chat struct {
-	UserID      string    `json:"user_id" db:"user_id"`
-	AssistantID string    `json:"assistant_id" db:"assistant_id"`
-	CustomerID  string    `json:"customer_id" db:"customer_id"`
-	StartedAt   time.Time `json:"started_at" db:"started_at"`
+	ID          string    `json:"id" db:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
+	UserID      string    `json:"user_id" db:"user_id" gorm:"type:uuid;not null;index"`
+	AssistantID string    `json:"assistant_id" db:"assistant_id" gorm:"type:uuid;not null"`
+	CustomerID  string    `json:"customer_id" db:"customer_id" gorm:"type:uuid"`
+	StartedAt   time.Time `json:"started_at" db:"started_at" gorm:"default:now()"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at" gorm:"default:now()"`
+	UpdatedAt   time.Time `json:"updated_at" db:"updated_at" gorm:"default:now()"`
 }
 
 // Message - соответствует таблице messages в БД (из AI сервиса)
 type Message struct {
-	ID         uint      `json:"id" db:"id"`
-	ChatUserID string    `json:"chat_user_id" db:"chat_user_id"`
-	Role       string    `json:"role" db:"role"`
-	Content    string    `json:"content" db:"content"`
-	Time       time.Time `json:"time" db:"time"`
+	ID        uint      `json:"id" db:"id" gorm:"primaryKey;autoIncrement"`
+	ChatID    string    `json:"chat_id" db:"chat_id" gorm:"type:uuid;not null;index"`
+	Role      string    `json:"role" db:"role" gorm:"type:varchar(20);not null"`
+	Content   string    `json:"content" db:"content" gorm:"type:text;not null"`
+	Time      time.Time `json:"time" db:"time" gorm:"default:now()"`
+	CreatedAt time.Time `json:"created_at" db:"created_at" gorm:"default:now()"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at" gorm:"default:now()"`
 }
 
 // RefreshToken - соответствует таблице refresh_tokens в БД

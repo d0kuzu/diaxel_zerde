@@ -7,11 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func SetupRoutes(r *gin.Engine, db *gorm.DB, llmClient *llm.Client, cfg *config.Settings) {
-	telegramClient := telegram.NewClient(db, llmClient, cfg)
+func SetupRoutes(r *gin.Engine, llmClient *llm.Client, cfg *config.Settings) {
+	telegramClient := telegram.NewClient(llmClient, cfg)
 
 	r.POST("/webhook/telegram/:secret", func(c *gin.Context) {
 		secret := c.Param("secret")

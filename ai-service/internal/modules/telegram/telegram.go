@@ -8,11 +8,12 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
-	"diaxel/config"
-	"diaxel/services/llm"
-	pb "diaxel/services/telegram/proto"
+	"diaxel/internal/config"
+	"diaxel/internal/modules/llm"
+	pb "diaxel/internal/modules/telegram/proto"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
@@ -54,7 +55,11 @@ type SendMessageRequest struct {
 
 func NewClient(llmClient *llm.Client, cfg *config.Settings) *Client {
 	// Connect to database service
-	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	grpcTarget := os.Getenv("DATABASE_GRPC_TARGET")
+	if grpcTarget == "" {
+		grpcTarget = "database-service:50051"
+	}
+	conn, err := grpc.Dial(grpcTarget, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to database service: %v", err)
 	}
