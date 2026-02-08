@@ -130,10 +130,15 @@ func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRe
 	return &proto.ChatResponse{
 		Id:          chat.ID,
 		AssistantId: chat.AssistantID,
-		CustomerId:  chat.CustomerID,
-		Platform:    req.Platform,
-		CreatedAt:   chat.StartedAt.Format(time.RFC3339),
-		UpdatedAt:   chat.StartedAt.Format(time.RFC3339),
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		Platform:  req.Platform,
+		CreatedAt: chat.StartedAt.Format(time.RFC3339),
+		UpdatedAt: chat.StartedAt.Format(time.RFC3339),
 	}, nil
 }
 

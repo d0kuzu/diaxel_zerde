@@ -30,7 +30,7 @@ func (r *chatRepository) CreateChat(ctx context.Context, assistantID, customerID
 		ID:          uuid.New().String(),
 		UserID:      uuid.New().String(), // TODO: получить реальный user_id из контекста
 		AssistantID: assistantID,
-		CustomerID:  customerID,
+		CustomerID:  &customerID,
 		StartedAt:   time.Now(),
 	}
 
