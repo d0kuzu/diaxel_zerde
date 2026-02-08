@@ -57,10 +57,11 @@ func main() {
 	refreshTokenRepo := repository.NewRefreshTokenRepository(db)
 	chatRepo := repository.NewChatRepository(db)
 	messageRepo := repository.NewMessageRepository(db)
+	assistantRepo := repository.NewAssistantRepository(db)
 
 	// Initialize gRPC server
 	grpcServer := grpc.NewServer()
-	databaseServer := server.NewDatabaseServer(userRepo, refreshTokenRepo, chatRepo, messageRepo)
+	databaseServer := server.NewDatabaseServer(userRepo, refreshTokenRepo, chatRepo, messageRepo, assistantRepo)
 
 	proto.RegisterDatabaseServiceServer(grpcServer, databaseServer)
 

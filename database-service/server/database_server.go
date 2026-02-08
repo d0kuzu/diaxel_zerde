@@ -18,15 +18,33 @@ type DatabaseServer struct {
 	refreshTokenRepo repository.RefreshTokenRepository
 	chatRepo         repository.ChatRepository
 	messageRepo      repository.MessageRepository
+	assistantRepo    repository.AssistantRepository
 }
 
-func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository) *DatabaseServer {
+func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository) *DatabaseServer {
 	return &DatabaseServer{
 		userRepo:         userRepo,
 		refreshTokenRepo: refreshTokenRepo,
 		chatRepo:         chatRepo,
 		messageRepo:      messageRepo,
+		assistantRepo:    assistantRepo,
 	}
+}
+
+func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateAssistantRequest) (*proto.AssistantResponse, error) {
+	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.BotToken, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create assistant: %v", err)
+	}
+
+	return &proto.AssistantResponse{
+		Id:        assistant.ID,
+		Name:      assistant.Name,
+		BotToken:  assistant.BotToken,
+		UserId:    assistant.UserID,
+		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+	}, nil
 }
 
 func (s *DatabaseServer) CreateUser(ctx context.Context, req *proto.CreateUserRequest) (*proto.UserResponse, error) {
