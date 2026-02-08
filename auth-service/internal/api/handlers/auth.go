@@ -146,3 +146,25 @@ func (h *AuthHandler) GetBotToken(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"bot_token": botToken})
 }
+
+func (h *AuthHandler) TestBotRegistration(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Test bot registration endpoint",
+		"endpoints": map[string]string{
+			"create_assistant": "POST /assistant - {assistant_id: string, bot_token: string}",
+			"get_bot_token":    "GET /assistant/:assistant_id/bot-token",
+		},
+		"example": map[string]interface{}{
+			"create_request": map[string]string{
+				"assistant_id": "test-assistant-123",
+				"bot_token":    "1234567890:ABCdefGHIjklMNOpqrsTUVwxyz",
+			},
+			"create_response": map[string]interface{}{
+				"status": true,
+			},
+			"get_response": map[string]string{
+				"bot_token": "1234567890:ABCdefGHIjklMNOpqrsTUVwxyz",
+			},
+		},
+	})
+}

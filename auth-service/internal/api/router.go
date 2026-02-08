@@ -18,5 +18,6 @@ func RegisterRoutes(r *gin.Engine, auth *service.AuthService) {
 		authGroup.POST("/register", h.Register)
 		authGroup.POST("/assistant", h.CreateAssistant)
 		authGroup.GET("/assistant/:assistant_id/bot-token", h.GetBotToken)
+		authGroup.GET("/test/bot-registration", h.TestBotRegistration)
 	}
 }
