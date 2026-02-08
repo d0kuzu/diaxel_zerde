@@ -7,9 +7,11 @@ import (
 
 func WebhookRoutes(router *gin.Engine, app *appModule.App) {
 	aiHandler := NewAIHandler(app.Cfg, app.LLM, app.Db)
-	productGroup := router.Group("webhooks")
+
+	webhookGroup := router.Group("webhooks")
 	{
-		productGroup.POST("/telegram", aiHandler.SendMessage)
-		productGroup.POST("/test", aiHandler.Test)
+		webhookGroup.POST("/telegram/register", aiHandler.RegisterTelegramBot)
+
+		webhookGroup.POST("/telegram/callback/:assistant_id", aiHandler.HandleTelegramWebhook)
 	}
 }

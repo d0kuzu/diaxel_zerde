@@ -50,17 +50,10 @@ func (c *Client) Listen(accountSID, authToken string) {
 	defer UnregisterClient(c)
 
 	for {
-		_, msg, err := c.conn.ReadMessage()
+		_, _, err := c.conn.ReadMessage()
 		if err != nil {
 			log.Println("client disconnected:", err)
 			return
-		}
-		log.Printf("[Operator → Twilio] Chat %s: %s\n", c.chat, string(msg))
-
-		twilioClient := twilio.NewClient(accountSID, authToken)
-		_, err = twilioClient.SendMessage(config.BotNumber, c.chat, string(msg))
-		if err != nil {
-			log.Println("ws twillio message send error:", err)
 		}
 	}
 }

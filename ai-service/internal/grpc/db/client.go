@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"fmt"
-	"log"
 	"time"
 
 	"google.golang.org/grpc"
@@ -39,23 +38,38 @@ func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
-func (c *Client) GetStats() {
+func (c *Client) CreateAssistant(name, token, userId string) (*dbpb.AssistantResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	req := &dbpb.AnalyticsRequest{
-		AssistantId: "asst_555",
-		Platform:    "telegram",
-		StartDate:   "2023-01-01",
-		EndDate:     "2023-02-01",
+	req := &dbpb.CreateAssistantRequest{
+		Name:     name,
+		BotToken: token,
+		UserId:   userId,
 	}
 
-	resp, err := c.DB.GetAnalytics(ctx, req)
+	resp, err := c.DB.CreateAssistant(ctx, req)
 
 	if err != nil {
-		log.Println("Ошибка:", err)
-		return
+		return nil, err
 	}
 
-	fmt.Printf("Всего чатов: %d\n", resp.GetTotalChats())
+	return resp, nil
+}
+
+func (c *Client) GetAssistant(id string) (*dbpb.AssistantResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetAssistantRequest{
+		Id: id,
+	}
+
+	resp, err := c.DB.GetAssistant(ctx, req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
