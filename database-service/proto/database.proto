@@ -9,12 +9,21 @@ service DatabaseService {
   rpc GetAnalyticsByAssistant(AnalyticsByAssistantRequest) returns (AnalyticsResponse);
   rpc CreateUser(CreateUserRequest) returns (UserResponse);
   rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (UserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
   rpc SaveRefreshToken(SaveRefreshTokenRequest) returns (SaveRefreshTokenResponse);
   rpc GetRefreshToken(GetRefreshTokenRequest) returns (RefreshTokenResponse);
   rpc DeleteRefreshToken(DeleteRefreshTokenRequest) returns (DeleteRefreshTokenResponse);
   rpc CreateChat(CreateChatRequest) returns (ChatResponse);
+  rpc GetChat(GetChatRequest) returns (ChatResponse);
+  rpc GetChatsByUser(GetChatsByUserRequest) returns (ChatsResponse);
+  rpc UpdateChat(UpdateChatRequest) returns (ChatResponse);
+  rpc DeleteChat(DeleteChatRequest) returns (DeleteChatResponse);
   rpc SaveMessage(SaveMessageRequest) returns (MessageResponse);
   rpc GetChatMessages(GetChatMessagesRequest) returns (MessagesResponse);
+  rpc UpdateMessage(UpdateMessageRequest) returns (MessageResponse);
+  rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
 }
 
 message AnalyticsRequest {
@@ -125,4 +134,69 @@ message GetChatMessagesRequest {
 
 message MessagesResponse {
   repeated MessageResponse messages = 1;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  string email = 2;
+  string password_hash = 3;
+  string role = 4;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+message GetChatRequest {
+  string id = 1;
+}
+
+message GetChatsByUserRequest {
+  string user_id = 1;
+  string assistant_id = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ChatsResponse {
+  repeated ChatResponse chats = 1;
+}
+
+message UpdateChatRequest {
+  string id = 1;
+  string assistant_id = 2;
+  string customer_id = 3;
+  string platform = 4;
+}
+
+message DeleteChatRequest {
+  string id = 1;
+}
+
+message DeleteChatResponse {
+  bool success = 1;
+}
+
+message UpdateMessageRequest {
+  string id = 1;
+  string chat_id = 2;
+  string role = 3;
+  string content = 4;
+  string platform = 5;
+}
+
+message DeleteMessageRequest {
+  string id = 1;
+}
+
+message DeleteMessageResponse {
+  bool success = 1;
 }
