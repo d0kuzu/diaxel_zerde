@@ -110,3 +110,39 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		RefreshToken: refresh,
 	})
 }
+
+func (h *AuthHandler) CreateAssistant(c *gin.Context) {
+	var req struct {
+		AssistantID string `json:"assistant_id"`
+		BotToken    string `json:"bot_token"`
+	}
+
+	if c.ShouldBindJSON(&req) != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bad request"})
+		return
+	}
+
+	success, err := h.auth.CreateAssistant(req.AssistantID, req.BotToken)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"status": success})
+}
+
+func (h *AuthHandler) GetBotToken(c *gin.Context) {
+	assistantID := c.Param("assistant_id")
+	if assistantID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
+		return
+	}
+
+	botToken, err := h.auth.GetBotToken(assistantID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"bot_token": botToken})
+}

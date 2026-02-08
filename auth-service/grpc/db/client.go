@@ -144,3 +144,59 @@ func (c *Client) DeleteRefreshToken(token string) error {
 
 	return nil
 }
+
+func (c *Client) CreateAssistant(name, botToken, userID string) (*dbpb.AssistantResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.CreateAssistantRequest{
+		Name:     name,
+		BotToken: botToken,
+		UserId:   userID,
+	}
+
+	resp, err := c.DB.CreateAssistant(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка создания ассистента:", err)
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Client) GetAssistant(assistantID string) (*dbpb.AssistantResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetAssistantRequest{
+		Id: assistantID,
+	}
+
+	resp, err := c.DB.GetAssistant(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка получения ассистента:", err)
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (c *Client) UpdateAssistant(assistantID, name, botToken, userID string) (*dbpb.AssistantResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.UpdateAssistantRequest{
+		Id:       assistantID,
+		Name:     name,
+		BotToken: botToken,
+		UserId:   userID,
+	}
+
+	resp, err := c.DB.UpdateAssistant(ctx, req)
+	if err != nil {
+		log.Fatalln("Ошибка обновления ассистента:", err)
+		return nil, err
+	}
+
+	return resp, nil
+}

@@ -29,6 +29,10 @@ const (
 	DatabaseService_SaveRefreshToken_FullMethodName        = "/database.DatabaseService/SaveRefreshToken"
 	DatabaseService_GetRefreshToken_FullMethodName         = "/database.DatabaseService/GetRefreshToken"
 	DatabaseService_DeleteRefreshToken_FullMethodName      = "/database.DatabaseService/DeleteRefreshToken"
+	DatabaseService_CreateAssistant_FullMethodName         = "/database.DatabaseService/CreateAssistant"
+	DatabaseService_GetAssistant_FullMethodName            = "/database.DatabaseService/GetAssistant"
+	DatabaseService_UpdateAssistant_FullMethodName         = "/database.DatabaseService/UpdateAssistant"
+	DatabaseService_DeleteAssistant_FullMethodName         = "/database.DatabaseService/DeleteAssistant"
 	DatabaseService_CreateChat_FullMethodName              = "/database.DatabaseService/CreateChat"
 	DatabaseService_GetChat_FullMethodName                 = "/database.DatabaseService/GetChat"
 	DatabaseService_GetChatsByUser_FullMethodName          = "/database.DatabaseService/GetChatsByUser"
@@ -58,6 +62,10 @@ type DatabaseServiceClient interface {
 	SaveRefreshToken(ctx context.Context, in *SaveRefreshTokenRequest, opts ...grpc.CallOption) (*SaveRefreshTokenResponse, error)
 	GetRefreshToken(ctx context.Context, in *GetRefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	DeleteRefreshToken(ctx context.Context, in *DeleteRefreshTokenRequest, opts ...grpc.CallOption) (*DeleteRefreshTokenResponse, error)
+	CreateAssistant(ctx context.Context, in *CreateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
+	GetAssistant(ctx context.Context, in *GetAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
+	UpdateAssistant(ctx context.Context, in *UpdateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
+	DeleteAssistant(ctx context.Context, in *DeleteAssistantRequest, opts ...grpc.CallOption) (*DeleteAssistantResponse, error)
 	CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 	GetChat(ctx context.Context, in *GetChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 	GetChatsByUser(ctx context.Context, in *GetChatsByUserRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
@@ -175,6 +183,46 @@ func (c *databaseServiceClient) DeleteRefreshToken(ctx context.Context, in *Dele
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteRefreshTokenResponse)
 	err := c.cc.Invoke(ctx, DatabaseService_DeleteRefreshToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) CreateAssistant(ctx context.Context, in *CreateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssistantResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_CreateAssistant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetAssistant(ctx context.Context, in *GetAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssistantResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetAssistant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) UpdateAssistant(ctx context.Context, in *UpdateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssistantResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_UpdateAssistant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) DeleteAssistant(ctx context.Context, in *DeleteAssistantRequest, opts ...grpc.CallOption) (*DeleteAssistantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteAssistantResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_DeleteAssistant_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -325,6 +373,10 @@ type DatabaseServiceServer interface {
 	SaveRefreshToken(context.Context, *SaveRefreshTokenRequest) (*SaveRefreshTokenResponse, error)
 	GetRefreshToken(context.Context, *GetRefreshTokenRequest) (*RefreshTokenResponse, error)
 	DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error)
+	CreateAssistant(context.Context, *CreateAssistantRequest) (*AssistantResponse, error)
+	GetAssistant(context.Context, *GetAssistantRequest) (*AssistantResponse, error)
+	UpdateAssistant(context.Context, *UpdateAssistantRequest) (*AssistantResponse, error)
+	DeleteAssistant(context.Context, *DeleteAssistantRequest) (*DeleteAssistantResponse, error)
 	CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error)
 	GetChat(context.Context, *GetChatRequest) (*ChatResponse, error)
 	GetChatsByUser(context.Context, *GetChatsByUserRequest) (*ChatsResponse, error)
@@ -377,6 +429,18 @@ func (UnimplementedDatabaseServiceServer) GetRefreshToken(context.Context, *GetR
 }
 func (UnimplementedDatabaseServiceServer) DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteRefreshToken not implemented")
+}
+func (UnimplementedDatabaseServiceServer) CreateAssistant(context.Context, *CreateAssistantRequest) (*AssistantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateAssistant not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetAssistant(context.Context, *GetAssistantRequest) (*AssistantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAssistant not implemented")
+}
+func (UnimplementedDatabaseServiceServer) UpdateAssistant(context.Context, *UpdateAssistantRequest) (*AssistantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateAssistant not implemented")
+}
+func (UnimplementedDatabaseServiceServer) DeleteAssistant(context.Context, *DeleteAssistantRequest) (*DeleteAssistantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteAssistant not implemented")
 }
 func (UnimplementedDatabaseServiceServer) CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateChat not implemented")
@@ -614,6 +678,78 @@ func _DatabaseService_DeleteRefreshToken_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DatabaseServiceServer).DeleteRefreshToken(ctx, req.(*DeleteRefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_CreateAssistant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAssistantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).CreateAssistant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_CreateAssistant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).CreateAssistant(ctx, req.(*CreateAssistantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetAssistant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAssistantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetAssistant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetAssistant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetAssistant(ctx, req.(*GetAssistantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_UpdateAssistant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAssistantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).UpdateAssistant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_UpdateAssistant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).UpdateAssistant(ctx, req.(*UpdateAssistantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_DeleteAssistant_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAssistantRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).DeleteAssistant(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_DeleteAssistant_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).DeleteAssistant(ctx, req.(*DeleteAssistantRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -898,6 +1034,22 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteRefreshToken",
 			Handler:    _DatabaseService_DeleteRefreshToken_Handler,
+		},
+		{
+			MethodName: "CreateAssistant",
+			Handler:    _DatabaseService_CreateAssistant_Handler,
+		},
+		{
+			MethodName: "GetAssistant",
+			Handler:    _DatabaseService_GetAssistant_Handler,
+		},
+		{
+			MethodName: "UpdateAssistant",
+			Handler:    _DatabaseService_UpdateAssistant_Handler,
+		},
+		{
+			MethodName: "DeleteAssistant",
+			Handler:    _DatabaseService_DeleteAssistant_Handler,
 		},
 		{
 			MethodName: "CreateChat",

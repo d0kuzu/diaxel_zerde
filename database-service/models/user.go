@@ -17,11 +17,12 @@ type User struct {
 
 // Assistant - соответствует таблице assistants в БД
 type Assistant struct {
-	ID            string    `json:"id" db:"id"`
-	Name          string    `json:"name" db:"name"`
-	Configuration string    `json:"configuration" db:"configuration"`
-	UserID        string    `json:"user_id" db:"user_id"`
-	CreatedAt     time.Time `json:"created_at" db:"created_at"`
+	ID        string    `json:"id" db:"id"`
+	Name      string    `json:"name" db:"name"`
+	BotToken  string    `json:"bot_token" db:"bot_token"`
+	UserID    string    `json:"user_id" db:"user_id"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Chat - соответствует таблице chats в БД (из AI сервиса)

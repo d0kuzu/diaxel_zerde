@@ -4,7 +4,6 @@ import (
 	"auth-service/grpc/db"
 	"auth-service/internal/api"
 	"auth-service/internal/config"
-	"auth-service/internal/repository"
 	"auth-service/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,7 @@ func New(cfg *config.Config) *App {
 
 	grpcClient, err := db.New("localhost:50051")
 	if err != nil {
-		return
+		return nil
 	}
 
 	authService := service.NewAuthService(

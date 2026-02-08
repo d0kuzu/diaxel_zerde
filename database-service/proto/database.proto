@@ -15,6 +15,10 @@ service DatabaseService {
   rpc SaveRefreshToken(SaveRefreshTokenRequest) returns (SaveRefreshTokenResponse);
   rpc GetRefreshToken(GetRefreshTokenRequest) returns (RefreshTokenResponse);
   rpc DeleteRefreshToken(DeleteRefreshTokenRequest) returns (DeleteRefreshTokenResponse);
+  rpc CreateAssistant(CreateAssistantRequest) returns (AssistantResponse);
+  rpc GetAssistant(GetAssistantRequest) returns (AssistantResponse);
+  rpc UpdateAssistant(UpdateAssistantRequest) returns (AssistantResponse);
+  rpc DeleteAssistant(DeleteAssistantRequest) returns (DeleteAssistantResponse);
   rpc CreateChat(CreateChatRequest) returns (ChatResponse);
   rpc GetChat(GetChatRequest) returns (ChatResponse);
   rpc GetChatsByUser(GetChatsByUserRequest) returns (ChatsResponse);
@@ -233,4 +237,38 @@ message SearchChatsByUserRequest {
 message SearchChatsResponse {
   repeated ChatResponse chats = 1;
   int32 total_count = 2;
+}
+
+message CreateAssistantRequest {
+  string name = 1;
+  string bot_token = 2;
+  string user_id = 3;
+}
+
+message AssistantResponse {
+  string id = 1;
+  string name = 2;
+  string bot_token = 3;
+  string user_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message GetAssistantRequest {
+  string id = 1;
+}
+
+message UpdateAssistantRequest {
+  string id = 1;
+  string name = 2;
+  string bot_token = 3;
+  string user_id = 4;
+}
+
+message DeleteAssistantRequest {
+  string id = 1;
+}
+
+message DeleteAssistantResponse {
+  bool success = 1;
 }
