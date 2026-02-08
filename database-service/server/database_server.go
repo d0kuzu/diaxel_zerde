@@ -35,11 +35,22 @@ func (s *DatabaseServer) CreateUser(ctx context.Context, req *proto.CreateUserRe
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
 
+	var email, passwordHash, role string
+	if user.Email != nil {
+		email = *user.Email
+	}
+	if user.PasswordHash != nil {
+		passwordHash = *user.PasswordHash
+	}
+	if user.Role != nil {
+		role = *user.Role
+	}
+
 	return &proto.UserResponse{
 		Id:           user.ID,
-		Email:        user.Email,
-		PasswordHash: user.PasswordHash,
-		Role:         user.Role,
+		Email:        email,
+		PasswordHash: passwordHash,
+		Role:         role,
 		CreatedAt:    user.CreatedAt.Format(time.RFC3339),
 	}, nil
 }
@@ -50,11 +61,48 @@ func (s *DatabaseServer) GetUser(ctx context.Context, req *proto.GetUserRequest)
 		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
 	}
 
+	var email, passwordHash, role string
+	if user.Email != nil {
+		email = *user.Email
+	}
+	if user.PasswordHash != nil {
+		passwordHash = *user.PasswordHash
+	}
+	if user.Role != nil {
+		role = *user.Role
+	}
+
 	return &proto.UserResponse{
 		Id:           user.ID,
-		Email:        user.Email,
-		PasswordHash: user.PasswordHash,
-		Role:         user.Role,
+		Email:        email,
+		PasswordHash: passwordHash,
+		Role:         role,
+		CreatedAt:    user.CreatedAt.Format(time.RFC3339),
+	}, nil
+}
+
+func (s *DatabaseServer) GetUserByEmail(ctx context.Context, req *proto.GetUserByEmailRequest) (*proto.UserResponse, error) {
+	user, err := s.userRepo.GetUserByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+	}
+
+	var email, passwordHash, role string
+	if user.Email != nil {
+		email = *user.Email
+	}
+	if user.PasswordHash != nil {
+		passwordHash = *user.PasswordHash
+	}
+	if user.Role != nil {
+		role = *user.Role
+	}
+
+	return &proto.UserResponse{
+		Id:           user.ID,
+		Email:        email,
+		PasswordHash: passwordHash,
+		Role:         role,
 		CreatedAt:    user.CreatedAt.Format(time.RFC3339),
 	}, nil
 }

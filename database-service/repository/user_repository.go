@@ -28,10 +28,11 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 func (r *userRepository) CreateUser(ctx context.Context, email, passwordHash, role string) (*models.User, error) {
 	user := models.User{
 		ID:           uuid.New().String(),
-		Email:        email,
-		PasswordHash: passwordHash,
-		Role:         role,
+		Email:        &email,
+		PasswordHash: &passwordHash,
+		Role:         &role,
 		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
 
 	if err := r.db.WithContext(ctx).Create(&user).Error; err != nil {
