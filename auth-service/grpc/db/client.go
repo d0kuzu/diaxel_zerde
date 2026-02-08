@@ -50,7 +50,7 @@ func (c *Client) GetUserByEmail(email string) (*dbpb.UserResponse, error) {
 	resp, err := c.DB.GetUserByEmail(ctx, req)
 
 	if err != nil {
-		log.Fatalln("Ошибка:", err)
+		log.Println("Ошибка:", err)
 		return nil, err
 	}
 
@@ -67,7 +67,7 @@ func (c *Client) GetUserByID(userID string) (*dbpb.UserResponse, error) {
 
 	resp, err := c.DB.GetUser(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка получения пользователя:", err)
+		log.Println("Ошибка получения пользователя:", err)
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (c *Client) CreateUser(email, passwordHash, role string) (*dbpb.UserRespons
 
 	resp, err := c.DB.CreateUser(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка создания пользователя:", err)
+		log.Println("Ошибка создания пользователя:", err)
 		return nil, err
 	}
 
@@ -104,7 +104,7 @@ func (c *Client) SaveRefreshToken(token, userID string) error {
 
 	_, err := c.DB.SaveRefreshToken(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка сохранения refresh токена:", err)
+		log.Println("Ошибка сохранения refresh токена:", err)
 		return err
 	}
 
@@ -121,7 +121,7 @@ func (c *Client) GetRefreshToken(token string) (string, error) {
 
 	resp, err := c.DB.GetRefreshToken(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка получения refresh токена:", err)
+		log.Println("Ошибка получения refresh токена:", err)
 		return "", err
 	}
 
@@ -138,7 +138,7 @@ func (c *Client) DeleteRefreshToken(token string) error {
 
 	_, err := c.DB.DeleteRefreshToken(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка удаления refresh токена:", err)
+		log.Println("Ошибка удаления refresh токена:", err)
 		return err
 	}
 
@@ -157,7 +157,7 @@ func (c *Client) CreateAssistant(name, botToken, userID string) (*dbpb.Assistant
 
 	resp, err := c.DB.CreateAssistant(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка создания ассистента:", err)
+		log.Println("Ошибка создания ассистента:", err)
 		return nil, err
 	}
 
@@ -174,7 +174,7 @@ func (c *Client) GetAssistant(assistantID string) (*dbpb.AssistantResponse, erro
 
 	resp, err := c.DB.GetAssistant(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка получения ассистента:", err)
+		log.Println("Ошибка получения ассистента:", err)
 		return nil, err
 	}
 
@@ -194,7 +194,7 @@ func (c *Client) UpdateAssistant(assistantID, name, botToken, userID string) (*d
 
 	resp, err := c.DB.UpdateAssistant(ctx, req)
 	if err != nil {
-		log.Fatalln("Ошибка обновления ассистента:", err)
+		log.Println("Ошибка обновления ассистента:", err)
 		return nil, err
 	}
 
