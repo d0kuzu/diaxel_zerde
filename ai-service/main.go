@@ -1,13 +1,13 @@
 package main
 
 import (
-	"diaxel/api"
-	appModule "diaxel/app"
-	"diaxel/cleanup"
-	"diaxel/config"
-	"diaxel/database"
-	"diaxel/services/llm"
-	"diaxel/services/twilio"
+	"diaxel/internal/api"
+	appModule "diaxel/internal/app"
+	"diaxel/internal/cleanup"
+	"diaxel/internal/config"
+	"diaxel/internal/database"
+	"diaxel/internal/modules/llm"
+	"diaxel/internal/modules/twilio"
 	"log"
 )
 
