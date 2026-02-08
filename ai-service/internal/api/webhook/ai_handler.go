@@ -47,6 +47,8 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 
 	resp, err := http.Get(tgApiUrl)
 	if err != nil || resp.StatusCode != 200 {
+		fmt.Println(err)
+		fmt.Println(resp.Body)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register webhook in Telegram"})
 		return
 	}

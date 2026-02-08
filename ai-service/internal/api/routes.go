@@ -2,10 +2,8 @@ package api
 
 import (
 	"diaxel/internal/api/analytics"
-	"diaxel/internal/api/chat"
 	"diaxel/internal/api/twilio"
 	"diaxel/internal/api/webhook"
-	"diaxel/internal/api/ws"
 	appModule "diaxel/internal/app"
 	"diaxel/internal/database"
 	"log"
@@ -26,8 +24,8 @@ func RouterStart(app *appModule.App) {
 
 	webhook.WebhookRoutes(r, app)
 	twilio.TwilioWebhookRoutes(r, app)
-	ws.WSRoutes(r, app)
-	chat.ChatRoutes(r, app)
+	//ws.WSRoutes(r, app)
+	//chat.ChatRoutes(r, app)
 	analytics.SetupRoutes(r, database.GetDB())
 
 	err := r.Run(":8080")
