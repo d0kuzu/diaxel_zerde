@@ -1,0 +1,66 @@
+version: "3.9"
+
+networks:
+  diaxel_net:
+    driver: bridge
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: diaxel_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: diaxel
+      POSTGRES_USER: diaxel_user
+      POSTGRES_PASSWORD: diaxel_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - diaxel_net
+
+  database-service:
+    build: ./database-service
+    container_name: database-service
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    networks:
+      - diaxel_net
+
+  ai-service:
+    build: ./ai-service
+    container_name: ai-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      - database-service
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=diaxel_user
+      - DB_PASSWORD=diaxel_password
+      - DB_NAME=diaxel
+      - DB_SSL=disable
+    networks:
+      - diaxel_net
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database-service
+      - ai-service
+    env_file:
+      - .env
+    networks:
+      - diaxel_net
+
+volumes:
+  postgres_data:

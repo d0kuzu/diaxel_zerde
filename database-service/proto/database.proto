@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package database;
+
+option go_package = "github.com/tr1ki/diaxel_zerde_master/database-service/proto";
+
+service DatabaseService {
+  rpc GetAnalytics(AnalyticsRequest) returns (AnalyticsResponse);
+  rpc GetAnalyticsByAssistant(AnalyticsByAssistantRequest) returns (AnalyticsResponse);
+}
+
+message AnalyticsRequest {
+  string assistant_id = 1;
+  string platform = 2;
+  string start_date = 3;
+  string end_date = 4;
+}
+
+message AnalyticsByAssistantRequest {
+  string assistant_id = 1;
+  string platform = 2;
+  string start_date = 3;
+  string end_date = 4;
+}
+
+message AnalyticsResponse {
+  string assistant_id = 1;
+  int32 total_chats = 2;
+  int32 active_users = 3;
+  double engagement_rate = 4;
+}

@@ -3,9 +3,13 @@ package api
 import (
 	"diaxel/api/infrastructure/rest"
 	appModule "diaxel/app"
+	"diaxel/database"
+	"diaxel/internal/analytics"
+	"diaxel/services/webhooks/telegram"
+	"log"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func RouterStart(app *appModule.App) {
@@ -20,6 +24,9 @@ func RouterStart(app *appModule.App) {
 
 	rest.ChatRoutes(r, app)
 	rest.TwilioWebhookRoutes(r, app)
+
+	telegram.SetupRoutes(r, database.GetDB(), app.LLM, app.Cfg)
+	analytics.SetupRoutes(r, database.GetDB())
 
 	err := r.Run(":8080")
 	if err != nil {
