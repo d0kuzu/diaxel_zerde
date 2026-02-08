@@ -36,8 +36,11 @@ export function Navbar() {
           <Button asChild variant="ghost" className="hidden sm:inline-flex">
             <Link href="/analytics">Демо</Link>
           </Button>
+          <Button asChild variant="ghost" className="hidden sm:inline-flex">
+            <Link href="/login">Войти</Link>
+          </Button>
           <Button asChild variant="primary">
-            <Link href="/pricing">Начать</Link>
+            <Link href="/register">Регистрация</Link>
           </Button>
         </div>
       </div>
