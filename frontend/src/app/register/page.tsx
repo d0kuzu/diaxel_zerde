@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { validateEmail, validatePassword, validateName } from '@/lib/validation';
+import { AuthAPI, authStorage, type RegisterRequest } from '@/lib/auth';
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -22,14 +25,18 @@ export default function RegisterPage() {
     confirmPassword: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Очищаем ошибку при вводе
+    // Очищаем ошибки при вводе
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    if (submitError) {
+      setSubmitError('');
     }
   };
 
@@ -42,25 +49,25 @@ export default function RegisterPage() {
       confirmPassword: ''
     };
 
-    if (!formData.firstName) {
+    if (!formData.firstName.trim()) {
       newErrors.firstName = 'Имя обязательно';
     } else if (!validateName(formData.firstName)) {
       newErrors.firstName = 'Введите корректное имя (минимум 2 символа)';
     }
 
-    if (!formData.lastName) {
+    if (!formData.lastName.trim()) {
       newErrors.lastName = 'Фамилия обязательна';
     } else if (!validateName(formData.lastName)) {
       newErrors.lastName = 'Введите корректную фамилию (минимум 2 символа)';
     }
 
-    if (!formData.email) {
+    if (!formData.email.trim()) {
       newErrors.email = 'Email обязателен';
     } else if (!validateEmail(formData.email)) {
       newErrors.email = 'Введите корректный email адрес';
     }
 
-    if (!formData.password) {
+    if (!formData.password.trim()) {
       newErrors.password = 'Пароль обязателен';
     } else {
       const passwordValidation = validatePassword(formData.password);
@@ -69,29 +76,49 @@ export default function RegisterPage() {
       }
     }
 
-    if (!formData.confirmPassword) {
+    if (!formData.confirmPassword.trim()) {
       newErrors.confirmPassword = 'Подтверждение пароля обязательно';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Пароли не совпадают';
     }
 
     setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error);
+    const hasErrors = Object.values(newErrors).some(error => error !== '');
+    console.log('Validation errors:', newErrors, 'Has errors:', hasErrors);
+    return !hasErrors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted with data:', formData);
     
-    if (!validateForm()) {
+    const isValid = validateForm();
+    console.log('Form is valid:', isValid);
+    
+    if (!isValid) {
+      console.log('Validation failed, stopping submission');
       return;
     }
 
     setIsLoading(true);
-    // TODO: Добавить логику регистрации
-    setTimeout(() => {
+    setSubmitError('');
+
+    try {
+      const userData: RegisterRequest = {
+        email: formData.email,
+        password: formData.password
+      };
+
+      const tokens = await AuthAPI.register(userData);
+      authStorage.setTokens(tokens);
+      
+      // Перенаправляем на главную или дашборд
+      router.push('/analytics');
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Ошибка регистрации');
+    } finally {
       setIsLoading(false);
-      console.log('Register attempt:', formData);
-    }, 1000);
+    }
   };
 
   return (
@@ -99,10 +126,12 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-glow">
-              D
-            </span>
-            <span className="text-sm font-semibold tracking-tight">Diaxel</span>
+            <img 
+              src="/large(1).ico" 
+              alt="SD Nexus" 
+              className="h-9 w-9 rounded-xl"
+            />
+            <span className="text-sm font-semibold tracking-tight">SD Nexus</span>
           </Link>
           <h1 className="mt-6 text-2xl font-semibold tracking-tight">Создание аккаунта</h1>
           <p className="mt-2 text-sm text-slate-600">
@@ -114,7 +143,13 @@ export default function RegisterPage() {
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {submitError && (
+            <div className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-sm text-red-600">{submitError}</p>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-slate-900 mb-2">
@@ -127,7 +162,7 @@ export default function RegisterPage() {
                   placeholder="Иван"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className={errors.firstName ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                  className={errors.firstName ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                   required
                 />
                 {errors.firstName && (
@@ -145,7 +180,7 @@ export default function RegisterPage() {
                   placeholder="Иванов"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className={errors.lastName ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                  className={errors.lastName ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                   required
                 />
                 {errors.lastName && (
@@ -165,7 +200,7 @@ export default function RegisterPage() {
                 placeholder="example@mail.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                className={errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                 required
               />
               {errors.email && (
@@ -184,7 +219,7 @@ export default function RegisterPage() {
                 placeholder="Минимум 8 символов"
                 value={formData.password}
                 onChange={handleChange}
-                className={errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                className={errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                 required
               />
               {errors.password && (
@@ -203,7 +238,7 @@ export default function RegisterPage() {
                 placeholder="Повторите пароль"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={errors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                className={errors.confirmPassword ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                 required
               />
               {errors.confirmPassword && (
@@ -234,9 +269,20 @@ export default function RegisterPage() {
               type="submit"
               className="w-full"
               disabled={isLoading}
+              onClick={() => console.log('Button clicked, current form data:', formData)}
             >
               {isLoading ? 'Создание аккаунта...' : 'Создать аккаунт'}
             </Button>
+            <button 
+              type="button" 
+              onClick={() => {
+                console.log('Test validation clicked');
+                validateForm();
+              }}
+              className="mt-2 w-full text-xs text-gray-500 underline"
+            >
+              Тест валидации (только для отладки)
+            </button>
           </form>
 
           <div className="mt-6">

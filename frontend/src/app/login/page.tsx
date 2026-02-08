@@ -2,11 +2,14 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { validateEmail } from '@/lib/validation';
+import { AuthAPI, authStorage, type LoginRequest } from '@/lib/auth';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -16,14 +19,25 @@ export default function LoginPage() {
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    console.log('Input changed:', name, value);
+    console.log('Input target:', e.target);
     
-    // Очищаем ошибку при вводе
-    if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+    if (name) {
+      setFormData(prev => ({ ...prev, [name]: value }));
+      
+      // Очищаем ошибки при вводе
+      if (errors[name as keyof typeof errors]) {
+        setErrors(prev => ({ ...prev, [name]: '' }));
+      }
+      if (submitError) {
+        setSubmitError('');
+      }
+    } else {
+      console.error('Input name is empty:', e.target);
     }
   };
 
@@ -33,33 +47,53 @@ export default function LoginPage() {
       password: ''
     };
 
-    if (!formData.email) {
+    if (!formData.email.trim()) {
       newErrors.email = 'Email обязателен';
     } else if (!validateEmail(formData.email)) {
       newErrors.email = 'Введите корректный email адрес';
     }
 
-    if (!formData.password) {
+    if (!formData.password.trim()) {
       newErrors.password = 'Пароль обязателен';
     }
 
     setErrors(newErrors);
-    return !newErrors.email && !newErrors.password;
+    const hasErrors = Object.values(newErrors).some(error => error !== '');
+    console.log('Login validation errors:', newErrors, 'Has errors:', hasErrors);
+    return !hasErrors;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login form submitted with data:', formData);
     
-    if (!validateForm()) {
+    const isValid = validateForm();
+    console.log('Login form is valid:', isValid);
+    
+    if (!isValid) {
+      console.log('Login validation failed, stopping submission');
       return;
     }
 
     setIsLoading(true);
-    // TODO: Добавить логику авторизации
-    setTimeout(() => {
+    setSubmitError('');
+
+    try {
+      const credentials: LoginRequest = {
+        email: formData.email,
+        password: formData.password
+      };
+
+      const tokens = await AuthAPI.login(credentials);
+      authStorage.setTokens(tokens);
+      
+      // Перенаправляем на главную или дашборд
+      router.push('/analytics');
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Ошибка входа');
+    } finally {
       setIsLoading(false);
-      console.log('Login attempt:', formData);
-    }, 1000);
+    }
   };
 
   return (
@@ -67,10 +101,12 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-glow">
-              D
-            </span>
-            <span className="text-sm font-semibold tracking-tight">Diaxel</span>
+            <img 
+              src="/large(1).ico" 
+              alt="SD Nexus" 
+              className="h-9 w-9 rounded-xl"
+            />
+            <span className="text-sm font-semibold tracking-tight">SD Nexus</span>
           </Link>
           <h1 className="mt-6 text-2xl font-semibold tracking-tight">Вход в аккаунт</h1>
           <p className="mt-2 text-sm text-slate-600">
@@ -82,18 +118,25 @@ export default function LoginPage() {
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {submitError && (
+            <div className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-sm text-red-600">{submitError}</p>
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-900 mb-2">
                 Email
               </label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="example@mail.com"
                 value={formData.email}
                 onChange={handleChange}
-                className={errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                className={errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                 required
               />
               {errors.email && (
@@ -107,11 +150,12 @@ export default function LoginPage() {
               </label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={handleChange}
-                className={errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' : ''}
+                className={errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20' : ''}
                 required
               />
               {errors.password && (
@@ -139,9 +183,20 @@ export default function LoginPage() {
               type="submit"
               className="w-full"
               disabled={isLoading}
+              onClick={() => console.log('Login button clicked, current form data:', formData)}
             >
               {isLoading ? 'Вход...' : 'Войти'}
             </Button>
+            <button 
+              type="button" 
+              onClick={() => {
+                console.log('Test login validation clicked');
+                validateForm();
+              }}
+              className="mt-2 w-full text-xs text-gray-500 underline"
+            >
+              Тест валидации входа (только для отладки)
+            </button>
           </form>
 
           <div className="mt-6">
