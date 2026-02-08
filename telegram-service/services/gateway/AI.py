@@ -3,7 +3,7 @@ import requests
 FALLBACK_RESPONSE = {"answer": "service unavailable"}
 
 
-def send_request_to_endpoint(token: str, user_message: str, target_endpoint: str) -> dict:
+def send_request_to_endpoint(token: str, user_id: str, user_message: str, target_endpoint: str) -> dict:
     try:
         headers = {
             "Authorization": f"Bearer {token}",
@@ -11,6 +11,7 @@ def send_request_to_endpoint(token: str, user_message: str, target_endpoint: str
         }
 
         payload = {
+            "user_id": user_id,
             "user_message": user_message
         }
 

@@ -10,5 +10,5 @@ router = Router()
 @router.message()
 async def on_message(message: Message, env: Environ):
     token = create_service_jwt(env.service.secret, env.service.exp)
-    response = send_request_to_endpoint(token, message.text, env.service.target_endpoint)
+    response = send_request_to_endpoint(token, str(message.from_user.id), message.text, env.service.target_endpoint)
     await message.answer(str(response))
