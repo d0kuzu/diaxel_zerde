@@ -2,14 +2,13 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"time"
 
 	"diaxel_zerde/database-service/models"
 
 	"github.com/google/uuid"
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 )
 
 type RefreshTokenRepository interface {
@@ -20,50 +19,30 @@ type RefreshTokenRepository interface {
 }
 
 type refreshTokenRepository struct {
-	db *sqlx.DB
+	db *gorm.DB
 }
 
-func NewRefreshTokenRepository(db *sqlx.DB) RefreshTokenRepository {
+func NewRefreshTokenRepository(db *gorm.DB) RefreshTokenRepository {
 	return &refreshTokenRepository{db: db}
 }
 
 func (r *refreshTokenRepository) SaveRefreshToken(ctx context.Context, userID, tokenHash string, expiresAt time.Time) error {
-	query := `
-		INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at, created_at)
-		VALUES ($1, $2, $3, $4, $5)
-		ON CONFLICT (token_hash) DO UPDATE SET
-			expires_at = EXCLUDED.expires_at
-	`
-
-	tokenID := uuid.New().String()
-	now := time.Now()
-
-	_, err := r.db.ExecContext(ctx, query, tokenID, userID, tokenHash, expiresAt, now)
-	if err != nil {
-		return fmt.Errorf("failed to save refresh token: %w", err)
+	token := models.RefreshToken{
+		ID:        uuid.New().String(),
+		UserID:    userID,
+		TokenHash: tokenHash,
+		ExpiresAt: expiresAt,
+		CreatedAt: time.Now(),
 	}
 
-	return nil
+	// Use Upsert to handle conflicts
+	return r.db.WithContext(ctx).Save(&token).Error
 }
 
 func (r *refreshTokenRepository) GetRefreshToken(ctx context.Context, tokenHash string) (*models.RefreshToken, error) {
-	query := `
-		SELECT id, user_id, token_hash, expires_at, created_at
-		FROM refresh_tokens
-		WHERE token_hash = $1
-	`
-
 	var token models.RefreshToken
-	err := r.db.QueryRowContext(ctx, query, tokenHash).Scan(
-		&token.ID,
-		&token.UserID,
-		&token.TokenHash,
-		&token.ExpiresAt,
-		&token.CreatedAt,
-	)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
+	if err := r.db.WithContext(ctx).Where("token_hash = ?", tokenHash).First(&token).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
 			return nil, fmt.Errorf("refresh token not found")
 		}
 		return nil, fmt.Errorf("failed to get refresh token: %w", err)
@@ -73,19 +52,12 @@ func (r *refreshTokenRepository) GetRefreshToken(ctx context.Context, tokenHash 
 }
 
 func (r *refreshTokenRepository) DeleteRefreshToken(ctx context.Context, tokenHash string) error {
-	query := `DELETE FROM refresh_tokens WHERE token_hash = $1`
-
-	result, err := r.db.ExecContext(ctx, query, tokenHash)
-	if err != nil {
-		return fmt.Errorf("failed to delete refresh token: %w", err)
+	result := r.db.WithContext(ctx).Where("token_hash = ?", tokenHash).Delete(&models.RefreshToken{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete refresh token: %w", result.Error)
 	}
 
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return fmt.Errorf("failed to get rows affected: %w", err)
-	}
-
-	if rowsAffected == 0 {
+	if result.RowsAffected == 0 {
 		return fmt.Errorf("refresh token not found")
 	}
 
@@ -93,12 +65,5 @@ func (r *refreshTokenRepository) DeleteRefreshToken(ctx context.Context, tokenHa
 }
 
 func (r *refreshTokenRepository) DeleteExpiredTokens(ctx context.Context) error {
-	query := `DELETE FROM refresh_tokens WHERE expires_at < NOW()`
-
-	_, err := r.db.ExecContext(ctx, query)
-	if err != nil {
-		return fmt.Errorf("failed to delete expired tokens: %w", err)
-	}
-
-	return nil
+	return r.db.WithContext(ctx).Where("expires_at < NOW()").Delete(&models.RefreshToken{}).Error
 }

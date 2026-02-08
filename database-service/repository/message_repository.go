@@ -7,80 +7,41 @@ import (
 
 	"diaxel_zerde/database-service/models"
 
-	"github.com/jmoiron/sqlx"
+	"gorm.io/gorm"
 )
 
 type MessageRepository interface {
-	SaveMessage(ctx context.Context, chatUserID, role, content, platform string) (*models.Message, error)
-	GetMessagesByChatUserID(ctx context.Context, chatUserID string, limit, offset int32) ([]*models.Message, error)
+	SaveMessage(ctx context.Context, chatID, role, content, platform string) (*models.Message, error)
+	GetMessagesByChatID(ctx context.Context, chatID string, limit, offset int32) ([]*models.Message, error)
 }
 
 type messageRepository struct {
-	db *sqlx.DB
+	db *gorm.DB
 }
 
-func NewMessageRepository(db *sqlx.DB) MessageRepository {
+func NewMessageRepository(db *gorm.DB) MessageRepository {
 	return &messageRepository{db: db}
 }
 
-func (r *messageRepository) SaveMessage(ctx context.Context, chatUserID, role, content, platform string) (*models.Message, error) {
-	now := time.Now()
+func (r *messageRepository) SaveMessage(ctx context.Context, chatID, role, content, platform string) (*models.Message, error) {
+	message := models.Message{
+		ChatID:  chatID,
+		Role:    role,
+		Content: content,
+		Time:    time.Now(),
+	}
 
-	query := `
-		INSERT INTO messages (chat_user_id, role, content, time)
-		VALUES ($1, $2, $3, $4)
-		RETURNING id, chat_user_id, role, content, time
-	`
-
-	var message models.Message
-	err := r.db.QueryRowContext(ctx, query, chatUserID, role, content, now).Scan(
-		&message.ID,
-		&message.ChatUserID,
-		&message.Role,
-		&message.Content,
-		&message.Time,
-	)
-
-	if err != nil {
+	if err := r.db.WithContext(ctx).Create(&message).Error; err != nil {
 		return nil, fmt.Errorf("failed to save message: %w", err)
 	}
 
 	return &message, nil
 }
 
-func (r *messageRepository) GetMessagesByChatUserID(ctx context.Context, chatUserID string, limit, offset int32) ([]*models.Message, error) {
-	query := `
-		SELECT id, chat_user_id, role, content, time
-		FROM messages
-		WHERE chat_user_id = $1
-		ORDER BY time ASC
-		LIMIT $2 OFFSET $3
-	`
-
-	rows, err := r.db.QueryContext(ctx, query, chatUserID, limit, offset)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get messages: %w", err)
-	}
-	defer rows.Close()
-
+func (r *messageRepository) GetMessagesByChatID(ctx context.Context, chatID string, limit, offset int32) ([]*models.Message, error) {
 	var messages []*models.Message
-	for rows.Next() {
-		var message models.Message
-		err := rows.Scan(
-			&message.ID,
-			&message.ChatUserID,
-			&message.Role,
-			&message.Content,
-			&message.Time,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan message: %w", err)
-		}
-		messages = append(messages, &message)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating messages: %w", err)
+	if err := r.db.WithContext(ctx).Where("chat_id = ?", chatID).Order("time ASC").Limit(int(limit)).Offset(int(offset)).Find(&messages).Error; err != nil {
+		return nil, fmt.Errorf("failed to get messages: %w", err)
 	}
 
 	return messages, nil

@@ -7,6 +7,6 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o database-service ./cmd
+RUN go build -o database-service .
 
 CMD ["./database-service"]
