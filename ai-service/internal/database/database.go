@@ -3,10 +3,9 @@ package database
 import (
 	"diaxel/internal/config"
 	. "diaxel/internal/database/models"
-	"log"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 )
 
 var db *gorm.DB
@@ -22,7 +21,7 @@ func Connect(settings *config.Settings) {
 	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=" + sslmode
 
 	var err error
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}

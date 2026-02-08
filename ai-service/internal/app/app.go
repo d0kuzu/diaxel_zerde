@@ -2,6 +2,7 @@ package app
 
 import (
 	"diaxel/internal/config"
+	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/twilio"
 )
@@ -15,13 +16,15 @@ type Twilio interface {
 type App struct {
 	LLM    *llm.Client
 	Twilio *twilio.Client
+	Db     *db.Client
 	Cfg    *config.Settings
 }
 
-func NewApp(llmClient *llm.Client, twilioClient *twilio.Client, cfg *config.Settings) *App {
+func NewApp(llmClient *llm.Client, twilioClient *twilio.Client, grpcClient *db.Client, cfg *config.Settings) *App {
 	return &App{
 		LLM:    llmClient,
 		Twilio: twilioClient,
+		Db:     grpcClient,
 		Cfg:    cfg,
 	}
 }

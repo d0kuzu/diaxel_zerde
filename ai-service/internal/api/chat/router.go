@@ -6,9 +6,13 @@ import (
 )
 
 func ChatRoutes(router *gin.Engine, app *appModule.App) {
-	aiHandler := NewAIHandler(app.Cfg, app.LLM)
-	productGroup := router.Group("chat")
+	h := NewChatHandler(app.Cfg)
+
+	productGroup := router.Group("chats")
 	{
-		productGroup.POST("/send_message", aiHandler.SendMessage)
+		productGroup.GET("/get_all", h.GetAllChats)
+		// productGroup.GET("/get_chat", h.GetChat)
+		productGroup.GET("/get_pagination", h.GetPagination)
+		productGroup.GET("/search_chat", h.SearchChat)
 	}
 }

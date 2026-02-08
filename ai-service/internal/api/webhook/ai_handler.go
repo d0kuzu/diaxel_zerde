@@ -1,7 +1,8 @@
-package chat
+package webhook
 
 import (
 	"diaxel/internal/config"
+	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,10 +11,11 @@ import (
 type AIHandler struct {
 	cfg *config.Settings
 	LLM *llm.Client
+	db  *db.Client
 }
 
-func NewAIHandler(cfg *config.Settings, llmClient *llm.Client) *AIHandler {
-	return &AIHandler{cfg: cfg, LLM: llmClient}
+func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client) *AIHandler {
+	return &AIHandler{cfg: cfg, LLM: llmClient, db: db}
 }
 
 type WebhookRequest struct {
@@ -32,4 +34,10 @@ func (h *AIHandler) SendMessage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"answer": response})
+}
+
+func (h *AIHandler) Test(c *gin.Context) {
+	h.db.GetStats()
+
+	c.JSON(http.StatusOK, gin.H{"answer": "ok"})
 }

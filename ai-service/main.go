@@ -1,13 +1,14 @@
 package main
 
 import (
-	"diaxel/api"
-	appModule "diaxel/app"
-	"diaxel/cleanup"
-	"diaxel/config"
-	"diaxel/database"
-	"diaxel/services/llm"
-	"diaxel/services/twilio"
+	"diaxel/internal/api"
+	appModule "diaxel/internal/app"
+	"diaxel/internal/cleanup"
+	"diaxel/internal/config"
+	"diaxel/internal/database"
+	"diaxel/internal/grpc/db"
+	"diaxel/internal/modules/llm"
+	"diaxel/internal/modules/twilio"
 	"log"
 )
 
@@ -15,6 +16,11 @@ func main() {
 	settings, err := config.LoadConfig()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	grpcClient, err := db.New("localhost:50051")
+	if err != nil {
+		return
 	}
 
 	llmClient := llm.InitClient(settings.OpenaiApiKey)
@@ -27,7 +33,7 @@ func main() {
 	cm.Add(database.Disconnect)
 	go cm.Start()
 
-	app := appModule.NewApp(llmClient, twilioClient, settings)
+	app := appModule.NewApp(llmClient, twilioClient, grpcClient, settings)
 
 	api.RouterStart(app)
 }
