@@ -1,17 +1,18 @@
-FROM golang:1.24-alpine
+# Используем максимально легкий образ
+FROM alpine:latest
 
-# Папка внутри контейнера, где будет лежать код
 WORKDIR /app
 
-# Копируем файлы зависимостей и скачиваем их
-COPY go.mod go.sum ./
-RUN go mod download
+# Устанавливаем сертификаты (нужны для внешних API)
+RUN apk --no-cache add ca-certificates
 
-# Копируем весь остальной код
-COPY . .
+# Просто копируем ваш уже готовый файл server
+COPY server .
+COPY .env .env
 
-# Собираем приложение
-RUN go build -o main .
+# Даем права на запуск (на всякий случай)
+RUN chmod +x server
 
-# Запускаем
-CMD ["./main"]
+EXPOSE 8080
+
+CMD ["./server"]
