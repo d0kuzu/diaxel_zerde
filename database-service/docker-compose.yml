@@ -4,11 +4,7 @@ services:
   database-service:
     build: .
     container_name: database-service
-    ports:
-      - "8080:8080"
     restart: unless-stopped
-    env_file:
-      - .env
     depends_on:
       - postgres
 
