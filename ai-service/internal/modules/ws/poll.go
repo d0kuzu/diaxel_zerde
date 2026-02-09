@@ -1,46 +1,52 @@
 package ws
 
 import (
-	twilio "AISale/services/twillio"
-	"diaxel/internal/config"
+	"diaxel/internal/database/models/repos/chat_repos"
 	"encoding/json"
 	"log"
 	"time"
 )
 
-func (c *Client) PollTwilio(chatID, accountSID, authToken string) {
-	var lastMessageSID string
+func (c *Client) PollLocalDB(chatID string) {
+	var lastMessageCount int
 
 	for {
-		messages, err := fetchMessagesFromTwilio(chatID, lastMessageSID, accountSID, authToken)
+		chat, err := chat_repos.CheckIfExist(chatID)
 		if err != nil {
-			log.Println("Twilio fetch error:", err)
+			log.Println("DB fetch error:", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
 
-		for _, m := range messages {
-			var author string
-			if m.From != config.BotNumber {
-				author = "bot"
-			} else {
-				author = "client"
+		currentMessageCount := len(chat.Messages)
+
+		if currentMessageCount > lastMessageCount {
+			for i := lastMessageCount; i < currentMessageCount; i++ {
+				msg := chat.Messages[i]
+
+				var author string
+				if msg.Role == "user" {
+					author = "client"
+				} else {
+					author = "bot"
+				}
+
+				wsMsg := Message{
+					Author: author,
+					Body:   msg.Content,
+				}
+
+				data, err := json.Marshal(wsMsg)
+				if err != nil {
+					log.Println("ws message json marshal error:", err)
+					continue
+				}
+
+				c.Broadcast(chatID, data)
 			}
-
-			msg := Message{
-				Author: author,
-				Body:   m.Body,
-			}
-
-			data, err := json.Marshal(msg)
-			if err != nil {
-				log.Println("ws message json marshal error:", err)
-			}
-
-			c.Broadcast(chatID, data)
-
-			lastMessageSID = m.Sid
+			lastMessageCount = currentMessageCount
 		}
+
 		time.Sleep(500 * time.Millisecond)
 	}
 }

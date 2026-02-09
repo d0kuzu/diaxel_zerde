@@ -2,10 +2,12 @@ package database
 
 import (
 	"diaxel/internal/config"
+	"diaxel/internal/database/models"
 	. "diaxel/internal/database/models"
+	"log"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
 var db *gorm.DB
@@ -32,7 +34,7 @@ func Connect(settings *config.Settings) {
 	//}
 	//log.Println("Таблицы успешно удалены")
 
-	err = db.AutoMigrate(&Chat{}, &Message{})
+	err = db.AutoMigrate(&Chat{}, &Message{}, &models.Assistant{})
 	if err != nil {
 		log.Fatalf("Не удалось создать таблицы: %v", err)
 	}

@@ -46,7 +46,7 @@ func (c *Client) Broadcast(chatID string, msg []byte) {
 	}
 }
 
-func (c *Client) Listen(accountSID, authToken string) {
+func (c *Client) Listen() {
 	defer UnregisterClient(c)
 
 	for {

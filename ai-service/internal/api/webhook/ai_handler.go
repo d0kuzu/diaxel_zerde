@@ -3,24 +3,27 @@ package webhook
 import (
 	"bytes"
 	"diaxel/internal/config"
-	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 	"net/url"
 	"strconv"
+
+	assistantRepos "diaxel/internal/database/models/repos"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type AIHandler struct {
 	cfg *config.Settings
 	LLM *llm.Client
-	db  *db.Client
+	db  *gorm.DB
 }
 
-func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client) *AIHandler {
+func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *gorm.DB) *AIHandler {
 	return &AIHandler{cfg: cfg, LLM: llmClient, db: db}
 }
 
@@ -37,13 +40,13 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 		return
 	}
 
-	assistant, err := h.db.CreateAssistant(req.Name, req.Token, req.UserID)
+	assistant, err := assistantRepos.CreateAssistant(req.Name, req.Token, req.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistant in database"})
 		return
 	}
 
-	webhookUrl := fmt.Sprintf("%s/webhooks/telegram/callback/%s", h.cfg.BaseURL, assistant.Id)
+	webhookUrl := fmt.Sprintf("%s/webhooks/telegram/callback/%d", h.cfg.BaseURL, assistant.ID)
 
 	encodedWebhook := url.QueryEscape(webhookUrl)
 	tgApiUrl := fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook?url=%s", req.Token, encodedWebhook)
@@ -120,7 +123,7 @@ func (h *AIHandler) HandleTelegramWebhook(c *gin.Context) {
 		return
 	}
 
-	assistant, err := h.db.GetAssistant(assistantId)
+	assistant, err := assistantRepos.GetAssistant(assistantId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get assistant"})
 		return
