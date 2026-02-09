@@ -1,12 +1,17 @@
-FROM golang:1.22-alpine
+FROM golang:1.24-alpine
 
+# Папка внутри контейнера, где будет лежать код
 WORKDIR /app
 
+# Копируем файлы зависимостей и скачиваем их
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Копируем весь остальной код
 COPY . .
 
-RUN go build -o database-service .
+# Собираем приложение
+RUN go build -o main .
 
-CMD ["./database-service"]
+# Запускаем
+CMD ["./main"]
