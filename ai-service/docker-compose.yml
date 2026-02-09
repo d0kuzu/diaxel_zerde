@@ -9,3 +9,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    networks:
+      - microservices-net  # <--- 1. Подключаем сервис к сети
+
+networks:
+  microservices-net:       # <--- 2. Объявляем сеть
+    external: true

@@ -27,3 +27,7 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  microservices-net:
+    external: true
