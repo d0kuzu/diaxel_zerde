@@ -4,6 +4,8 @@ import (
 	"api-gateway/config"
 	"api-gateway/routes"
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +19,21 @@ func NewServer(cfg *config.Config) *Server {
 
 func (s *Server) Run() {
 	r := gin.Default()
+
+	// CORS middleware
+	r.Use(func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		c.Next()
+	})
+
 	routes.SetupRoutes(r, s.cfg)
 
 	addr := fmt.Sprintf(":%s", s.cfg.GatewayPort)

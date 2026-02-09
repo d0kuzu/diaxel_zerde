@@ -18,6 +18,7 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 			c.JSON(200, gin.H{"status": "ok"})
 		})
 
+		// Auth endpoints through /auth prefix
 		public.Any("/auth/*any",
 			proxy.NewReverseProxy(cfg.AuthServiceURL, "/auth"),
 		)
