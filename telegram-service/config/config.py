@@ -20,8 +20,7 @@ class BotConfig:
 @dataclass(frozen=True)
 class ServiceConfig:
     target_endpoint: str = env.str("TARGET_ENDPOINT")
-    secret: str = env.str("SECRET")
-    exp: str = int(time.time()) + 300
+    gateway_token: str = env.str("GATEWAY_TOKEN")
 
 
 @dataclass(frozen=True)
