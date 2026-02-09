@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	grpcClient, err := db.New("localhost:50051")
+	grpcClient, err := db.New("database-service:50051")
 	if err != nil {
 		return
 	}
