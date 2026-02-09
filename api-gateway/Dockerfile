@@ -3,16 +3,17 @@ FROM alpine:latest
 
 WORKDIR /app
 
-# Устанавливаем сертификаты (нужны для внешних API)
+# Устанавливаем сертификаты (нужны для внешних API, например, Telegram)
 RUN apk --no-cache add ca-certificates
 
-# Просто копируем ваш уже готовый файл server
-COPY server .
+# Копируем переименованный файл
+COPY serverfile .
 COPY .env .env
 
-# Даем права на запуск (на всякий случай)
-RUN chmod +x server
+# Даем права на запуск именно этому файлу
+RUN chmod +x serverfile
 
 EXPOSE 8080
 
-CMD ["./server"]
+# Запускаем правильный файл
+CMD ["./serverfile"]
