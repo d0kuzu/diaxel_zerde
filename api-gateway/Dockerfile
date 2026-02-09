@@ -1,17 +1,17 @@
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24-alpine
 
+# Папка внутри контейнера, где будет лежать код
 WORKDIR /app
+
+# Копируем файлы зависимостей и скачиваем их
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Копируем весь остальной код
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o api-gateway .
 
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
+# Собираем приложение
+RUN go build -o main .
 
-COPY --from=builder /app/api-gateway .
-EXPOSE 8081
-
-CMD ["./api-gateway"]
+# Запускаем
+CMD ["./main"]
