@@ -5,7 +5,6 @@ import (
 	appModule "diaxel/internal/app"
 	"diaxel/internal/cleanup"
 	"diaxel/internal/config"
-	"diaxel/internal/database"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/twilio"
@@ -27,10 +26,10 @@ func main() {
 
 	twilioClient := twilio.InitClient(settings.TwilioAccountSID, settings.TwilioAuthToken)
 
-	database.Connect(settings)
+	//database.Connect(settings)
 
 	cm := &cleanup.CleanupManager{}
-	cm.Add(database.Disconnect)
+	//cm.Add(database.Disconnect)
 	go cm.Start()
 
 	app := appModule.NewApp(llmClient, twilioClient, grpcClient, settings)
