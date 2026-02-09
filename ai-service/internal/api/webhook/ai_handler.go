@@ -4,11 +4,10 @@ import (
 	"bytes"
 	"diaxel/internal/config"
 	"diaxel/internal/modules/llm"
+	"diaxel/internal/modules/token"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 	"strconv"
 
 	assistantRepos "diaxel/internal/database/models/repos"
@@ -46,31 +45,15 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 		return
 	}
 
-	webhookUrl := fmt.Sprintf("%s/webhooks/telegram/callback/%d", h.cfg.BaseURL, assistant.ID)
-
-	encodedWebhook := url.QueryEscape(webhookUrl)
-	tgApiUrl := fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook?url=%s", req.Token, encodedWebhook)
-
-	resp, err := http.Get(tgApiUrl)
+	secureToken, err := token.GenerateSecureToken(h.cfg.TokenPrefix, h.cfg.TokenLength)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Network error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
 		return
 	}
-	defer resp.Body.Close()
 
-	// 2. Читаем подробности ошибки
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		fmt.Printf("Telegram Error: %s\n", string(body)) // Посмотрите это в консоли!
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error":   "Telegram rejected webhook",
-			"details": string(body),
-		})
-		return
-	}
-	defer resp.Body.Close()
+	//TODO: Сохранение пользователя (принимает токен и assistant_id) и возвращает успешность операции
 
-	c.JSON(http.StatusOK, gin.H{"status": "Webhook registered", "url": webhookUrl})
+	c.JSON(http.StatusOK, gin.H{"status": "Assistant registered", "assistant_id": assistant.ID, "token": secureToken})
 }
 
 type TelegramMessageReq struct {
