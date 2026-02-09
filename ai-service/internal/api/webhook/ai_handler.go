@@ -8,7 +8,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -43,13 +45,24 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 
 	webhookUrl := fmt.Sprintf("%s/webhooks/telegram/callback/%s", h.cfg.BaseURL, assistant.Id)
 
-	tgApiUrl := fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook?url=%s", req.Token, webhookUrl)
+	encodedWebhook := url.QueryEscape(webhookUrl)
+	tgApiUrl := fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook?url=%s", req.Token, encodedWebhook)
 
 	resp, err := http.Get(tgApiUrl)
-	if err != nil || resp.StatusCode != 200 {
-		fmt.Println(err)
-		fmt.Println(resp.Body)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register webhook in Telegram"})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Network error"})
+		return
+	}
+	defer resp.Body.Close()
+
+	// 2. Читаем подробности ошибки
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Telegram Error: %s\n", string(body)) // Посмотрите это в консоли!
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Telegram rejected webhook",
+			"details": string(body),
+		})
 		return
 	}
 	defer resp.Body.Close()
