@@ -39,6 +39,23 @@ services:
     networks:
       - diaxel_net
 
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "50052:50051"
+    depends_on:
+      - database-service
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=database-service
+      - DB_PORT=50051
+    volumes:
+      - ./.env:/root/.env:ro
+    networks:
+      - diaxel_net
+
   ai-service:
     build: ./ai-service
     container_name: ai-service
@@ -66,8 +83,11 @@ services:
     depends_on:
       - database-service
       - ai-service
+      - auth-service
     env_file:
       - .env
+    volumes:
+      - ./.env:/root/.env:ro
     networks:
       - diaxel_net
 

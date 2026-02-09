@@ -6,8 +6,7 @@ import (
 	"auth-service/internal/crypto"
 	"auth-service/internal/jwt"
 	"errors"
-
-	"github.com/google/uuid"
+	"fmt"
 )
 
 var ErrInvalidCredentials = errors.New("invalid credentials")
@@ -99,17 +98,16 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 		return "", "", err
 	}
 
-	userID := uuid.NewString()
 	role := "user"
 
 	// Создаем пользователя через gRPC
-	_, err = s.db.CreateUser(email, hash, role)
+	user, err := s.db.CreateUser(email, hash, role)
 	if err != nil {
 		return "", "", err
 	}
 
 	access, err := jwt.GenerateAccessToken(
-		userID,
+		user.Id,
 		role,
 		s.cfg.AccessTokenTTL,
 		s.cfg.AccessSecret,
@@ -119,7 +117,7 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 	}
 
 	refresh, expiresAt, err := jwt.GenerateRefreshToken(
-		userID,
+		user.Id,
 		s.cfg.RefreshTokenTTL,
 		s.cfg.RefreshSecret,
 	)
@@ -127,8 +125,11 @@ func (s *AuthService) Register(email, password string) (string, string, error) {
 		return "", "", err
 	}
 
+	// Debug logging
+	fmt.Printf("Generated refresh token: '%s' for user: '%s'\n", refresh, user.Id)
+
 	// Сохраняем refresh токен
-	err = s.db.SaveRefreshToken(refresh, userID, expiresAt)
+	err = s.db.SaveRefreshToken(refresh, user.Id, expiresAt)
 	if err != nil {
 		return "", "", err
 	}

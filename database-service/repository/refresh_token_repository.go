@@ -30,6 +30,7 @@ func (r *refreshTokenRepository) SaveRefreshToken(ctx context.Context, userID, t
 	token := models.RefreshToken{
 		ID:        uuid.New().String(),
 		UserID:    userID,
+		Token:     tokenHash, // Заполняем поле token тем же значением
 		TokenHash: tokenHash,
 		ExpiresAt: expiresAt,
 		CreatedAt: time.Now(),

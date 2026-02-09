@@ -87,6 +87,9 @@ export default function LoginPage() {
       const tokens = await AuthAPI.login(credentials);
       authStorage.setTokens(tokens);
       
+      // Dispatch auth change event to update navbar
+      window.dispatchEvent(new Event('auth-change'));
+      
       // Перенаправляем на главную или дашборд
       router.push('/analytics');
     } catch (error) {

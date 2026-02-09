@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auth Test</title>
+</head>
+<body>
+    <h1>Authentication Test</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testAuthStatus()">Check Auth Status</button>
+    <button onclick="clearAuth()">Clear Auth</button>
+    <div id="result"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8081';
+
+        async function testLogin() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'testuser@example.com',
+                        password: 'test123'
+                    }),
+                });
+
+                if (response.ok) {
+                    const tokens = await response.json();
+                    localStorage.setItem('access_token', tokens.access_token);
+                    localStorage.setItem('refresh_token', tokens.refresh_token);
+                    document.getElementById('result').innerHTML = 'Login successful! Tokens stored.';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('result').innerHTML = 'Login failed: ' + error.error;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        function testAuthStatus() {
+            const token = localStorage.getItem('access_token');
+            const isAuthenticated = !!token;
+            document.getElementById('result').innerHTML = `Authenticated: ${isAuthenticated}<br>Token: ${token ? token.substring(0, 50) + '...' : 'None'}`;
+        }
+
+        function clearAuth() {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            document.getElementById('result').innerHTML = 'Auth cleared';
+        }
+    </script>
+</body>
+</html>

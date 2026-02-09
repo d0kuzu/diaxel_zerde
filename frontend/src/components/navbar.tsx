@@ -1,5 +1,9 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { authStorage } from '@/lib/auth';
 
 const links = [
   { href: '/features', label: 'Функции' },
@@ -10,6 +14,29 @@ const links = [
 ];
 
 export function Navbar() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setIsAuthenticated(authStorage.isAuthenticated());
+    
+    const handleStorageChange = () => {
+      setIsAuthenticated(authStorage.isAuthenticated());
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('auth-change', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('auth-change', handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    authStorage.clearTokens();
+    setIsAuthenticated(false);
+    window.dispatchEvent(new Event('auth-change'));
+  };
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/70 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 container-px py-4">
@@ -35,15 +62,31 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" className="hidden sm:inline-flex">
-            <Link href="/analytics">Демо</Link>
-          </Button>
-          <Button asChild variant="ghost" className="hidden sm:inline-flex">
-            <Link href="/login">Войти</Link>
-          </Button>
-          <Button asChild variant="primary">
-            <Link href="/register">Регистрация</Link>
-          </Button>
+          {isAuthenticated ? (
+            <>
+              <Button asChild variant="ghost" className="hidden sm:inline-flex">
+                <Link href="/analytics">Аналитика</Link>
+              </Button>
+              <Button asChild variant="ghost" className="hidden sm:inline-flex">
+                <Link href="/conversations">Чаты</Link>
+              </Button>
+              <Button onClick={handleLogout} variant="ghost" className="hidden sm:inline-flex">
+                Выйти
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild variant="ghost" className="hidden sm:inline-flex">
+                <Link href="/analytics">Демо</Link>
+              </Button>
+              <Button asChild variant="ghost" className="hidden sm:inline-flex">
+                <Link href="/login">Войти</Link>
+              </Button>
+              <Button asChild variant="primary">
+                <Link href="/register">Регистрация</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

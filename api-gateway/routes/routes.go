@@ -18,8 +18,23 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 			c.JSON(200, gin.H{"status": "ok"})
 		})
 
+		// Auth routes with /auth prefix
 		public.Any("/auth/*any",
 			proxy.NewReverseProxy(cfg.AuthServiceURL, "/auth"),
+		)
+
+		// Direct auth routes without prefix
+		public.Any("/login",
+			proxy.NewReverseProxy(cfg.AuthServiceURL, ""),
+		)
+		public.Any("/register",
+			proxy.NewReverseProxy(cfg.AuthServiceURL, ""),
+		)
+		public.Any("/refresh",
+			proxy.NewReverseProxy(cfg.AuthServiceURL, ""),
+		)
+		public.Any("/logout",
+			proxy.NewReverseProxy(cfg.AuthServiceURL, ""),
 		)
 
 		public.Any("/webhooks/telegram/*any",

@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	dbpb "auth-service/proto/db"
+	dbpb "auth-service/proto"
 )
 
 type Client struct {
@@ -18,11 +18,12 @@ type Client struct {
 }
 
 func New(address string) (*Client, error) {
-	opts := []grpc.DialOption{
+	conn, err := grpc.DialContext(
+		context.Background(),
+		address,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	}
+	)
 
-	conn, err := grpc.NewClient(address, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("ошибка создания gRPC клиента: %w", err)
 	}
