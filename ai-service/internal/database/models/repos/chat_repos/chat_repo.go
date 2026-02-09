@@ -4,6 +4,8 @@ import (
 	"diaxel/internal/database"
 	. "diaxel/internal/database/models"
 	"errors"
+
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -11,9 +13,15 @@ func CheckIfExist(userId string) (Chat, error) {
 	db := database.GetDB()
 	var chat Chat
 
+	// Convert string to UUID
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return Chat{}, err
+	}
+
 	if err := db.Preload("Messages", func(db *gorm.DB) *gorm.DB {
 		return db.Order("id ASC")
-	}).Where("user_id = ?", userId).First(&chat).Error; err != nil {
+	}).Where("user_id = ?", userUUID).First(&chat).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return Chat{}, nil
 		}
@@ -26,13 +34,19 @@ func CheckIfExist(userId string) (Chat, error) {
 func Save(userId string, messages []Message) error {
 	db := database.GetDB()
 
+	// Convert string to UUID
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return err
+	}
+
 	var chat Chat
-	result := db.Preload("Messages").First(&chat, "user_id = ?", userId)
+	result := db.Preload("Messages").First(&chat, "user_id = ?", userUUID)
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			chat = Chat{
-				UserID:   userId,
+				UserID:   userUUID,
 				Messages: messages,
 			}
 			if err := db.Create(&chat).Error; err != nil {
@@ -70,7 +84,13 @@ func GetAll() ([]Chat, error) {
 func SetClientStatusTrue(userID string) error {
 	db := database.GetDB()
 
-	return db.Model(&Chat{}).Where("user_id = ?", userID).Update("is_client", true).Error
+	// Convert string to UUID
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return err
+	}
+
+	return db.Model(&Chat{}).Where("user_id = ?", userUUID).Update("is_client", true).Error
 }
 
 func ClearMessages() error {
@@ -86,5 +106,11 @@ func ClearMessages() error {
 func ClearChatMessages(userId string) error {
 	db := database.GetDB()
 
-	return db.Where("chat_user_id = ?", userId).Delete(&Message{}).Error
+	// Convert string to UUID
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return err
+	}
+
+	return db.Where("chat_id = ?", userUUID).Delete(&Message{}).Error
 }

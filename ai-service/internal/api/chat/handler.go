@@ -4,9 +4,10 @@ import (
 	"diaxel/internal/config"
 	"diaxel/internal/database/models"
 	"diaxel/internal/database/models/repos/chat_repos"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 type ChatHandler struct {
@@ -19,10 +20,10 @@ func NewChatHandler(cfg *config.Settings, db *gorm.DB) *ChatHandler {
 }
 
 type ChatResponse struct {
-	UserID        string                `json:"user_id"`
-	Messages      []models.Message     `json:"messages"`
-	IsClient      bool                 `json:"is_client"`
-	MessageCount  int                  `json:"message_count"`
+	UserID       string           `json:"user_id"`
+	Messages     []models.Message `json:"messages"`
+	IsClient     bool             `json:"is_client"`
+	MessageCount int              `json:"message_count"`
 }
 
 func (h *ChatHandler) GetAllChats(c *gin.Context) {
@@ -34,7 +35,7 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 
 	offset := (page - 1) * 10
 	var chats []models.Chat
-	
+
 	if err := h.db.Preload("Messages").Offset(int(offset)).Limit(10).Find(&chats).Error; err != nil {
 		c.JSON(500, gin.H{"error": "failed to fetch chats", "details": err.Error()})
 		return
@@ -43,7 +44,7 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 	var response []ChatResponse
 	for _, chat := range chats {
 		response = append(response, ChatResponse{
-			UserID:       chat.UserID,
+			UserID:       chat.UserID.String(),
 			Messages:     chat.Messages,
 			IsClient:     chat.IsClient,
 			MessageCount: len(chat.Messages),
@@ -55,7 +56,7 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 
 func (h *ChatHandler) GetPagination(c *gin.Context) {
 	var count int64
-	
+
 	if err := h.db.Model(&models.Chat{}).Count(&count).Error; err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
 		return
@@ -79,7 +80,7 @@ func (h *ChatHandler) GetChat(c *gin.Context) {
 	}
 
 	response := ChatResponse{
-		UserID:       chat.UserID,
+		UserID:       chat.UserID.String(),
 		Messages:     chat.Messages,
 		IsClient:     chat.IsClient,
 		MessageCount: len(chat.Messages),
@@ -96,7 +97,7 @@ func (h *ChatHandler) SearchChat(c *gin.Context) {
 	}
 
 	var chats []models.Chat
-	
+
 	if err := h.db.Preload("Messages").Where("user_id ILIKE ?", "%"+searchTerm+"%").Find(&chats).Error; err != nil {
 		c.JSON(500, gin.H{"error": "failed to search chats", "details": err.Error()})
 		return
@@ -105,7 +106,7 @@ func (h *ChatHandler) SearchChat(c *gin.Context) {
 	var response []ChatResponse
 	for _, chat := range chats {
 		response = append(response, ChatResponse{
-			UserID:       chat.UserID,
+			UserID:       chat.UserID.String(),
 			Messages:     chat.Messages,
 			IsClient:     chat.IsClient,
 			MessageCount: len(chat.Messages),

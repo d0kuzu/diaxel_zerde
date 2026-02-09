@@ -4,10 +4,12 @@ import (
 	"diaxel/internal/constants"
 	. "diaxel/internal/database/models"
 	"diaxel/internal/database/models/repos/chat_repos"
-	"github.com/sashabaranov/go-openai"
 	"log"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/sashabaranov/go-openai"
 )
 
 func GetHistory(userId string) ([]Message, error) {
@@ -23,7 +25,7 @@ func GetAllChats() ([]string, error) {
 	if err == nil && len(chats) > 0 {
 		for _, chat := range chats {
 
-			parsedChats = append(parsedChats, chat.UserID)
+			parsedChats = append(parsedChats, chat.UserID.String())
 		}
 
 		return parsedChats, err
@@ -81,12 +83,18 @@ func SaveMessages(userId string, messages []openai.ChatCompletionMessage) error 
 func ConvertToMessage(userId string, messages []openai.ChatCompletionMessage) []Message {
 	var messagesArray []Message
 
+	// Convert userId to UUID
+	userUUID, err := uuid.Parse(userId)
+	if err != nil {
+		return messagesArray
+	}
+
 	for _, message := range messages {
 		messagesArray = append(messagesArray, Message{
-			ChatUserID: userId,
-			Role:       message.Role,
-			Content:    message.Content,
-			Time:       time.Now(),
+			ChatID:  userUUID,
+			Role:    message.Role,
+			Content: message.Content,
+			Time:    time.Now(),
 		})
 	}
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -23,41 +24,45 @@ func setupAnalyticsTestDB(t *testing.T) *gorm.DB {
 
 func seedTestData(t *testing.T, db *gorm.DB) {
 	now := time.Now()
+	user1UUID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440001")
+	user2UUID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440002")
+	user3UUID := uuid.MustParse("550e8400-e29b-41d4-a716-446655440003")
+
 	messages := []models.Message{
 		{
-			ChatUserID: "user1",
-			Role:       "user",
-			Content:    "Hello",
-			Platform:   "telegram",
-			Time:       now.Add(-2 * time.Hour),
+			ChatID:   user1UUID,
+			Role:     "user",
+			Content:  "Hello",
+			Platform: "telegram",
+			Time:     now.Add(-2 * time.Hour),
 		},
 		{
-			ChatUserID: "user1",
-			Role:       "assistant",
-			Content:    "Hi there!",
-			Platform:   "telegram",
-			Time:       now.Add(-2 * time.Hour),
+			ChatID:   user1UUID,
+			Role:     "assistant",
+			Content:  "Hi there!",
+			Platform: "telegram",
+			Time:     now.Add(-2 * time.Hour),
 		},
 		{
-			ChatUserID: "user2",
-			Role:       "user",
-			Content:    "Help me",
-			Platform:   "web",
-			Time:       now.Add(-1 * time.Hour),
+			ChatID:   user2UUID,
+			Role:     "user",
+			Content:  "Help me",
+			Platform: "web",
+			Time:     now.Add(-1 * time.Hour),
 		},
 		{
-			ChatUserID: "user2",
-			Role:       "assistant",
-			Content:    "How can I help?",
-			Platform:   "web",
-			Time:       now.Add(-1 * time.Hour),
+			ChatID:   user2UUID,
+			Role:     "assistant",
+			Content:  "How can I help?",
+			Platform: "web",
+			Time:     now.Add(-1 * time.Hour),
 		},
 		{
-			ChatUserID: "user3",
-			Role:       "user",
-			Content:    "Another question",
-			Platform:   "telegram",
-			Time:       now.Add(-30 * time.Minute),
+			ChatID:   user3UUID,
+			Role:     "user",
+			Content:  "Another question",
+			Platform: "telegram",
+			Time:     now.Add(-30 * time.Minute),
 		},
 	}
 
