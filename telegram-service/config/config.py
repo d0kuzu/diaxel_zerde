@@ -12,8 +12,8 @@ if Path(".env").exists():
 
 @dataclass(frozen=True)
 class BotConfig:
-    token: str = env.str("BOT_TOKEN")
-    logging_level: int = env.int("LOGGING_LEVEL")
+    token: str = env.str("TELEGRAM_BOT_TOKEN")
+    logging_level: int = env.int("LOGGING_LEVEL", default=20)
     admin_ids: set[int] = (7278477437, 910631008, )
 
 

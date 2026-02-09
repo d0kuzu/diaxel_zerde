@@ -1,8 +1,9 @@
 package llm
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage string) (string, error) {
@@ -48,6 +49,6 @@ func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage strin
 		return "", err
 	}
 
-	log.Println("Конец запроса\n\n\n")
+	log.Println("Конец запроса")
 	return response.Choices[0].Message.Content, nil
 }
