@@ -1,15 +1,17 @@
-FROM golang:1.24-alpine
-# Устанавливаем прокси для ускорения загрузки и обхода проблем с сетью
-ENV GOPROXY=https://proxy.golang.org,direct
+# Используем максимально легкий образ
+FROM alpine:latest
 
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
 
-# 3. Только потом копируем код
-COPY . .
+# Устанавливаем сертификаты (нужны для внешних API)
+RUN apk --no-cache add ca-certificates
 
-# 4. Собираем (флаг -v покажет, какие пакеты компилируются сейчас)
-RUN CGO_ENABLED=0 go build -v -o main .
+# Просто копируем ваш уже готовый файл server
+COPY server .
 
-CMD ["./main"]
+# Даем права на запуск (на всякий случай)
+RUN chmod +x server
+
+EXPOSE 8080
+
+CMD ["./server"]
