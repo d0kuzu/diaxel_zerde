@@ -9,3 +9,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    external: true

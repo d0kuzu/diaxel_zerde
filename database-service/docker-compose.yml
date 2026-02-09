@@ -4,6 +4,8 @@ services:
   database-service:
     build: .
     container_name: database-service
+    networks:
+      - microservices-net
     restart: unless-stopped
     depends_on:
       - postgres
@@ -11,6 +13,8 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: database-postgres
+    networks:
+      - microservices-net
     restart: unless-stopped
     environment:
       POSTGRES_DB: database_service
