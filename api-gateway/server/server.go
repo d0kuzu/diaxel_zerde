@@ -2,6 +2,7 @@ package server
 
 import (
 	"api-gateway/config"
+	"api-gateway/grpc/db"
 	"api-gateway/routes"
 	"fmt"
 	"net/http"
@@ -11,10 +12,11 @@ import (
 
 type Server struct {
 	cfg *config.Config
+	db  *db.Client
 }
 
-func NewServer(cfg *config.Config) *Server {
-	return &Server{cfg: cfg}
+func NewServer(cfg *config.Config, db *db.Client) *Server {
+	return &Server{cfg: cfg, db: db}
 }
 
 func (s *Server) Run() {
@@ -34,7 +36,7 @@ func (s *Server) Run() {
 		c.Next()
 	})
 
-	routes.SetupRoutes(r, s.cfg)
+	routes.SetupRoutes(r, s.cfg, db)
 
 	addr := fmt.Sprintf(":%s", s.cfg.GatewayPort)
 	fmt.Printf("Gateway running on %s\n", addr)

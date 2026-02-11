@@ -2,6 +2,7 @@ package routes
 
 import (
 	"api-gateway/config"
+	"api-gateway/grpc/db"
 	"api-gateway/middleware/auth"
 	"api-gateway/middleware/logger"
 	"api-gateway/proxy"
@@ -9,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(r *gin.Engine, cfg *config.Config) {
+func SetupRoutes(r *gin.Engine, cfg *config.Config, db *db.Client) {
 	r.Use(gin.LoggerWithFormatter(logger.Formatter))
 
 	public := r.Group("/")
@@ -18,13 +19,8 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 			c.JSON(200, gin.H{"status": "ok"})
 		})
 
-		// Auth endpoints through /auth prefix
 		public.Any("/auth/*any",
 			proxy.NewReverseProxy(cfg.AuthServiceURL, "/auth"),
-		)
-
-		public.Any("/webhooks/telegram/*any",
-			proxy.NewReverseProxy(cfg.AIServiceURL, "/webhooks/telegram"),
 		)
 	}
 
@@ -38,13 +34,17 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config) {
 		userPrivate.Any("/api/analytics/*any",
 			proxy.NewReverseProxy(cfg.AIServiceURL, "/api/analytics"),
 		)
+
+		public.Any("/webhooks/telegram/*any",
+			proxy.NewReverseProxy(cfg.AIServiceURL, ""),
+		)
 	}
 
 	servicePrivate := r.Group("/")
-	servicePrivate.Use(auth.ServiceMiddleware([]byte(cfg.TelegramServiceSecret), "telegram-service", "ai-service"))
+	servicePrivate.Use(auth.ServiceMiddleware(db))
 	{
-		servicePrivate.Any("/internal/analytics/*any",
-			proxy.NewReverseProxy(cfg.AIServiceURL, "/api/analytics"),
+		public.Any("/webhooks/telegram",
+			proxy.NewReverseProxy(cfg.AIServiceURL, ""),
 		)
 	}
 }

@@ -1,16 +1,13 @@
 package auth
 
 import (
-	"fmt"
+	"api-gateway/grpc/db"
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
-	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 )
 
-func ServiceMiddleware(jwtSecret []byte, service, target string) gin.HandlerFunc {
+func ServiceMiddleware(db *db.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -30,71 +27,16 @@ func ServiceMiddleware(jwtSecret []byte, service, target string) gin.HandlerFunc
 
 		tokenStr := parts[1]
 
-		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
-			if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
-				return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
-			}
-			return jwtSecret, nil
-		})
-
-		if err != nil || !token.Valid {
+		assistant, err := db.GetAssistant(tokenStr) //TODO: заменить на поиск по токену
+		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid token",
+				"error": "token not found",
 			})
 			return
 		}
 
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid claims",
-			})
-			return
-		}
-
-		exp, ok := claims["exp"].(float64)
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "exp claim missing",
-			})
-			return
-		}
-
-		if time.Now().Unix() > int64(exp) {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "token expired",
-			})
-			return
-		}
-
-		serviceName, ok := claims["sub"].(string)
-		if !ok || serviceName == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid subject",
-			})
-			return
-		}
-		if serviceName != service {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"error": "not allowed",
-			})
-		}
-
-		targetName, ok := claims["aud"].(string)
-		if !ok || targetName == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid subject",
-			})
-			return
-		}
-		if targetName != target {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
-				"error": "not allowed",
-			})
-		}
-
-		c.Set("service", serviceName)
-		c.Set("target", targetName)
+		c.Set("user_id", assistant.UserId)
+		c.Set("assistant_id", assistant.Id)
 
 		c.Next()
 	}
