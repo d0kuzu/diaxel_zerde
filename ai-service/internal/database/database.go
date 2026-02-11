@@ -2,7 +2,6 @@ package database
 
 import (
 	"diaxel/internal/config"
-	"diaxel/internal/database/models"
 	. "diaxel/internal/database/models"
 	"log"
 
@@ -34,7 +33,7 @@ func Connect(settings *config.Settings) {
 	//}
 	//log.Println("Таблицы успешно удалены")
 
-	err = db.AutoMigrate(&Chat{}, &Message{}, &models.Assistant{})
+	err = db.AutoMigrate(&Chat{}, &Message{}, &Assistant{})
 	if err != nil {
 		log.Fatalf("Не удалось создать таблицы: %v", err)
 	}

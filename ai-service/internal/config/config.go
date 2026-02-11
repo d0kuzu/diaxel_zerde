@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -54,6 +55,20 @@ func LoadConfig() (*Settings, error) {
 		TelegramWebhookSecret: os.Getenv("TELEGRAM_WEBHOOK_SECRET"),
 
 		TokenPrefix: os.Getenv("TOKEN_PREFIX"),
-		TokenLength: os.Getenv("TOKEN_LENGTH"),
+		TokenLength: getEnvAsInt("TOKEN_LENGTH", 32),
 	}, nil
+}
+
+func getEnvAsInt(name string, defaultVal int) int {
+	valueStr := os.Getenv(name)
+	if valueStr == "" {
+		return defaultVal
+	}
+
+	value, err := strconv.Atoi(valueStr)
+	if err != nil {
+		return defaultVal
+	}
+
+	return value
 }
