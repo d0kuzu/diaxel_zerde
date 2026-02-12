@@ -12,7 +12,7 @@ func WebhookRoutes(router *gin.Engine, app *appModule.App) {
 	{
 		webhookGroup.POST("/telegram/register", aiHandler.RegisterTelegramBot)
 
-		webhookGroup.POST("/telegram/callback/:assistant_id", aiHandler.HandleTelegramWebhook)
+		//webhookGroup.POST("/telegram/callback/:assistant_id", aiHandler.HandleTelegramWebhook)
 
 		webhookGroup.POST("/telegram", aiHandler.SendMessage)
 	}
