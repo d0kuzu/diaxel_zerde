@@ -1,6 +1,7 @@
 package ws
 
 import (
+	"diaxel/internal/grpc/db"
 	"log"
 	"sync"
 
@@ -10,10 +11,11 @@ import (
 type Client struct {
 	conn *websocket.Conn
 	chat string
+	Db   *db.Client
 }
 
-func NewWSClient(conn *websocket.Conn, chatID string) *Client {
-	return &Client{conn: conn, chat: chatID}
+func NewWSClient(conn *websocket.Conn, chatID string, db *db.Client) *Client {
+	return &Client{conn: conn, chat: chatID, Db: db}
 }
 
 var (

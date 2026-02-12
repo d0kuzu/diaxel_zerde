@@ -8,12 +8,12 @@ import (
 
 func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage string) (string, error) {
 	log.Printf("Сообщение от пользователя %s: %s", userId, userMessage)
-	messages, err := GetMessages(userId)
+	messages, err := c.GetMessages(userId)
 	if err != nil {
 		return "", err
 	}
 
-	AddMessage(&messages, "user", userMessage)
+	c.AddMessage(&messages, "user", userMessage)
 
 	response, err := c.GetAnswer(ctx, messages)
 	if err != nil {
@@ -37,14 +37,14 @@ func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage strin
 			//
 			//answer := fmt.Sprintf("your appointment link: %s", bookUrl)
 			//
-			//AddMessage(&messages, "assistant", answer)
+			//c.AddMessage(&messages, "assistant", answer)
 		}
 	}
 	log.Printf("Ответ пользователю %s от ИИ: %s\n", userId, response.Choices[0].Message.Content)
 
-	AddMessage(&messages, "assistant", response.Choices[0].Message.Content)
+	c.AddMessage(&messages, "assistant", response.Choices[0].Message.Content)
 
-	err = SaveMessages(userId, messages)
+	err = c.SaveMessages(userId, messages)
 	if err != nil {
 		return "", err
 	}

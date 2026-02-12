@@ -2,116 +2,116 @@ package chat
 
 import (
 	"diaxel/internal/config"
-	"diaxel/internal/database/models"
-	"diaxel/internal/database/models/repos/chat_repos"
+	"diaxel/internal/grpc/db"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type ChatHandler struct {
 	cfg *config.Settings
-	db  *gorm.DB
+	db  *db.Client
 }
 
-func NewChatHandler(cfg *config.Settings, db *gorm.DB) *ChatHandler {
+func NewChatHandler(cfg *config.Settings, db *db.Client) *ChatHandler {
 	return &ChatHandler{cfg: cfg, db: db}
 }
 
 type ChatResponse struct {
-	UserID       string           `json:"user_id"`
-	Messages     []models.Message `json:"messages"`
-	IsClient     bool             `json:"is_client"`
-	MessageCount int              `json:"message_count"`
+	ChatID       string                  `json:"chat_id"`
+	AssistantID  string                  `json:"assistant_id"`
+	CustomerID   string                  `json:"customer_id"`
+	Messages     []*dbpb.MessageResponse `json:"messages"`
+	MessageCount int32                   `json:"message_count"`
 }
 
 func (h *ChatHandler) GetAllChats(c *gin.Context) {
-	page, err := strconv.ParseInt(c.Query("page"), 10, 32)
+	pageStr := c.DefaultQuery("page", "1")
+	page, err := strconv.ParseInt(pageStr, 10, 32)
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	assistantID := c.Query("assistant_id")
+	if assistantID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
+		return
+	}
+
+	chatsPerPage := int32(10)
+
+	chats, totalCount, err := h.db.GetChatPage(assistantID, int32(page), chatsPerPage)
 	if err != nil {
-		c.JSON(400, gin.H{"error": "invalid page parameter"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch chats", "details": err.Error()})
 		return
 	}
 
-	offset := (page - 1) * 10
-	var chats []models.Chat
-
-	if err := h.db.Preload("Messages").Offset(int(offset)).Limit(10).Find(&chats).Error; err != nil {
-		c.JSON(500, gin.H{"error": "failed to fetch chats", "details": err.Error()})
-		return
-	}
-
-	var response []ChatResponse
-	for _, chat := range chats {
-		response = append(response, ChatResponse{
-			UserID:       chat.UserID.String(),
-			Messages:     chat.Messages,
-			IsClient:     chat.IsClient,
-			MessageCount: len(chat.Messages),
-		})
-	}
-
-	c.JSON(200, gin.H{"answer": response})
+	c.JSON(http.StatusOK, gin.H{
+		"answer":      chats,
+		"total_count": totalCount,
+	})
 }
 
 func (h *ChatHandler) GetPagination(c *gin.Context) {
-	var count int64
-
-	if err := h.db.Model(&models.Chat{}).Count(&count).Error; err != nil {
-		c.JSON(500, gin.H{"error": err.Error()})
+	assistantID := c.Query("assistant_id")
+	if assistantID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
 		return
 	}
 
-	pages := (count + 9) / 10 // ceiling division
-	c.JSON(200, gin.H{"answer": pages})
+	// Assuming we can get total count from GetChatPage with limit 0
+	_, totalCount, err := h.db.GetChatPage(assistantID, 0, 0)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch pagination", "details": err.Error()})
+		return
+	}
+
+	pages := (totalCount + 9) / 10
+	c.JSON(http.StatusOK, gin.H{"answer": pages})
 }
 
 func (h *ChatHandler) GetChat(c *gin.Context) {
-	userID := c.Query("chat")
-	if userID == "" {
-		c.JSON(400, gin.H{"error": "chat parameter is required"})
+	chatID := c.Query("chat")
+	if chatID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "chat parameter is required (chatID)"})
 		return
 	}
 
-	chat, err := chat_repos.CheckIfExist(userID)
+	messages, err := h.db.GetAllChatMessages(chatID)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "failed to fetch chat", "details": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch chat messages", "details": err.Error()})
 		return
 	}
 
-	response := ChatResponse{
-		UserID:       chat.UserID.String(),
-		Messages:     chat.Messages,
-		IsClient:     chat.IsClient,
-		MessageCount: len(chat.Messages),
-	}
-
-	c.JSON(200, gin.H{"answer": response})
+	c.JSON(http.StatusOK, gin.H{"answer": gin.H{
+		"chat_id":  chatID,
+		"messages": messages,
+		"count":    len(messages),
+	}})
 }
 
 func (h *ChatHandler) SearchChat(c *gin.Context) {
 	searchTerm := c.Query("chat")
+	assistantID := c.Query("assistant_id")
+	if assistantID == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
+		return
+	}
+
 	if searchTerm == "" {
-		c.JSON(400, gin.H{"error": "chat parameter is required"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "chat parameter is required (search term)"})
 		return
 	}
 
-	var chats []models.Chat
-
-	if err := h.db.Preload("Messages").Where("user_id ILIKE ?", "%"+searchTerm+"%").Find(&chats).Error; err != nil {
-		c.JSON(500, gin.H{"error": "failed to search chats", "details": err.Error()})
+	chats, totalCount, err := h.db.SearchChatsByUser(assistantID, searchTerm)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to search chats", "details": err.Error()})
 		return
 	}
 
-	var response []ChatResponse
-	for _, chat := range chats {
-		response = append(response, ChatResponse{
-			UserID:       chat.UserID.String(),
-			Messages:     chat.Messages,
-			IsClient:     chat.IsClient,
-			MessageCount: len(chat.Messages),
-		})
-	}
-
-	c.JSON(200, gin.H{"answer": response})
+	c.JSON(http.StatusOK, gin.H{
+		"answer":      chats,
+		"total_count": totalCount,
+	})
 }

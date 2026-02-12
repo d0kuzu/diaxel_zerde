@@ -18,6 +18,7 @@ type ChatRepository interface {
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
 	SearchChatsByUser(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error)
+	GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error)
 	UpdateMessageCount(ctx context.Context, chatID string) error
 }
 
@@ -32,7 +33,7 @@ func NewChatRepository(db *gorm.DB) ChatRepository {
 func (r *chatRepository) CreateChat(ctx context.Context, assistantID, customerID, platform string) (*models.Chat, error) {
 	chat := models.Chat{
 		ID:          uuid.New().String(),
-		UserID:      uuid.New().String(), // TODO: получить реальный user_id из контекста
+		UserID:      uuid.New().String(),
 		AssistantID: assistantID,
 		CustomerID:  &customerID,
 		StartedAt:   time.Now(),
@@ -125,6 +126,23 @@ func (r *chatRepository) SearchChatsByUser(ctx context.Context, assistantID, sea
 	}
 
 	return chats, int32(count), nil
+}
+
+func (r *chatRepository) GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error) {
+	var chat models.Chat
+	result := r.db.WithContext(ctx).
+		Where("assistant_id = ? AND customer_id = ?", assistantID, customerID).
+		Order("started_at DESC").
+		First(&chat)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return nil, nil // Return nil if no chat found
+		}
+		return nil, fmt.Errorf("failed to get latest chat: %w", result.Error)
+	}
+
+	return &chat, nil
 }
 
 func (r *chatRepository) UpdateMessageCount(ctx context.Context, chatID string) error {

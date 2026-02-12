@@ -2,6 +2,7 @@ package ws
 
 import (
 	"diaxel/internal/config"
+	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/ws"
 	"log"
 	"net/http"
@@ -12,10 +13,11 @@ import (
 
 type WSHandler struct {
 	cfg *config.Settings
+	db  *db.Client
 }
 
-func NewWSHandler(cfg *config.Settings) *WSHandler {
-	return &WSHandler{cfg: cfg}
+func NewWSHandler(cfg *config.Settings, db *db.Client) *WSHandler {
+	return &WSHandler{cfg: cfg, db: db}
 }
 
 var upgrader = websocket.Upgrader{
@@ -35,7 +37,7 @@ func (h *WSHandler) ChatPolling(c *gin.Context) {
 		return
 	}
 
-	client := ws.NewWSClient(conn, chatID)
+	client := ws.NewWSClient(conn, chatID, h.db)
 	ws.RegisterClient(client)
 	log.Println("new client connected to chat", chatID)
 

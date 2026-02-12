@@ -33,6 +33,7 @@ service DatabaseService {
   rpc GetChatPagesCount(GetChatPagesCountRequest) returns (ChatPagesCountResponse);
   rpc GetChatPage(GetChatPageRequest) returns (ChatsResponse);
   rpc SearchChatsByUser(SearchChatsByUserRequest) returns (SearchChatsResponse);
+  rpc GetLatestChatByCustomer(GetLatestChatByCustomerRequest) returns (ChatResponse);
 }
 
 message AnalyticsRequest {
@@ -253,6 +254,7 @@ message AssistantResponse {
   string user_id = 4;
   string created_at = 5;
   string updated_at = 6;
+  string configuration = 7;
 }
 
 message GetAssistantRequest {
@@ -276,4 +278,9 @@ message DeleteAssistantRequest {
 
 message DeleteAssistantResponse {
   bool success = 1;
+}
+
+message GetLatestChatByCustomerRequest {
+  string assistant_id = 1;
+  string customer_id = 2;
 }

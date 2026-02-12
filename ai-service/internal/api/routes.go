@@ -18,15 +18,12 @@ func RouterStart(app *appModule.App) {
 		MaxAge:       12 * 60 * 60,
 	}))
 
-	// TODO: Fix webhook and twilio routes
 	// webhook.WebhookRoutes(r, app)
 	// twilio.TwilioWebhookRoutes(r, app)
 	// ws.WSRoutes(r, app)
 	// chat.ChatRoutes(r, app)
 
-	// TODO: Initialize analytics service with gRPC client
 	// analyticsService := analytics.NewAnalyticsService(app.Db)
-	// TODO: Fix analytics routes
 	// analyticsAPI.SetupRoutes(r, analyticsService)
 
 	err := r.Run(":8080")

@@ -22,7 +22,7 @@ func main() {
 		return
 	}
 
-	llmClient := llm.InitClient(settings.OpenaiApiKey)
+	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient)
 
 	twilioClient := twilio.InitClient(settings.TwilioAccountSID, settings.TwilioAuthToken)
 

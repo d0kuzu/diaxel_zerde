@@ -38,12 +38,13 @@ func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateA
 	}
 
 	return &proto.AssistantResponse{
-		Id:        assistant.ID,
-		Name:      assistant.Name,
-		ApiToken:  assistant.APIToken,
-		UserId:    assistant.UserID,
-		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+		Id:            assistant.ID,
+		Name:          assistant.Name,
+		ApiToken:      assistant.APIToken,
+		UserId:        assistant.UserID,
+		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration: assistant.Configuration,
 	}, nil
 }
 
@@ -359,12 +360,13 @@ func (s *DatabaseServer) GetAssistant(ctx context.Context, req *proto.GetAssista
 	}
 
 	return &proto.AssistantResponse{
-		Id:        assistant.ID,
-		Name:      assistant.Name,
-		ApiToken:  assistant.APIToken,
-		UserId:    assistant.UserID,
-		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+		Id:            assistant.ID,
+		Name:          assistant.Name,
+		ApiToken:      assistant.APIToken,
+		UserId:        assistant.UserID,
+		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration: assistant.Configuration,
 	}, nil
 }
 
@@ -375,12 +377,13 @@ func (s *DatabaseServer) GetAssistantByAPIToken(ctx context.Context, req *proto.
 	}
 
 	return &proto.AssistantResponse{
-		Id:        assistant.ID,
-		Name:      assistant.Name,
-		ApiToken:  assistant.APIToken,
-		UserId:    assistant.UserID,
-		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+		Id:            assistant.ID,
+		Name:          assistant.Name,
+		ApiToken:      assistant.APIToken,
+		UserId:        assistant.UserID,
+		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration: assistant.Configuration,
 	}, nil
 }
 
@@ -391,12 +394,13 @@ func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateA
 	}
 
 	return &proto.AssistantResponse{
-		Id:        assistant.ID,
-		Name:      assistant.Name,
-		ApiToken:  assistant.APIToken,
-		UserId:    assistant.UserID,
-		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+		Id:            assistant.ID,
+		Name:          assistant.Name,
+		ApiToken:      assistant.APIToken,
+		UserId:        assistant.UserID,
+		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration: assistant.Configuration,
 	}, nil
 }
 
@@ -408,5 +412,29 @@ func (s *DatabaseServer) DeleteAssistant(ctx context.Context, req *proto.DeleteA
 
 	return &proto.DeleteAssistantResponse{
 		Success: true,
+	}, nil
+}
+func (s *DatabaseServer) GetLatestChatByCustomer(ctx context.Context, req *proto.GetLatestChatByCustomerRequest) (*proto.ChatResponse, error) {
+	chat, err := s.chatRepo.GetLatestChatByCustomer(ctx, req.AssistantId, req.CustomerId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get latest chat: %v", err)
+	}
+
+	if chat == nil {
+		return &proto.ChatResponse{}, nil
+	}
+
+	return &proto.ChatResponse{
+		Id:          chat.ID,
+		AssistantId: chat.AssistantID,
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+		MessageCount: chat.MessageCount,
 	}, nil
 }

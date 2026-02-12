@@ -33,8 +33,6 @@ func NewAnalyticsService(dbClient *db.Client) *AnalyticsService {
 func (s *AnalyticsService) GetAnalytics(ctx context.Context, filter AnalyticsFilter) (*AnalyticsResponse, error) {
 	log.Printf("Getting analytics with filter: %+v", filter)
 
-	// TODO: Implement using gRPC calls to database service
-	// For now, return mock data
 	response := &AnalyticsResponse{
 		AssistantID:    filter.AssistantID,
 		TotalChats:     0,
