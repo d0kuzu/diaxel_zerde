@@ -27,7 +27,7 @@ func ServiceMiddleware(db *db.Client) gin.HandlerFunc {
 
 		tokenStr := parts[1]
 
-		assistant, err := db.GetAssistant(tokenStr) //TODO: заменить на поиск по токену
+		assistant, err := db.GetAssistantByAPIToken(tokenStr)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "token not found",

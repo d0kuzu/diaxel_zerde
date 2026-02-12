@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v5.28.3
-// source: proto/database.proto
+// source: database.proto
 
 package proto
 
@@ -31,6 +31,7 @@ const (
 	DatabaseService_DeleteRefreshToken_FullMethodName      = "/database.DatabaseService/DeleteRefreshToken"
 	DatabaseService_CreateAssistant_FullMethodName         = "/database.DatabaseService/CreateAssistant"
 	DatabaseService_GetAssistant_FullMethodName            = "/database.DatabaseService/GetAssistant"
+	DatabaseService_GetAssistantByAPIToken_FullMethodName  = "/database.DatabaseService/GetAssistantByAPIToken"
 	DatabaseService_UpdateAssistant_FullMethodName         = "/database.DatabaseService/UpdateAssistant"
 	DatabaseService_DeleteAssistant_FullMethodName         = "/database.DatabaseService/DeleteAssistant"
 	DatabaseService_CreateChat_FullMethodName              = "/database.DatabaseService/CreateChat"
@@ -64,6 +65,7 @@ type DatabaseServiceClient interface {
 	DeleteRefreshToken(ctx context.Context, in *DeleteRefreshTokenRequest, opts ...grpc.CallOption) (*DeleteRefreshTokenResponse, error)
 	CreateAssistant(ctx context.Context, in *CreateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
 	GetAssistant(ctx context.Context, in *GetAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
+	GetAssistantByAPIToken(ctx context.Context, in *GetAssistantByAPITokenRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
 	UpdateAssistant(ctx context.Context, in *UpdateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
 	DeleteAssistant(ctx context.Context, in *DeleteAssistantRequest, opts ...grpc.CallOption) (*DeleteAssistantResponse, error)
 	CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
@@ -203,6 +205,16 @@ func (c *databaseServiceClient) GetAssistant(ctx context.Context, in *GetAssista
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AssistantResponse)
 	err := c.cc.Invoke(ctx, DatabaseService_GetAssistant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetAssistantByAPIToken(ctx context.Context, in *GetAssistantByAPITokenRequest, opts ...grpc.CallOption) (*AssistantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssistantResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetAssistantByAPIToken_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -375,6 +387,7 @@ type DatabaseServiceServer interface {
 	DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error)
 	CreateAssistant(context.Context, *CreateAssistantRequest) (*AssistantResponse, error)
 	GetAssistant(context.Context, *GetAssistantRequest) (*AssistantResponse, error)
+	GetAssistantByAPIToken(context.Context, *GetAssistantByAPITokenRequest) (*AssistantResponse, error)
 	UpdateAssistant(context.Context, *UpdateAssistantRequest) (*AssistantResponse, error)
 	DeleteAssistant(context.Context, *DeleteAssistantRequest) (*DeleteAssistantResponse, error)
 	CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error)
@@ -435,6 +448,9 @@ func (UnimplementedDatabaseServiceServer) CreateAssistant(context.Context, *Crea
 }
 func (UnimplementedDatabaseServiceServer) GetAssistant(context.Context, *GetAssistantRequest) (*AssistantResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAssistant not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetAssistantByAPIToken(context.Context, *GetAssistantByAPITokenRequest) (*AssistantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAssistantByAPIToken not implemented")
 }
 func (UnimplementedDatabaseServiceServer) UpdateAssistant(context.Context, *UpdateAssistantRequest) (*AssistantResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateAssistant not implemented")
@@ -714,6 +730,24 @@ func _DatabaseService_GetAssistant_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DatabaseServiceServer).GetAssistant(ctx, req.(*GetAssistantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetAssistantByAPIToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAssistantByAPITokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetAssistantByAPIToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetAssistantByAPIToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetAssistantByAPIToken(ctx, req.(*GetAssistantByAPITokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1044,6 +1078,10 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DatabaseService_GetAssistant_Handler,
 		},
 		{
+			MethodName: "GetAssistantByAPIToken",
+			Handler:    _DatabaseService_GetAssistantByAPIToken_Handler,
+		},
+		{
 			MethodName: "UpdateAssistant",
 			Handler:    _DatabaseService_UpdateAssistant_Handler,
 		},
@@ -1105,5 +1143,5 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/database.proto",
+	Metadata: "database.proto",
 }
