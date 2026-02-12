@@ -3,6 +3,7 @@ package webhook
 import (
 	"bytes"
 	"diaxel/internal/config"
+	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/token"
 	"encoding/json"
@@ -13,23 +14,21 @@ import (
 	assistantRepos "diaxel/internal/database/models/repos"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 type AIHandler struct {
 	cfg *config.Settings
 	LLM *llm.Client
-	db  *gorm.DB
+	db  *db.Client
 }
 
-func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *gorm.DB) *AIHandler {
+func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client) *AIHandler {
 	return &AIHandler{cfg: cfg, LLM: llmClient, db: db}
 }
 
 type RegisterBotRequest struct {
 	Name   string `json:"name"`
-	Token  string `json:"token"`
-	UserID string `json:"assistant_id"`
+	UserID string `json:"user_id"`
 }
 
 func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
@@ -39,21 +38,19 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 		return
 	}
 
-	assistant, err := assistantRepos.CreateAssistant(req.Name, req.Token, req.UserID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistant in database"})
-		return
-	}
-
 	secureToken, err := token.GenerateSecureToken(h.cfg.TokenPrefix, h.cfg.TokenLength)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
 		return
 	}
 
-	//TODO: Сохранение пользователя (принимает токен и assistant_id) и возвращает успешность операции
+	assistant, err := h.db.CreateAssistant(req.Name, secureToken, req.UserID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistant in database"})
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{"status": "Assistant registered", "assistant_id": assistant.ID, "token": secureToken})
+	c.JSON(http.StatusOK, gin.H{"status": "Assistant registered", "assistant_id": assistant.Id, "token": secureToken})
 }
 
 type TelegramMessageReq struct {

@@ -44,7 +44,7 @@ func (c *Client) CreateAssistant(name, token, userId string) (*dbpb.AssistantRes
 
 	req := &dbpb.CreateAssistantRequest{
 		Name:     name,
-		BotToken: token,
+		ApiToken: token,
 		UserId:   userId,
 	}
 
