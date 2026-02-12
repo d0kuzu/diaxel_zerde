@@ -36,7 +36,7 @@ func (s *Server) Run() {
 		c.Next()
 	})
 
-	routes.SetupRoutes(r, s.cfg, db)
+	routes.SetupRoutes(r, s.cfg, s.db)
 
 	addr := fmt.Sprintf(":%s", s.cfg.GatewayPort)
 	fmt.Printf("Gateway running on %s\n", addr)

@@ -1,11 +1,7 @@
 package api
 
 import (
-	"diaxel/internal/api/analytics"
-	"diaxel/internal/api/twilio"
-	"diaxel/internal/api/webhook"
 	appModule "diaxel/internal/app"
-	"diaxel/internal/database"
 	"log"
 
 	"github.com/gin-contrib/cors"
@@ -22,11 +18,16 @@ func RouterStart(app *appModule.App) {
 		MaxAge:       12 * 60 * 60,
 	}))
 
-	webhook.WebhookRoutes(r, app)
-	twilio.TwilioWebhookRoutes(r, app)
-	//ws.WSRoutes(r, app)
-	//chat.ChatRoutes(r, app)
-	analytics.SetupRoutes(r, database.GetDB())
+	// TODO: Fix webhook and twilio routes
+	// webhook.WebhookRoutes(r, app)
+	// twilio.TwilioWebhookRoutes(r, app)
+	// ws.WSRoutes(r, app)
+	// chat.ChatRoutes(r, app)
+
+	// TODO: Initialize analytics service with gRPC client
+	// analyticsService := analytics.NewAnalyticsService(app.Db)
+	// TODO: Fix analytics routes
+	// analyticsAPI.SetupRoutes(r, analyticsService)
 
 	err := r.Run(":8080")
 	if err != nil {

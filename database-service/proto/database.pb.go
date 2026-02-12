@@ -2108,9 +2108,8 @@ func (x *SearchChatsResponse) GetTotalCount() int32 {
 type CreateAssistantRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	BotToken      string                 `protobuf:"bytes,2,opt,name=bot_token,json=botToken,proto3" json:"bot_token,omitempty"`
-	ApiToken      string                 `protobuf:"bytes,3,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
-	UserId        string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ApiToken      string                 `protobuf:"bytes,2,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2152,13 +2151,6 @@ func (x *CreateAssistantRequest) GetName() string {
 	return ""
 }
 
-func (x *CreateAssistantRequest) GetBotToken() string {
-	if x != nil {
-		return x.BotToken
-	}
-	return ""
-}
-
 func (x *CreateAssistantRequest) GetApiToken() string {
 	if x != nil {
 		return x.ApiToken
@@ -2177,11 +2169,10 @@ type AssistantResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	BotToken      string                 `protobuf:"bytes,3,opt,name=bot_token,json=botToken,proto3" json:"bot_token,omitempty"`
-	ApiToken      string                 `protobuf:"bytes,4,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
-	UserId        string                 `protobuf:"bytes,5,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     string                 `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	ApiToken      string                 `protobuf:"bytes,3,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
+	UserId        string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2226,13 +2217,6 @@ func (x *AssistantResponse) GetId() string {
 func (x *AssistantResponse) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *AssistantResponse) GetBotToken() string {
-	if x != nil {
-		return x.BotToken
 	}
 	return ""
 }
@@ -2357,9 +2341,8 @@ type UpdateAssistantRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	BotToken      string                 `protobuf:"bytes,3,opt,name=bot_token,json=botToken,proto3" json:"bot_token,omitempty"`
-	ApiToken      string                 `protobuf:"bytes,4,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
-	UserId        string                 `protobuf:"bytes,5,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ApiToken      string                 `protobuf:"bytes,3,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
+	UserId        string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2404,13 +2387,6 @@ func (x *UpdateAssistantRequest) GetId() string {
 func (x *UpdateAssistantRequest) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *UpdateAssistantRequest) GetBotToken() string {
-	if x != nil {
-		return x.BotToken
 	}
 	return ""
 }
@@ -2671,32 +2647,29 @@ const file_database_proto_rawDesc = "" +
 	"\x13SearchChatsResponse\x12,\n" +
 	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
-	"totalCount\"\x7f\n" +
+	"totalCount\"b\n" +
 	"\x16CreateAssistantRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
-	"\tbot_token\x18\x02 \x01(\tR\bbotToken\x12\x1b\n" +
-	"\tapi_token\x18\x03 \x01(\tR\bapiToken\x12\x17\n" +
-	"\auser_id\x18\x04 \x01(\tR\x06userId\"\xc8\x01\n" +
+	"\tapi_token\x18\x02 \x01(\tR\bapiToken\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\"\xab\x01\n" +
 	"\x11AssistantResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
-	"\tbot_token\x18\x03 \x01(\tR\bbotToken\x12\x1b\n" +
-	"\tapi_token\x18\x04 \x01(\tR\bapiToken\x12\x17\n" +
-	"\auser_id\x18\x05 \x01(\tR\x06userId\x12\x1d\n" +
+	"\tapi_token\x18\x03 \x01(\tR\bapiToken\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\a \x01(\tR\tupdatedAt\"%\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"%\n" +
 	"\x13GetAssistantRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"<\n" +
 	"\x1dGetAssistantByAPITokenRequest\x12\x1b\n" +
-	"\tapi_token\x18\x01 \x01(\tR\bapiToken\"\x8f\x01\n" +
+	"\tapi_token\x18\x01 \x01(\tR\bapiToken\"r\n" +
 	"\x16UpdateAssistantRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
-	"\tbot_token\x18\x03 \x01(\tR\bbotToken\x12\x1b\n" +
-	"\tapi_token\x18\x04 \x01(\tR\bapiToken\x12\x17\n" +
-	"\auser_id\x18\x05 \x01(\tR\x06userId\"(\n" +
+	"\tapi_token\x18\x03 \x01(\tR\bapiToken\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\tR\x06userId\"(\n" +
 	"\x16DeleteAssistantRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"3\n" +
 	"\x17DeleteAssistantResponse\x12\x18\n" +

@@ -21,6 +21,7 @@ require (
 )
 
 require (
+	diaxel/proto/db v0.0.0-00010101000000-000000000000 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
@@ -63,3 +64,5 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251029180050-ab9386a59fda // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace diaxel/proto/db => ./proto

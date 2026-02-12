@@ -71,6 +71,7 @@ services:
       - AUTH_SERVICE_URL=http://auth-service:8080
       - TARGET_ENDPOINT=http://api-gateway:8080
       - SECRET=your_telegram_service_secret_here
+      - GATEWAY_TOKEN=your_gateway_token_here
     networks:
       - diaxel_net
 

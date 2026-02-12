@@ -32,7 +32,7 @@ func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repo
 }
 
 func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.BotToken, req.ApiToken, req.UserId)
+	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.ApiToken, req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create assistant: %v", err)
 	}
@@ -40,7 +40,6 @@ func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateA
 	return &proto.AssistantResponse{
 		Id:        assistant.ID,
 		Name:      assistant.Name,
-		BotToken:  assistant.BotToken,
 		ApiToken:  assistant.APIToken,
 		UserId:    assistant.UserID,
 		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
@@ -362,7 +361,6 @@ func (s *DatabaseServer) GetAssistant(ctx context.Context, req *proto.GetAssista
 	return &proto.AssistantResponse{
 		Id:        assistant.ID,
 		Name:      assistant.Name,
-		BotToken:  assistant.BotToken,
 		ApiToken:  assistant.APIToken,
 		UserId:    assistant.UserID,
 		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
@@ -379,7 +377,6 @@ func (s *DatabaseServer) GetAssistantByAPIToken(ctx context.Context, req *proto.
 	return &proto.AssistantResponse{
 		Id:        assistant.ID,
 		Name:      assistant.Name,
-		BotToken:  assistant.BotToken,
 		ApiToken:  assistant.APIToken,
 		UserId:    assistant.UserID,
 		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
@@ -396,7 +393,6 @@ func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateA
 	return &proto.AssistantResponse{
 		Id:        assistant.ID,
 		Name:      assistant.Name,
-		BotToken:  assistant.BotToken,
 		ApiToken:  assistant.APIToken,
 		UserId:    assistant.UserID,
 		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),

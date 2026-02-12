@@ -1,0 +1,279 @@
+syntax = "proto3";
+
+package database;
+
+option go_package = "diaxel_zerde/database-service/proto;proto";
+
+service DatabaseService {
+  rpc GetAnalytics(AnalyticsRequest) returns (AnalyticsResponse);
+  rpc GetAnalyticsByAssistant(AnalyticsByAssistantRequest) returns (AnalyticsResponse);
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (UserResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+  rpc SaveRefreshToken(SaveRefreshTokenRequest) returns (SaveRefreshTokenResponse);
+  rpc GetRefreshToken(GetRefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc DeleteRefreshToken(DeleteRefreshTokenRequest) returns (DeleteRefreshTokenResponse);
+  rpc CreateAssistant(CreateAssistantRequest) returns (AssistantResponse);
+  rpc GetAssistant(GetAssistantRequest) returns (AssistantResponse);
+  rpc GetAssistantByAPIToken(GetAssistantByAPITokenRequest) returns (AssistantResponse);
+  rpc UpdateAssistant(UpdateAssistantRequest) returns (AssistantResponse);
+  rpc DeleteAssistant(DeleteAssistantRequest) returns (DeleteAssistantResponse);
+  rpc CreateChat(CreateChatRequest) returns (ChatResponse);
+  rpc GetChat(GetChatRequest) returns (ChatResponse);
+  rpc GetChatsByUser(GetChatsByUserRequest) returns (ChatsResponse);
+  rpc UpdateChat(UpdateChatRequest) returns (ChatResponse);
+  rpc DeleteChat(DeleteChatRequest) returns (DeleteChatResponse);
+  rpc SaveMessage(SaveMessageRequest) returns (MessageResponse);
+  rpc GetChatMessages(GetChatMessagesRequest) returns (MessagesResponse);
+  rpc GetAllChatMessages(GetAllChatMessagesRequest) returns (MessagesResponse);
+  rpc UpdateMessage(UpdateMessageRequest) returns (MessageResponse);
+  rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
+  rpc GetChatPagesCount(GetChatPagesCountRequest) returns (ChatPagesCountResponse);
+  rpc GetChatPage(GetChatPageRequest) returns (ChatsResponse);
+  rpc SearchChatsByUser(SearchChatsByUserRequest) returns (SearchChatsResponse);
+}
+
+message AnalyticsRequest {
+  string assistant_id = 1;
+  string platform = 2;
+  string start_date = 3;
+  string end_date = 4;
+}
+
+message AnalyticsByAssistantRequest {
+  string assistant_id = 1;
+  string platform = 2;
+  string start_date = 3;
+  string end_date = 4;
+}
+
+message AnalyticsResponse {
+  string assistant_id = 1;
+  int32 total_chats = 2;
+  int32 active_users = 3;
+  double engagement_rate = 4;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string password_hash = 2;
+  string role = 3;
+}
+
+message GetUserRequest {
+  string id = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string email = 2;
+  string password_hash = 3;
+  string role = 4;
+  string created_at = 5;
+}
+
+message SaveRefreshTokenRequest {
+  string user_id = 1;
+  string token_hash = 2;
+  string expires_at = 3;
+}
+
+message SaveRefreshTokenResponse {
+  bool success = 1;
+}
+
+message GetRefreshTokenRequest {
+  string token_hash = 1;
+}
+
+message RefreshTokenResponse {
+  string id = 1;
+  string user_id = 2;
+  string token_hash = 3;
+  string expires_at = 4;
+  string created_at = 5;
+}
+
+message DeleteRefreshTokenRequest {
+  string token_hash = 1;
+}
+
+message DeleteRefreshTokenResponse {
+  bool success = 1;
+}
+
+message CreateChatRequest {
+  string assistant_id = 1;
+  string customer_id = 2;
+  string platform = 3;
+}
+
+message ChatResponse {
+  string id = 1;
+  string assistant_id = 2;
+  string customer_id = 3;
+  string platform = 4;
+  string created_at = 5;
+  string updated_at = 6;
+  int32 message_count = 7;
+}
+
+message SaveMessageRequest {
+  string chat_id = 1;
+  string role = 2;
+  string content = 3;
+  string platform = 4;
+}
+
+message MessageResponse {
+  string id = 1;
+  string chat_id = 2;
+  string role = 3;
+  string content = 4;
+  string platform = 5;
+  string created_at = 6;
+}
+
+message GetChatMessagesRequest {
+  string chat_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message GetAllChatMessagesRequest {
+  string chat_id = 1;
+}
+
+message MessagesResponse {
+  repeated MessageResponse messages = 1;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message UpdateUserRequest {
+  string id = 1;
+  string email = 2;
+  string password_hash = 3;
+  string role = 4;
+}
+
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+message GetChatRequest {
+  string id = 1;
+}
+
+message GetChatsByUserRequest {
+  string user_id = 1;
+  string assistant_id = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ChatsResponse {
+  repeated ChatResponse chats = 1;
+}
+
+message UpdateChatRequest {
+  string id = 1;
+  string assistant_id = 2;
+  string customer_id = 3;
+  string platform = 4;
+}
+
+message DeleteChatRequest {
+  string id = 1;
+}
+
+message DeleteChatResponse {
+  bool success = 1;
+}
+
+message UpdateMessageRequest {
+  string id = 1;
+  string chat_id = 2;
+  string role = 3;
+  string content = 4;
+  string platform = 5;
+}
+
+message DeleteMessageRequest {
+  string id = 1;
+}
+
+message DeleteMessageResponse {
+  bool success = 1;
+}
+
+message GetChatPagesCountRequest {
+  string assistant_id = 1;
+  int32 chats_per_page = 2;
+}
+
+message ChatPagesCountResponse {
+  int32 pages_count = 1;
+}
+
+message GetChatPageRequest {
+  string assistant_id = 1;
+  int32 page = 2;
+  int32 chats_per_page = 3;
+}
+
+message SearchChatsByUserRequest {
+  string assistant_id = 1;
+  string search = 2;
+}
+
+message SearchChatsResponse {
+  repeated ChatResponse chats = 1;
+  int32 total_count = 2;
+}
+
+message CreateAssistantRequest {
+  string name = 1;
+  string api_token = 2;
+  string user_id = 3;
+}
+
+message AssistantResponse {
+  string id = 1;
+  string name = 2;
+  string api_token = 3;
+  string user_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+message GetAssistantRequest {
+  string id = 1;
+}
+
+message GetAssistantByAPITokenRequest {
+  string api_token = 1;
+}
+
+message UpdateAssistantRequest {
+  string id = 1;
+  string name = 2;
+  string api_token = 3;
+  string user_id = 4;
+}
+
+message DeleteAssistantRequest {
+  string id = 1;
+}
+
+message DeleteAssistantResponse {
+  bool success = 1;
+}

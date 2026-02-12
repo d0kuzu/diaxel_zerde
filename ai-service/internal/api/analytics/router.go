@@ -6,12 +6,9 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func SetupRoutes(r *gin.Engine, db *gorm.DB) {
-	analyticsService := analytics2.NewAnalyticsService(db)
-
+func SetupRoutes(r *gin.Engine, analyticsService *analytics2.AnalyticsService) {
 	api := r.Group("/api/analytics")
 	{
 		api.GET("/metrics", func(c *gin.Context) {

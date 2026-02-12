@@ -26,6 +26,7 @@ func main() {
 
 	twilioClient := twilio.InitClient(settings.TwilioAccountSID, settings.TwilioAuthToken)
 
+	// Убираем локальную базу данных - работаем только через gRPC
 	//database.Connect(settings)
 
 	cm := &cleanup.CleanupManager{}

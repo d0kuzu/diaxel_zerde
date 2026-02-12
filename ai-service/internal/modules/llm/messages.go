@@ -2,8 +2,6 @@ package llm
 
 import (
 	"diaxel/internal/constants"
-	. "diaxel/internal/database/models"
-	"diaxel/internal/database/models/repos/chat_repos"
 	"log"
 	"strings"
 	"time"
@@ -12,46 +10,29 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func GetHistory(userId string) ([]Message, error) {
-	chat, err := chat_repos.CheckIfExist(userId)
+// Message represents a chat message (moved from database models)
+type Message struct {
+	ChatID  uuid.UUID `json:"chat_id"`
+	Role    string    `json:"role"`
+	Content string    `json:"content"`
+	Time    time.Time `json:"time"`
+}
 
-	return chat.Messages, err
+// Mock functions for now - will be replaced with gRPC calls
+func GetHistory(userId string) ([]Message, error) {
+	// TODO: Implement using gRPC calls to database service
+	return []Message{}, nil
 }
 
 func GetAllChats() ([]string, error) {
-	var parsedChats []string
-
-	chats, err := chat_repos.GetAll()
-	if err == nil && len(chats) > 0 {
-		for _, chat := range chats {
-
-			parsedChats = append(parsedChats, chat.UserID.String())
-		}
-
-		return parsedChats, err
-	}
-
-	return parsedChats, err
+	// TODO: Implement using gRPC calls to database service
+	return []string{}, nil
 }
 
 func GetMessages(userId string) ([]openai.ChatCompletionMessage, error) {
-	chat, err := chat_repos.CheckIfExist(userId)
+	// TODO: Implement using gRPC calls to database service
 	var messages []openai.ChatCompletionMessage
-	rawMessages := chat.Messages
 
-	if err != nil {
-		return messages, err
-	} else if len(chat.Messages) != 0 {
-		convertedMessages, err := ConvertToOpenaiMessage(rawMessages)
-		if err != nil {
-			return messages, err
-		}
-
-		messages = append(messages, convertedMessages...)
-		// CheckSystemMessages(&messages)
-	} //else if len(chat.Messages) == 0 {
-	//	messages = append(messages, config.StartBotMessage...)
-	//}
 	startMessages := StartMessages()
 	messages = append(messages, startMessages...)
 
@@ -60,7 +41,6 @@ func GetMessages(userId string) ([]openai.ChatCompletionMessage, error) {
 
 func StartMessages() []openai.ChatCompletionMessage {
 	log.Printf("Принял системный промпт")
-
 	return constants.SystemMessages
 }
 
@@ -69,14 +49,8 @@ func AddMessage(messages *[]openai.ChatCompletionMessage, role string, message s
 }
 
 func SaveMessages(userId string, messages []openai.ChatCompletionMessage) error {
-	RemoveSystemMessages(&messages)
-	arrayMessages := ConvertToMessage(userId, messages)
-
-	err := chat_repos.Save(userId, arrayMessages)
-	if err != nil {
-		return err
-	}
-
+	// TODO: Implement using gRPC calls to database service
+	log.Printf("Saving messages for user %s", userId)
 	return nil
 }
 

@@ -242,19 +242,17 @@ message SearchChatsResponse {
 
 message CreateAssistantRequest {
   string name = 1;
-  string bot_token = 2;
-  string api_token = 3;
-  string user_id = 4;
+  string api_token = 2;
+  string user_id = 3;
 }
 
 message AssistantResponse {
   string id = 1;
   string name = 2;
-  string bot_token = 3;
-  string api_token = 4;
-  string user_id = 5;
-  string created_at = 6;
-  string updated_at = 7;
+  string api_token = 3;
+  string user_id = 4;
+  string created_at = 5;
+  string updated_at = 6;
 }
 
 message GetAssistantRequest {
@@ -268,9 +266,8 @@ message GetAssistantByAPITokenRequest {
 message UpdateAssistantRequest {
   string id = 1;
   string name = 2;
-  string bot_token = 3;
-  string api_token = 4;
-  string user_id = 5;
+  string api_token = 3;
+  string user_id = 4;
 }
 
 message DeleteAssistantRequest {

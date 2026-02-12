@@ -2,16 +2,14 @@ package analytics
 
 import (
 	"context"
-	"diaxel/internal/database/models"
-	"fmt"
 	"log"
 	"time"
 
-	"gorm.io/gorm"
+	"diaxel/internal/grpc/db"
 )
 
 type AnalyticsService struct {
-	db *gorm.DB
+	dbClient *db.Client
 }
 
 type AnalyticsResponse struct {
@@ -28,63 +26,20 @@ type AnalyticsFilter struct {
 	EndDate     time.Time `json:"end_date,omitempty"`
 }
 
-func NewAnalyticsService(db *gorm.DB) *AnalyticsService {
-	return &AnalyticsService{db: db}
+func NewAnalyticsService(dbClient *db.Client) *AnalyticsService {
+	return &AnalyticsService{dbClient: dbClient}
 }
 
 func (s *AnalyticsService) GetAnalytics(ctx context.Context, filter AnalyticsFilter) (*AnalyticsResponse, error) {
 	log.Printf("Getting analytics with filter: %+v", filter)
 
-	query := s.db.WithContext(ctx).Model(&models.Message{})
-
-	if filter.Platform != "" {
-		query = query.Where("platform = ?", filter.Platform)
-	}
-
-	if filter.StartDate.IsZero() {
-		filter.StartDate = time.Now().AddDate(0, 0, -7)
-	}
-
-	if filter.EndDate.IsZero() {
-		filter.EndDate = time.Now()
-	}
-
-	query = query.Where("time BETWEEN ? AND ?", filter.StartDate, filter.EndDate)
-
-	var totalChats int64
-	err := query.Select("COUNT(DISTINCT chat_user_id)").Scan(&totalChats).Error
-	if err != nil {
-		return nil, fmt.Errorf("failed to get total chats: %w", err)
-	}
-
-	var activeUsers int64
-	err = query.Where("role = ?", "user").Select("COUNT(DISTINCT chat_user_id)").Scan(&activeUsers).Error
-	if err != nil {
-		return nil, fmt.Errorf("failed to get active users: %w", err)
-	}
-
-	var totalMessages int64
-	err = query.Select("COUNT(*)").Scan(&totalMessages).Error
-	if err != nil {
-		return nil, fmt.Errorf("failed to get total messages: %w", err)
-	}
-
-	var userMessages int64
-	err = query.Where("role = ?", "user").Select("COUNT(*)").Scan(&userMessages).Error
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user messages: %w", err)
-	}
-
-	var engagementRate float64
-	if totalMessages > 0 {
-		engagementRate = float64(userMessages) / float64(totalMessages)
-	}
-
+	// TODO: Implement using gRPC calls to database service
+	// For now, return mock data
 	response := &AnalyticsResponse{
 		AssistantID:    filter.AssistantID,
-		TotalChats:     int(totalChats),
-		ActiveUsers:    int(activeUsers),
-		EngagementRate: engagementRate,
+		TotalChats:     0,
+		ActiveUsers:    0,
+		EngagementRate: 0.0,
 	}
 
 	log.Printf("Analytics result: %+v", response)

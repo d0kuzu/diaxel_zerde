@@ -11,8 +11,6 @@ import (
 	"net/http"
 	"strconv"
 
-	assistantRepos "diaxel/internal/database/models/repos"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -103,7 +101,8 @@ func (h *AIHandler) HandleTelegramWebhook(c *gin.Context) {
 		return
 	}
 
-	assistant, err := assistantRepos.GetAssistant(assistantId)
+	// Get assistant from gRPC service instead of local DB
+	_, err := h.db.GetAssistant(assistantId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get assistant"})
 		return
@@ -117,7 +116,9 @@ func (h *AIHandler) HandleTelegramWebhook(c *gin.Context) {
 		return
 	}
 
-	err = h.sendTelegramMessage(assistant.BotToken, chatID, aiResponse)
+	// Note: BotToken is no longer stored in database, need to get it from configuration or other source
+	// For now, this will need to be implemented based on your requirements
+	err = h.sendTelegramMessage("BOT_TOKEN_HERE", chatID, aiResponse)
 	if err != nil {
 		fmt.Printf("Failed to send to Telegram: %v\n", err)
 	}
