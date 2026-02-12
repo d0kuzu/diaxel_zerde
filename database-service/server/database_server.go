@@ -32,7 +32,7 @@ func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repo
 }
 
 func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.BotToken, req.UserId)
+	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.BotToken, req.ApiToken, req.UserId)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create assistant: %v", err)
 	}
@@ -41,6 +41,7 @@ func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateA
 		Id:        assistant.ID,
 		Name:      assistant.Name,
 		BotToken:  assistant.BotToken,
+		ApiToken:  assistant.APIToken,
 		UserId:    assistant.UserID,
 		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
 		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
@@ -188,6 +189,12 @@ func (s *DatabaseServer) GetAnalyticsByAssistant(ctx context.Context, req *proto
 }
 
 func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRequest) (*proto.ChatResponse, error) {
+	// Verify that the assistant exists before creating a chat
+	_, err := s.assistantRepo.GetAssistantByID(ctx, req.AssistantId)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "assistant not found: %v", err)
+	}
+
 	chat, err := s.chatRepo.CreateChat(ctx, req.AssistantId, req.CustomerId, req.Platform)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create chat: %v", err)
@@ -212,6 +219,12 @@ func (s *DatabaseServer) SaveMessage(ctx context.Context, req *proto.SaveMessage
 	message, err := s.messageRepo.SaveMessage(ctx, req.GetChatId(), req.GetRole(), req.GetContent(), req.GetPlatform())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to save message: %v", err)
+	}
+
+	// Update message count for the chat
+	if err := s.chatRepo.UpdateMessageCount(ctx, req.GetChatId()); err != nil {
+		// Log error but don't fail the message save
+		// TODO: Add proper logging
 	}
 
 	return &proto.MessageResponse{
@@ -337,5 +350,67 @@ func (s *DatabaseServer) SearchChatsByUser(ctx context.Context, req *proto.Searc
 	return &proto.SearchChatsResponse{
 		Chats:      protoChats,
 		TotalCount: totalCount,
+	}, nil
+}
+
+func (s *DatabaseServer) GetAssistant(ctx context.Context, req *proto.GetAssistantRequest) (*proto.AssistantResponse, error) {
+	assistant, err := s.assistantRepo.GetAssistantByID(ctx, req.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "assistant not found: %v", err)
+	}
+
+	return &proto.AssistantResponse{
+		Id:        assistant.ID,
+		Name:      assistant.Name,
+		BotToken:  assistant.BotToken,
+		ApiToken:  assistant.APIToken,
+		UserId:    assistant.UserID,
+		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+	}, nil
+}
+
+func (s *DatabaseServer) GetAssistantByAPIToken(ctx context.Context, req *proto.GetAssistantByAPITokenRequest) (*proto.AssistantResponse, error) {
+	assistant, err := s.assistantRepo.GetAssistantByAPIToken(ctx, req.ApiToken)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "assistant not found: %v", err)
+	}
+
+	return &proto.AssistantResponse{
+		Id:        assistant.ID,
+		Name:      assistant.Name,
+		BotToken:  assistant.BotToken,
+		ApiToken:  assistant.APIToken,
+		UserId:    assistant.UserID,
+		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+	}, nil
+}
+
+func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateAssistantRequest) (*proto.AssistantResponse, error) {
+	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, "", req.ApiToken)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update assistant: %v", err)
+	}
+
+	return &proto.AssistantResponse{
+		Id:        assistant.ID,
+		Name:      assistant.Name,
+		BotToken:  assistant.BotToken,
+		ApiToken:  assistant.APIToken,
+		UserId:    assistant.UserID,
+		CreatedAt: assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt: assistant.UpdatedAt.Format(time.RFC3339),
+	}, nil
+}
+
+func (s *DatabaseServer) DeleteAssistant(ctx context.Context, req *proto.DeleteAssistantRequest) (*proto.DeleteAssistantResponse, error) {
+	err := s.assistantRepo.DeleteAssistant(ctx, req.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete assistant: %v", err)
+	}
+
+	return &proto.DeleteAssistantResponse{
+		Success: true,
 	}, nil
 }

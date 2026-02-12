@@ -26,6 +26,7 @@ type Assistant struct {
 	Name          string    `json:"name" db:"name"`
 	Configuration string    `json:"configuration" db:"configuration"`
 	BotToken      string    `json:"bot_token" db:"bot_token"`
+	APIToken      string    `json:"api_token" db:"api_token"`
 	UserID        string    `json:"user_id" db:"user_id"`
 	CreatedAt     time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at" db:"updated_at"`
