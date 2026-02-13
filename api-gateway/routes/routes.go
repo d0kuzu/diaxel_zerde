@@ -35,8 +35,8 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config, db *db.Client) {
 			proxy.NewReverseProxy(cfg.AIServiceURL, "/api/analytics"),
 		)
 
-		public.Any("/webhooks/telegram/*any",
-			proxy.NewReverseProxy(cfg.AIServiceURL, ""),
+		userPrivate.Any("/ai/*any",
+			proxy.NewReverseProxy(cfg.AIServiceURL, "/ai"),
 		)
 	}
 

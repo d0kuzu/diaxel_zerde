@@ -24,7 +24,7 @@ func main() {
 	dbPort := getEnv("POSTGRES_PORT", "5432")
 	dbUser := getEnv("POSTGRES_USER", "postgres")
 	dbPassword := getEnv("POSTGRES_PASSWORD", "dokuzu_desu")
-	dbName := getEnv("POSTGRES_DB", "database_service")
+	dbName := getEnv("POSTGRES_DB", "diaxel_zerde")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)

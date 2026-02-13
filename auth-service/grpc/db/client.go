@@ -151,9 +151,8 @@ func (c *Client) CreateAssistant(name, botToken, userID string) (*dbpb.Assistant
 	defer cancel()
 
 	req := &dbpb.CreateAssistantRequest{
-		Name:     name,
-		BotToken: botToken,
-		UserId:   userID,
+		Name:   name,
+		UserId: userID,
 	}
 
 	resp, err := c.DB.CreateAssistant(ctx, req)
@@ -187,10 +186,9 @@ func (c *Client) UpdateAssistant(assistantID, name, botToken, userID string) (*d
 	defer cancel()
 
 	req := &dbpb.UpdateAssistantRequest{
-		Id:       assistantID,
-		Name:     name,
-		BotToken: botToken,
-		UserId:   userID,
+		Id:     assistantID,
+		Name:   name,
+		UserId: userID,
 	}
 
 	resp, err := c.DB.UpdateAssistant(ctx, req)

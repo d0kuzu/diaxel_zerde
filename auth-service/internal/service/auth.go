@@ -161,5 +161,5 @@ func (s *AuthService) GetBotToken(assistantID string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return assistant.BotToken, nil
+	return assistant.ApiToken, nil
 }
