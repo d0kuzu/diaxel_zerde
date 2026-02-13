@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage string) (string, error) {
+func (c *Client) Conversation(ctx *gin.Context, userId, assistantId, userMessage string) (string, error) {
 	log.Printf("Сообщение от пользователя %s: %s", userId, userMessage)
-	messages, err := c.GetMessages(userId)
+	messages, err := c.GetMessages(assistantId, userId)
 	if err != nil {
 		return "", err
 	}
@@ -44,7 +44,7 @@ func (c *Client) Conversation(ctx *gin.Context, userId string, userMessage strin
 
 	c.AddMessage(&messages, "assistant", response.Choices[0].Message.Content)
 
-	err = c.SaveMessages(userId, messages)
+	err = c.SaveMessages(assistantId, userId, messages)
 	if err != nil {
 		return "", err
 	}

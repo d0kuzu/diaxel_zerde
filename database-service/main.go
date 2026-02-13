@@ -20,10 +20,10 @@ import (
 
 func main() {
 	// Database connection
-	dbHost := getEnv("POSTGRES_HOST", "database-postgres")
+	dbHost := getEnv("POSTGRES_HOST", "localhost")
 	dbPort := getEnv("POSTGRES_PORT", "5432")
 	dbUser := getEnv("POSTGRES_USER", "postgres")
-	dbPassword := getEnv("POSTGRES_PASSWORD", "postgres")
+	dbPassword := getEnv("POSTGRES_PASSWORD", "dokuzu_desu")
 	dbName := getEnv("POSTGRES_DB", "database_service")
 
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",

@@ -108,7 +108,7 @@ func (h *AIHandler) HandleTelegramWebhook(c *gin.Context) {
 		return
 	}
 
-	aiResponse, err := h.LLM.Conversation(c, userIdString, userText)
+	aiResponse, err := h.LLM.Conversation(c, "", userIdString, userText)
 
 	if err != nil {
 		fmt.Printf("AI Error: %v\n", err)
@@ -149,8 +149,9 @@ func (h *AIHandler) sendTelegramMessage(token string, chatID int64, text string)
 
 func (h *AIHandler) SendMessage(c *gin.Context) {
 	userId := c.PostForm("user_id")
+	assistantId := c.PostForm("assistant_id")
 	userMessage := c.PostForm("user_message")
-	response, err := h.LLM.Conversation(c, userId, userMessage)
+	response, err := h.LLM.Conversation(c, userId, assistantId, userMessage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

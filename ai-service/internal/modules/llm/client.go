@@ -7,10 +7,9 @@ import (
 )
 
 type Client struct {
-	client      *openai.Client
-	db          *db.Client
-	assistantID string
-	model       string
+	client *openai.Client
+	db     *db.Client
+	model  string
 }
 
 func InitClient(openaiApiKey string, dbClient *db.Client) *Client {

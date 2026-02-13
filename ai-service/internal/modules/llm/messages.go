@@ -18,9 +18,9 @@ type Message struct {
 	Time    time.Time `json:"time"`
 }
 
-func (c *Client) GetMessages(customerId string) ([]openai.ChatCompletionMessage, error) {
+func (c *Client) GetMessages(assistantId, customerId string) ([]openai.ChatCompletionMessage, error) {
 	// 1. Get chat
-	chatResp, err := c.db.GetLatestChatByCustomer(c.assistantID, customerId)
+	chatResp, err := c.db.GetLatestChatByCustomer(assistantId, customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +50,7 @@ func (c *Client) GetMessages(customerId string) ([]openai.ChatCompletionMessage,
 	}
 
 	// Append system prompt at the end
-	startMessages, err := c.StartMessages()
+	startMessages, err := c.StartMessages(assistantId)
 	if err != nil {
 		return nil, err
 	}
@@ -59,13 +59,13 @@ func (c *Client) GetMessages(customerId string) ([]openai.ChatCompletionMessage,
 	return messages, nil
 }
 
-func (c *Client) StartMessages() ([]openai.ChatCompletionMessage, error) {
+func (c *Client) StartMessages(assistantId string) ([]openai.ChatCompletionMessage, error) {
 	log.Printf("Getting system prompt")
 
 	systemPrompt := "You are a helpful assistant."
 
 	// Try to get dynamic prompt from assistant config via gRPC
-	assistant, err := c.db.GetAssistant(c.assistantID)
+	assistant, err := c.db.GetAssistant(assistantId)
 	if err != nil {
 		return nil, err
 	}
@@ -86,10 +86,10 @@ func (c *Client) AddMessage(messages *[]openai.ChatCompletionMessage, role strin
 	*messages = append(*messages, openai.ChatCompletionMessage{Role: role, Content: message})
 }
 
-func (c *Client) SaveMessages(customerId string, messages []openai.ChatCompletionMessage) error {
+func (c *Client) SaveMessages(assistantId, customerId string, messages []openai.ChatCompletionMessage) error {
 	log.Printf("Saving messages for user %s", customerId)
 
-	chatResp, err := c.db.GetLatestChatByCustomer(c.assistantID, customerId)
+	chatResp, err := c.db.GetLatestChatByCustomer(assistantId, customerId)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func (c *Client) SaveMessages(customerId string, messages []openai.ChatCompletio
 	messageCount := chatResp.MessageCount
 
 	if chatID == "" {
-		newChat, err := c.db.CreateChat(c.assistantID, customerId, "openai")
+		newChat, err := c.db.CreateChat(assistantId, customerId, "openai")
 		if err != nil {
 			return err
 		}
