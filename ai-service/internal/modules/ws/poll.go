@@ -10,18 +10,18 @@ func (c *Client) PollLocalDB(chatID string) {
 	var lastMessageCount int
 
 	for {
-		chat, err := chat_repos.CheckIfExist(chatID)
+		messages, err := c.Db.GetAllChatMessages(chatID)
 		if err != nil {
 			log.Println("DB fetch error:", err)
 			time.Sleep(5 * time.Second)
 			continue
 		}
 
-		currentMessageCount := len(chat.Messages)
+		currentMessageCount := len(messages)
 
 		if currentMessageCount > lastMessageCount {
 			for i := lastMessageCount; i < currentMessageCount; i++ {
-				msg := chat.Messages[i]
+				msg := messages[i]
 
 				var author string
 				if msg.Role == "user" {

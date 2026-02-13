@@ -1,6 +1,10 @@
 package api
 
 import (
+	"diaxel/internal/api/chat"
+	"diaxel/internal/api/twilio"
+	"diaxel/internal/api/webhook"
+	"diaxel/internal/api/ws"
 	appModule "diaxel/internal/app"
 	"log"
 
@@ -18,10 +22,10 @@ func RouterStart(app *appModule.App) {
 		MaxAge:       12 * 60 * 60,
 	}))
 
-	// webhook.WebhookRoutes(r, app)
-	// twilio.TwilioWebhookRoutes(r, app)
-	// ws.WSRoutes(r, app)
-	// chat.ChatRoutes(r, app)
+	webhook.WebhookRoutes(r, app)
+	twilio.TwilioWebhookRoutes(r, app)
+	ws.WSRoutes(r, app)
+	chat.ChatRoutes(r, app)
 
 	// analyticsService := analytics.NewAnalyticsService(app.Db)
 	// analyticsAPI.SetupRoutes(r, analyticsService)
