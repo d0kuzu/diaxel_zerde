@@ -13,6 +13,7 @@ import (
 type MessageRepository interface {
 	SaveMessage(ctx context.Context, chatID, role, content, platform string) (*models.Message, error)
 	GetMessagesByChatID(ctx context.Context, chatID string, limit, offset int32) ([]*models.Message, error)
+	GetMessagePagesCount(ctx context.Context, chatID string, messagesPerPage int32) (int32, error)
 	GetAllChatMessages(ctx context.Context, chatID string) ([]*models.Message, error)
 }
 
@@ -46,6 +47,20 @@ func (r *messageRepository) GetMessagesByChatID(ctx context.Context, chatID stri
 	}
 
 	return messages, nil
+}
+
+func (r *messageRepository) GetMessagePagesCount(ctx context.Context, chatID string, messagesPerPage int32) (int32, error) {
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&models.Message{}).Where("chat_id = ?", chatID).Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count messages: %w", err)
+	}
+
+	if messagesPerPage <= 0 {
+		messagesPerPage = 10
+	}
+
+	pagesCount := int32((count + int64(messagesPerPage) - 1) / int64(messagesPerPage))
+	return pagesCount, nil
 }
 
 func (r *messageRepository) GetAllChatMessages(ctx context.Context, chatID string) ([]*models.Message, error) {

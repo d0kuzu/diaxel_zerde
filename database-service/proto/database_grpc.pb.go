@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             v5.28.3
-// source: database.proto
+// source: proto/database.proto
 
 package proto
 
@@ -46,7 +46,8 @@ const (
 	DatabaseService_DeleteMessage_FullMethodName           = "/database.DatabaseService/DeleteMessage"
 	DatabaseService_GetChatPagesCount_FullMethodName       = "/database.DatabaseService/GetChatPagesCount"
 	DatabaseService_GetChatPage_FullMethodName             = "/database.DatabaseService/GetChatPage"
-	DatabaseService_SearchChatsByUser_FullMethodName       = "/database.DatabaseService/SearchChatsByUser"
+	DatabaseService_SearchChatsByCustomer_FullMethodName   = "/database.DatabaseService/SearchChatsByCustomer"
+	DatabaseService_GetLatestChatByCustomer_FullMethodName = "/database.DatabaseService/GetLatestChatByCustomer"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -80,7 +81,8 @@ type DatabaseServiceClient interface {
 	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*DeleteMessageResponse, error)
 	GetChatPagesCount(ctx context.Context, in *GetChatPagesCountRequest, opts ...grpc.CallOption) (*ChatPagesCountResponse, error)
 	GetChatPage(ctx context.Context, in *GetChatPageRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
-	SearchChatsByUser(ctx context.Context, in *SearchChatsByUserRequest, opts ...grpc.CallOption) (*SearchChatsResponse, error)
+	SearchChatsByCustomer(ctx context.Context, in *SearchChatsByCustomerRequest, opts ...grpc.CallOption) (*SearchChatsByCustomerResponse, error)
+	GetLatestChatByCustomer(ctx context.Context, in *GetLatestChatByCustomerRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -361,10 +363,20 @@ func (c *databaseServiceClient) GetChatPage(ctx context.Context, in *GetChatPage
 	return out, nil
 }
 
-func (c *databaseServiceClient) SearchChatsByUser(ctx context.Context, in *SearchChatsByUserRequest, opts ...grpc.CallOption) (*SearchChatsResponse, error) {
+func (c *databaseServiceClient) SearchChatsByCustomer(ctx context.Context, in *SearchChatsByCustomerRequest, opts ...grpc.CallOption) (*SearchChatsByCustomerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchChatsResponse)
-	err := c.cc.Invoke(ctx, DatabaseService_SearchChatsByUser_FullMethodName, in, out, cOpts...)
+	out := new(SearchChatsByCustomerResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_SearchChatsByCustomer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetLatestChatByCustomer(ctx context.Context, in *GetLatestChatByCustomerRequest, opts ...grpc.CallOption) (*ChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetLatestChatByCustomer_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -402,7 +414,8 @@ type DatabaseServiceServer interface {
 	DeleteMessage(context.Context, *DeleteMessageRequest) (*DeleteMessageResponse, error)
 	GetChatPagesCount(context.Context, *GetChatPagesCountRequest) (*ChatPagesCountResponse, error)
 	GetChatPage(context.Context, *GetChatPageRequest) (*ChatsResponse, error)
-	SearchChatsByUser(context.Context, *SearchChatsByUserRequest) (*SearchChatsResponse, error)
+	SearchChatsByCustomer(context.Context, *SearchChatsByCustomerRequest) (*SearchChatsByCustomerResponse, error)
+	GetLatestChatByCustomer(context.Context, *GetLatestChatByCustomerRequest) (*ChatResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -494,8 +507,11 @@ func (UnimplementedDatabaseServiceServer) GetChatPagesCount(context.Context, *Ge
 func (UnimplementedDatabaseServiceServer) GetChatPage(context.Context, *GetChatPageRequest) (*ChatsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetChatPage not implemented")
 }
-func (UnimplementedDatabaseServiceServer) SearchChatsByUser(context.Context, *SearchChatsByUserRequest) (*SearchChatsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method SearchChatsByUser not implemented")
+func (UnimplementedDatabaseServiceServer) SearchChatsByCustomer(context.Context, *SearchChatsByCustomerRequest) (*SearchChatsByCustomerResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchChatsByCustomer not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetLatestChatByCustomer(context.Context, *GetLatestChatByCustomerRequest) (*ChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLatestChatByCustomer not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -1004,20 +1020,38 @@ func _DatabaseService_GetChatPage_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DatabaseService_SearchChatsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchChatsByUserRequest)
+func _DatabaseService_SearchChatsByCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchChatsByCustomerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DatabaseServiceServer).SearchChatsByUser(ctx, in)
+		return srv.(DatabaseServiceServer).SearchChatsByCustomer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DatabaseService_SearchChatsByUser_FullMethodName,
+		FullMethod: DatabaseService_SearchChatsByCustomer_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).SearchChatsByUser(ctx, req.(*SearchChatsByUserRequest))
+		return srv.(DatabaseServiceServer).SearchChatsByCustomer(ctx, req.(*SearchChatsByCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetLatestChatByCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestChatByCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetLatestChatByCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetLatestChatByCustomer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetLatestChatByCustomer(ctx, req.(*GetLatestChatByCustomerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1138,10 +1172,14 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DatabaseService_GetChatPage_Handler,
 		},
 		{
-			MethodName: "SearchChatsByUser",
-			Handler:    _DatabaseService_SearchChatsByUser_Handler,
+			MethodName: "SearchChatsByCustomer",
+			Handler:    _DatabaseService_SearchChatsByCustomer_Handler,
+		},
+		{
+			MethodName: "GetLatestChatByCustomer",
+			Handler:    _DatabaseService_GetLatestChatByCustomer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "database.proto",
+	Metadata: "proto/database.proto",
 }

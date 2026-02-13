@@ -41,15 +41,14 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 
 	chatsPerPage := int32(10)
 
-	chats, totalCount, err := h.db.GetChatPage(assistantID, int32(page), chatsPerPage)
+	chats, err := h.db.GetChatPage(assistantID, int32(page), chatsPerPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch chats", "details": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"answer":      chats,
-		"total_count": totalCount,
+		"answer": chats,
 	})
 }
 
@@ -60,15 +59,14 @@ func (h *ChatHandler) GetPagination(c *gin.Context) {
 		return
 	}
 
-	// Assuming we can get total count from GetChatPage with limit 0
-	_, totalCount, err := h.db.GetChatPage(assistantID, 0, 0)
+	chatsPerPage := int32(10)
+	pagesCount, err := h.db.GetChatPagesCount(assistantID, chatsPerPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch pagination", "details": err.Error()})
 		return
 	}
 
-	pages := (totalCount + 9) / 10
-	c.JSON(http.StatusOK, gin.H{"answer": pages})
+	c.JSON(http.StatusOK, gin.H{"answer": pagesCount})
 }
 
 func (h *ChatHandler) GetChat(c *gin.Context) {
@@ -104,7 +102,7 @@ func (h *ChatHandler) SearchChat(c *gin.Context) {
 		return
 	}
 
-	chats, totalCount, err := h.db.SearchChatsByUser(assistantID, searchTerm)
+	chats, totalCount, err := h.db.SearchChatsByCustomer(assistantID, searchTerm)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to search chats", "details": err.Error()})
 		return

@@ -31,6 +31,7 @@ const (
 	DatabaseService_DeleteRefreshToken_FullMethodName      = "/database.DatabaseService/DeleteRefreshToken"
 	DatabaseService_CreateAssistant_FullMethodName         = "/database.DatabaseService/CreateAssistant"
 	DatabaseService_GetAssistant_FullMethodName            = "/database.DatabaseService/GetAssistant"
+	DatabaseService_GetAssistantByAPIToken_FullMethodName  = "/database.DatabaseService/GetAssistantByAPIToken"
 	DatabaseService_UpdateAssistant_FullMethodName         = "/database.DatabaseService/UpdateAssistant"
 	DatabaseService_DeleteAssistant_FullMethodName         = "/database.DatabaseService/DeleteAssistant"
 	DatabaseService_CreateChat_FullMethodName              = "/database.DatabaseService/CreateChat"
@@ -45,7 +46,8 @@ const (
 	DatabaseService_DeleteMessage_FullMethodName           = "/database.DatabaseService/DeleteMessage"
 	DatabaseService_GetChatPagesCount_FullMethodName       = "/database.DatabaseService/GetChatPagesCount"
 	DatabaseService_GetChatPage_FullMethodName             = "/database.DatabaseService/GetChatPage"
-	DatabaseService_SearchChatsByUser_FullMethodName       = "/database.DatabaseService/SearchChatsByUser"
+	DatabaseService_SearchChatsByCustomer_FullMethodName   = "/database.DatabaseService/SearchChatsByCustomer"
+	DatabaseService_GetLatestChatByCustomer_FullMethodName = "/database.DatabaseService/GetLatestChatByCustomer"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -64,6 +66,7 @@ type DatabaseServiceClient interface {
 	DeleteRefreshToken(ctx context.Context, in *DeleteRefreshTokenRequest, opts ...grpc.CallOption) (*DeleteRefreshTokenResponse, error)
 	CreateAssistant(ctx context.Context, in *CreateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
 	GetAssistant(ctx context.Context, in *GetAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
+	GetAssistantByAPIToken(ctx context.Context, in *GetAssistantByAPITokenRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
 	UpdateAssistant(ctx context.Context, in *UpdateAssistantRequest, opts ...grpc.CallOption) (*AssistantResponse, error)
 	DeleteAssistant(ctx context.Context, in *DeleteAssistantRequest, opts ...grpc.CallOption) (*DeleteAssistantResponse, error)
 	CreateChat(ctx context.Context, in *CreateChatRequest, opts ...grpc.CallOption) (*ChatResponse, error)
@@ -78,7 +81,8 @@ type DatabaseServiceClient interface {
 	DeleteMessage(ctx context.Context, in *DeleteMessageRequest, opts ...grpc.CallOption) (*DeleteMessageResponse, error)
 	GetChatPagesCount(ctx context.Context, in *GetChatPagesCountRequest, opts ...grpc.CallOption) (*ChatPagesCountResponse, error)
 	GetChatPage(ctx context.Context, in *GetChatPageRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
-	SearchChatsByUser(ctx context.Context, in *SearchChatsByUserRequest, opts ...grpc.CallOption) (*SearchChatsResponse, error)
+	SearchChatsByCustomer(ctx context.Context, in *SearchChatsByCustomerRequest, opts ...grpc.CallOption) (*SearchChatsByCustomerResponse, error)
+	GetLatestChatByCustomer(ctx context.Context, in *GetLatestChatByCustomerRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -203,6 +207,16 @@ func (c *databaseServiceClient) GetAssistant(ctx context.Context, in *GetAssista
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AssistantResponse)
 	err := c.cc.Invoke(ctx, DatabaseService_GetAssistant_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetAssistantByAPIToken(ctx context.Context, in *GetAssistantByAPITokenRequest, opts ...grpc.CallOption) (*AssistantResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssistantResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetAssistantByAPIToken_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -349,10 +363,20 @@ func (c *databaseServiceClient) GetChatPage(ctx context.Context, in *GetChatPage
 	return out, nil
 }
 
-func (c *databaseServiceClient) SearchChatsByUser(ctx context.Context, in *SearchChatsByUserRequest, opts ...grpc.CallOption) (*SearchChatsResponse, error) {
+func (c *databaseServiceClient) SearchChatsByCustomer(ctx context.Context, in *SearchChatsByCustomerRequest, opts ...grpc.CallOption) (*SearchChatsByCustomerResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchChatsResponse)
-	err := c.cc.Invoke(ctx, DatabaseService_SearchChatsByUser_FullMethodName, in, out, cOpts...)
+	out := new(SearchChatsByCustomerResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_SearchChatsByCustomer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetLatestChatByCustomer(ctx context.Context, in *GetLatestChatByCustomerRequest, opts ...grpc.CallOption) (*ChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetLatestChatByCustomer_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -375,6 +399,7 @@ type DatabaseServiceServer interface {
 	DeleteRefreshToken(context.Context, *DeleteRefreshTokenRequest) (*DeleteRefreshTokenResponse, error)
 	CreateAssistant(context.Context, *CreateAssistantRequest) (*AssistantResponse, error)
 	GetAssistant(context.Context, *GetAssistantRequest) (*AssistantResponse, error)
+	GetAssistantByAPIToken(context.Context, *GetAssistantByAPITokenRequest) (*AssistantResponse, error)
 	UpdateAssistant(context.Context, *UpdateAssistantRequest) (*AssistantResponse, error)
 	DeleteAssistant(context.Context, *DeleteAssistantRequest) (*DeleteAssistantResponse, error)
 	CreateChat(context.Context, *CreateChatRequest) (*ChatResponse, error)
@@ -389,7 +414,8 @@ type DatabaseServiceServer interface {
 	DeleteMessage(context.Context, *DeleteMessageRequest) (*DeleteMessageResponse, error)
 	GetChatPagesCount(context.Context, *GetChatPagesCountRequest) (*ChatPagesCountResponse, error)
 	GetChatPage(context.Context, *GetChatPageRequest) (*ChatsResponse, error)
-	SearchChatsByUser(context.Context, *SearchChatsByUserRequest) (*SearchChatsResponse, error)
+	SearchChatsByCustomer(context.Context, *SearchChatsByCustomerRequest) (*SearchChatsByCustomerResponse, error)
+	GetLatestChatByCustomer(context.Context, *GetLatestChatByCustomerRequest) (*ChatResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -436,6 +462,9 @@ func (UnimplementedDatabaseServiceServer) CreateAssistant(context.Context, *Crea
 func (UnimplementedDatabaseServiceServer) GetAssistant(context.Context, *GetAssistantRequest) (*AssistantResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAssistant not implemented")
 }
+func (UnimplementedDatabaseServiceServer) GetAssistantByAPIToken(context.Context, *GetAssistantByAPITokenRequest) (*AssistantResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAssistantByAPIToken not implemented")
+}
 func (UnimplementedDatabaseServiceServer) UpdateAssistant(context.Context, *UpdateAssistantRequest) (*AssistantResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateAssistant not implemented")
 }
@@ -478,8 +507,11 @@ func (UnimplementedDatabaseServiceServer) GetChatPagesCount(context.Context, *Ge
 func (UnimplementedDatabaseServiceServer) GetChatPage(context.Context, *GetChatPageRequest) (*ChatsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetChatPage not implemented")
 }
-func (UnimplementedDatabaseServiceServer) SearchChatsByUser(context.Context, *SearchChatsByUserRequest) (*SearchChatsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method SearchChatsByUser not implemented")
+func (UnimplementedDatabaseServiceServer) SearchChatsByCustomer(context.Context, *SearchChatsByCustomerRequest) (*SearchChatsByCustomerResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchChatsByCustomer not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetLatestChatByCustomer(context.Context, *GetLatestChatByCustomerRequest) (*ChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLatestChatByCustomer not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -714,6 +746,24 @@ func _DatabaseService_GetAssistant_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DatabaseServiceServer).GetAssistant(ctx, req.(*GetAssistantRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetAssistantByAPIToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAssistantByAPITokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetAssistantByAPIToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetAssistantByAPIToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetAssistantByAPIToken(ctx, req.(*GetAssistantByAPITokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -970,20 +1020,38 @@ func _DatabaseService_GetChatPage_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DatabaseService_SearchChatsByUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchChatsByUserRequest)
+func _DatabaseService_SearchChatsByCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchChatsByCustomerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DatabaseServiceServer).SearchChatsByUser(ctx, in)
+		return srv.(DatabaseServiceServer).SearchChatsByCustomer(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: DatabaseService_SearchChatsByUser_FullMethodName,
+		FullMethod: DatabaseService_SearchChatsByCustomer_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).SearchChatsByUser(ctx, req.(*SearchChatsByUserRequest))
+		return srv.(DatabaseServiceServer).SearchChatsByCustomer(ctx, req.(*SearchChatsByCustomerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetLatestChatByCustomer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestChatByCustomerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetLatestChatByCustomer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetLatestChatByCustomer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetLatestChatByCustomer(ctx, req.(*GetLatestChatByCustomerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1044,6 +1112,10 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DatabaseService_GetAssistant_Handler,
 		},
 		{
+			MethodName: "GetAssistantByAPIToken",
+			Handler:    _DatabaseService_GetAssistantByAPIToken_Handler,
+		},
+		{
 			MethodName: "UpdateAssistant",
 			Handler:    _DatabaseService_UpdateAssistant_Handler,
 		},
@@ -1100,8 +1172,12 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DatabaseService_GetChatPage_Handler,
 		},
 		{
-			MethodName: "SearchChatsByUser",
-			Handler:    _DatabaseService_SearchChatsByUser_Handler,
+			MethodName: "SearchChatsByCustomer",
+			Handler:    _DatabaseService_SearchChatsByCustomer_Handler,
+		},
+		{
+			MethodName: "GetLatestChatByCustomer",
+			Handler:    _DatabaseService_GetLatestChatByCustomer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

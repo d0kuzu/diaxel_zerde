@@ -17,7 +17,7 @@ type ChatRepository interface {
 	GetChatsByCustomerID(ctx context.Context, customerID string) ([]*models.Chat, error)
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
-	SearchChatsByUser(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error)
+	SearchChatsByCustomer(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error)
 	GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error)
 	UpdateMessageCount(ctx context.Context, chatID string) error
 }
@@ -104,15 +104,15 @@ func (r *chatRepository) GetChatPage(ctx context.Context, assistantID string, pa
 	return chats, nil
 }
 
-func (r *chatRepository) SearchChatsByUser(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error) {
+func (r *chatRepository) SearchChatsByCustomer(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error) {
 	var chats []*models.Chat
 	var count int64
 
 	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("assistant_id = ?", assistantID)
 
-	// If search term is provided, search by user_id
+	// If search term is provided, search by customer_id
 	if search != "" {
-		query = query.Where("user_id LIKE ?", "%"+search+"%")
+		query = query.Where("customer_id LIKE ?", "%"+search+"%")
 	}
 
 	// Get total count

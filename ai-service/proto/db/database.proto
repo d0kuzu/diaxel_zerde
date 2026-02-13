@@ -32,7 +32,7 @@ service DatabaseService {
   rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
   rpc GetChatPagesCount(GetChatPagesCountRequest) returns (ChatPagesCountResponse);
   rpc GetChatPage(GetChatPageRequest) returns (ChatsResponse);
-  rpc SearchChatsByUser(SearchChatsByUserRequest) returns (SearchChatsResponse);
+  rpc SearchChatsByCustomer(SearchChatsByCustomerRequest) returns (SearchChatsByCustomerResponse);
   rpc GetLatestChatByCustomer(GetLatestChatByCustomerRequest) returns (ChatResponse);
 }
 
@@ -231,12 +231,12 @@ message GetChatPageRequest {
   int32 chats_per_page = 3;
 }
 
-message SearchChatsByUserRequest {
+message SearchChatsByCustomerRequest {
   string assistant_id = 1;
   string search = 2;
 }
 
-message SearchChatsResponse {
+message SearchChatsByCustomerResponse {
   repeated ChatResponse chats = 1;
   int32 total_count = 2;
 }

@@ -323,8 +323,8 @@ func (s *DatabaseServer) GetChatPage(ctx context.Context, req *proto.GetChatPage
 	}, nil
 }
 
-func (s *DatabaseServer) SearchChatsByUser(ctx context.Context, req *proto.SearchChatsByUserRequest) (*proto.SearchChatsResponse, error) {
-	chats, totalCount, err := s.chatRepo.SearchChatsByUser(ctx, req.AssistantId, req.Search)
+func (s *DatabaseServer) SearchChatsByCustomer(ctx context.Context, req *proto.SearchChatsByCustomerRequest) (*proto.SearchChatsByCustomerResponse, error) {
+	chats, totalCount, err := s.chatRepo.SearchChatsByCustomer(ctx, req.AssistantId, req.Search)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to search chats: %v", err)
 	}
@@ -347,7 +347,7 @@ func (s *DatabaseServer) SearchChatsByUser(ctx context.Context, req *proto.Searc
 		})
 	}
 
-	return &proto.SearchChatsResponse{
+	return &proto.SearchChatsByCustomerResponse{
 		Chats:      protoChats,
 		TotalCount: totalCount,
 	}, nil
