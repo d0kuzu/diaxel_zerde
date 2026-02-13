@@ -18,14 +18,6 @@ func NewChatHandler(cfg *config.Settings, db *db.Client) *ChatHandler {
 	return &ChatHandler{cfg: cfg, db: db}
 }
 
-type ChatResponse struct {
-	ChatID       string                  `json:"chat_id"`
-	AssistantID  string                  `json:"assistant_id"`
-	CustomerID   string                  `json:"customer_id"`
-	Messages     []*dbpb.MessageResponse `json:"messages"`
-	MessageCount int32                   `json:"message_count"`
-}
-
 func (h *ChatHandler) GetAllChats(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.ParseInt(pageStr, 10, 32)
