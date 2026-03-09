@@ -148,9 +148,15 @@ func (h *AIHandler) sendTelegramMessage(token string, chatID int64, text string)
 }
 
 func (h *AIHandler) SendMessage(c *gin.Context) {
-	userId := c.PostForm("user_id")
-	assistantId := c.PostForm("assistant_id")
+	userId := c.GetHeader("X-User-Id")
+	assistantId := c.GetHeader("X-Assistant-Id")
 	userMessage := c.PostForm("user_message")
+
+	if userId == "" || assistantId == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized request from gateway"})
+		return
+	}
+
 	response, err := h.LLM.Conversation(c, userId, assistantId, userMessage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

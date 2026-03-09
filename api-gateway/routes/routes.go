@@ -44,7 +44,7 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config, db *db.Client) {
 	servicePrivate.Use(auth.ServiceMiddleware(db))
 	{
 		servicePrivate.Any("/webhooks/telegram",
-			proxy.NewReverseProxy(cfg.AIServiceURL, ""),
+			proxy.NewServiceProxy(cfg.AIServiceURL, ""),
 		)
 	}
 }
