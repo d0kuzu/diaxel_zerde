@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"diaxel_zerde/database-service/proto"
@@ -126,6 +127,43 @@ func (s *DatabaseServer) GetUserByEmail(ctx context.Context, req *proto.GetUserB
 	}, nil
 }
 
+func (s *DatabaseServer) UpdateUser(ctx context.Context, req *proto.UpdateUserRequest) (*proto.UserResponse, error) {
+	user, err := s.userRepo.UpdateUser(ctx, req.Id, req.Email, req.PasswordHash, req.Role)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update user: %v", err)
+	}
+
+	var email, passwordHash, role string
+	if user.Email != nil {
+		email = *user.Email
+	}
+	if user.PasswordHash != nil {
+		passwordHash = *user.PasswordHash
+	}
+	if user.Role != nil {
+		role = *user.Role
+	}
+
+	return &proto.UserResponse{
+		Id:           user.ID,
+		Email:        email,
+		PasswordHash: passwordHash,
+		Role:         role,
+		CreatedAt:    user.CreatedAt.Format(time.RFC3339),
+	}, nil
+}
+
+func (s *DatabaseServer) DeleteUser(ctx context.Context, req *proto.DeleteUserRequest) (*proto.DeleteUserResponse, error) {
+	err := s.userRepo.DeleteUser(ctx, req.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete user: %v", err)
+	}
+
+	return &proto.DeleteUserResponse{
+		Success: true,
+	}, nil
+}
+
 func (s *DatabaseServer) SaveRefreshToken(ctx context.Context, req *proto.SaveRefreshTokenRequest) (*proto.SaveRefreshTokenResponse, error) {
 	expiresAt, err := time.Parse(time.RFC3339, req.ExpiresAt)
 	if err != nil {
@@ -215,6 +253,87 @@ func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRe
 	}, nil
 }
 
+func (s *DatabaseServer) GetChat(ctx context.Context, req *proto.GetChatRequest) (*proto.ChatResponse, error) {
+	chat, err := s.chatRepo.GetChatByID(ctx, req.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "chat not found: %v", err)
+	}
+
+	return &proto.ChatResponse{
+		Id:          chat.ID,
+		AssistantId: chat.AssistantID,
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+		MessageCount: chat.MessageCount,
+	}, nil
+}
+
+func (s *DatabaseServer) GetChatsByUser(ctx context.Context, req *proto.GetChatsByUserRequest) (*proto.ChatsResponse, error) {
+	chats, err := s.chatRepo.GetChatsByUserID(ctx, req.UserId, req.AssistantId, req.Limit, req.Offset)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get chats by user: %v", err)
+	}
+
+	var protoChats []*proto.ChatResponse
+	for _, chat := range chats {
+		customerId := ""
+		if chat.CustomerID != nil {
+			customerId = *chat.CustomerID
+		}
+
+		protoChats = append(protoChats, &proto.ChatResponse{
+			Id:           chat.ID,
+			AssistantId:  chat.AssistantID,
+			CustomerId:   customerId,
+			CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+			MessageCount: chat.MessageCount,
+		})
+	}
+
+	return &proto.ChatsResponse{
+		Chats: protoChats,
+	}, nil
+}
+
+func (s *DatabaseServer) UpdateChat(ctx context.Context, req *proto.UpdateChatRequest) (*proto.ChatResponse, error) {
+	chat, err := s.chatRepo.UpdateChat(ctx, req.Id, req.AssistantId, req.CustomerId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update chat: %v", err)
+	}
+
+	return &proto.ChatResponse{
+		Id:          chat.ID,
+		AssistantId: chat.AssistantID,
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+		MessageCount: chat.MessageCount,
+	}, nil
+}
+
+func (s *DatabaseServer) DeleteChat(ctx context.Context, req *proto.DeleteChatRequest) (*proto.DeleteChatResponse, error) {
+	err := s.chatRepo.DeleteChat(ctx, req.Id)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete chat: %v", err)
+	}
+
+	return &proto.DeleteChatResponse{
+		Success: true,
+	}, nil
+}
+
 func (s *DatabaseServer) SaveMessage(ctx context.Context, req *proto.SaveMessageRequest) (*proto.MessageResponse, error) {
 	message, err := s.messageRepo.SaveMessage(ctx, req.GetChatId(), req.GetRole(), req.GetContent(), req.GetPlatform())
 	if err != nil {
@@ -280,6 +399,43 @@ func (s *DatabaseServer) GetAllChatMessages(ctx context.Context, req *proto.GetA
 
 	return &proto.MessagesResponse{
 		Messages: protoMessages,
+	}, nil
+}
+
+func (s *DatabaseServer) UpdateMessage(ctx context.Context, req *proto.UpdateMessageRequest) (*proto.MessageResponse, error) {
+	msgID, err := strconv.ParseUint(req.Id, 10, 64)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid message id: %v", err)
+	}
+
+	message, err := s.messageRepo.UpdateMessage(ctx, uint(msgID), req.Role, req.Content)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update message: %v", err)
+	}
+
+	return &proto.MessageResponse{
+		Id:        fmt.Sprintf("%d", message.ID),
+		ChatId:    message.ChatID,
+		Role:      message.Role,
+		Content:   message.Content,
+		Platform:  req.Platform,
+		CreatedAt: message.Time.Format(time.RFC3339),
+	}, nil
+}
+
+func (s *DatabaseServer) DeleteMessage(ctx context.Context, req *proto.DeleteMessageRequest) (*proto.DeleteMessageResponse, error) {
+	msgID, err := strconv.ParseUint(req.Id, 10, 64)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid message id: %v", err)
+	}
+
+	err = s.messageRepo.DeleteMessage(ctx, uint(msgID))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete message: %v", err)
+	}
+
+	return &proto.DeleteMessageResponse{
+		Success: true,
 	}, nil
 }
 

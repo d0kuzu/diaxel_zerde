@@ -12,9 +12,12 @@ import (
 
 type MessageRepository interface {
 	SaveMessage(ctx context.Context, chatID, role, content, platform string) (*models.Message, error)
+	GetMessageByID(ctx context.Context, id uint) (*models.Message, error)
 	GetMessagesByChatID(ctx context.Context, chatID string, limit, offset int32) ([]*models.Message, error)
 	GetMessagePagesCount(ctx context.Context, chatID string, messagesPerPage int32) (int32, error)
 	GetAllChatMessages(ctx context.Context, chatID string) ([]*models.Message, error)
+	UpdateMessage(ctx context.Context, id uint, role, content string) (*models.Message, error)
+	DeleteMessage(ctx context.Context, id uint) error
 }
 
 type messageRepository struct {
@@ -70,4 +73,49 @@ func (r *messageRepository) GetAllChatMessages(ctx context.Context, chatID strin
 	}
 
 	return messages, nil
+}
+
+func (r *messageRepository) GetMessageByID(ctx context.Context, id uint) (*models.Message, error) {
+	var message models.Message
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&message).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("message not found")
+		}
+		return nil, fmt.Errorf("failed to get message: %w", err)
+	}
+
+	return &message, nil
+}
+
+func (r *messageRepository) UpdateMessage(ctx context.Context, id uint, role, content string) (*models.Message, error) {
+	var message models.Message
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&message).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("message not found")
+		}
+		return nil, fmt.Errorf("failed to get message: %w", err)
+	}
+
+	message.Role = role
+	message.Content = content
+	message.UpdatedAt = time.Now()
+
+	if err := r.db.WithContext(ctx).Save(&message).Error; err != nil {
+		return nil, fmt.Errorf("failed to update message: %w", err)
+	}
+
+	return &message, nil
+}
+
+func (r *messageRepository) DeleteMessage(ctx context.Context, id uint) error {
+	result := r.db.WithContext(ctx).Where("id = ?", id).Delete(&models.Message{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete message: %w", result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("message not found")
+	}
+
+	return nil
 }

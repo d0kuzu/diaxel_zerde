@@ -15,6 +15,9 @@ type ChatRepository interface {
 	CreateChat(ctx context.Context, assistantID, customerID, platform string) (*models.Chat, error)
 	GetChatByID(ctx context.Context, id string) (*models.Chat, error)
 	GetChatsByCustomerID(ctx context.Context, customerID string) ([]*models.Chat, error)
+	GetChatsByUserID(ctx context.Context, userID, assistantID string, limit, offset int32) ([]*models.Chat, error)
+	UpdateChat(ctx context.Context, id, assistantID, customerID string) (*models.Chat, error)
+	DeleteChat(ctx context.Context, id string) error
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
 	SearchChatsByCustomer(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error)
@@ -155,6 +158,62 @@ func (r *chatRepository) UpdateMessageCount(ctx context.Context, chatID string) 
 	// Update the message count in the chat
 	if err := r.db.WithContext(ctx).Model(&models.Chat{}).Where("id = ?", chatID).Update("message_count", messageCount).Error; err != nil {
 		return fmt.Errorf("failed to update message count: %w", err)
+	}
+
+	return nil
+}
+
+func (r *chatRepository) GetChatsByUserID(ctx context.Context, userID, assistantID string, limit, offset int32) ([]*models.Chat, error) {
+	var chats []*models.Chat
+	query := r.db.WithContext(ctx).Where("user_id = ?", userID)
+	if assistantID != "" {
+		query = query.Where("assistant_id = ?", assistantID)
+	}
+	if limit > 0 {
+		query = query.Limit(int(limit))
+	}
+	if offset > 0 {
+		query = query.Offset(int(offset))
+	}
+	if err := query.Order("created_at DESC").Find(&chats).Error; err != nil {
+		return nil, fmt.Errorf("failed to get chats by user: %w", err)
+	}
+
+	return chats, nil
+}
+
+func (r *chatRepository) UpdateChat(ctx context.Context, id, assistantID, customerID string) (*models.Chat, error) {
+	var chat models.Chat
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&chat).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("chat not found")
+		}
+		return nil, fmt.Errorf("failed to get chat: %w", err)
+	}
+
+	if assistantID != "" {
+		chat.AssistantID = assistantID
+	}
+	if customerID != "" {
+		chat.CustomerID = &customerID
+	}
+	chat.UpdatedAt = time.Now()
+
+	if err := r.db.WithContext(ctx).Save(&chat).Error; err != nil {
+		return nil, fmt.Errorf("failed to update chat: %w", err)
+	}
+
+	return &chat, nil
+}
+
+func (r *chatRepository) DeleteChat(ctx context.Context, id string) error {
+	result := r.db.WithContext(ctx).Where("id = ?", id).Delete(&models.Chat{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete chat: %w", result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("chat not found")
 	}
 
 	return nil
