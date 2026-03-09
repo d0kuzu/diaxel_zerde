@@ -13,7 +13,7 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 
-	grpcClient, err := db.New("localhost:50051")
+	grpcClient, err := db.New(cfg.GRPCAddress)
 
 	s := server.NewServer(cfg, grpcClient)
 	s.Run()

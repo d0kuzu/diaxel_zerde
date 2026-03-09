@@ -8,6 +8,9 @@ import (
 )
 
 type Settings struct {
+	HTTPPort    string
+	GRPCAddress string
+
 	DbHost     string
 	DbUser     string
 	DbPassword string
@@ -34,7 +37,20 @@ type Settings struct {
 func LoadConfig() (*Settings, error) {
 	godotenv.Load(".env")
 
+	httpPort := os.Getenv("HTTP_PORT")
+	if httpPort == "" {
+		httpPort = "8080"
+	}
+
+	grpcAddress := os.Getenv("GRPC_ADDRESS")
+	if grpcAddress == "" {
+		grpcAddress = "localhost:50051"
+	}
+
 	return &Settings{
+		HTTPPort:    httpPort,
+		GRPCAddress: grpcAddress,
+
 		DbHost:     os.Getenv("DB_HOST"),
 		DbUser:     os.Getenv("DB_USER"),
 		DbPassword: os.Getenv("DB_PASSWORD"),

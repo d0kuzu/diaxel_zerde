@@ -30,7 +30,7 @@ func RouterStart(app *appModule.App) {
 	// analyticsService := analytics.NewAnalyticsService(app.Db)
 	// analyticsAPI.SetupRoutes(r, analyticsService)
 
-	err := r.Run(":8080")
+	err := r.Run(":" + app.Cfg.HTTPPort)
 	if err != nil {
 		log.Fatal("Router start error", err)
 	}

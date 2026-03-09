@@ -1,18 +1,23 @@
-FROM golang:1.24-alpine
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
-# Копируем go.mod и go.sum
 COPY go.mod go.sum ./
-
-# Копируем proto (если он используется в replace)
-COPY proto ./proto
-
 RUN go mod download
 
-# Копируем остальной код
 COPY . .
-
 RUN go build -o main .
+
+FROM alpine:latest
+
+WORKDIR /app
+
+RUN apk --no-cache add ca-certificates
+
+COPY --from=builder /app/main .
+
+RUN chmod +x main
+
+EXPOSE 8080
 
 CMD ["./main"]

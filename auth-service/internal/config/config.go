@@ -8,7 +8,8 @@ import (
 )
 
 type Config struct {
-	HTTPPort string
+	HTTPPort    string
+	GRPCAddress string
 
 	AccessTokenTTL  time.Duration
 	RefreshTokenTTL time.Duration
@@ -18,13 +19,16 @@ type Config struct {
 }
 
 func MustLoad() (*Config, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		return nil, err
+	godotenv.Load(".env")
+
+	grpcAddress := os.Getenv("GRPC_ADDRESS")
+	if grpcAddress == "" {
+		grpcAddress = "localhost:50051"
 	}
 
 	return &Config{
-		HTTPPort: os.Getenv("HTTP_PORT"),
+		HTTPPort:    os.Getenv("HTTP_PORT"),
+		GRPCAddress: grpcAddress,
 
 		AccessTokenTTL:  15 * time.Minute,
 		RefreshTokenTTL: 30 * 24 * time.Hour,
