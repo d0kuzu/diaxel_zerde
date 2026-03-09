@@ -12,7 +12,7 @@ services:
       POSTGRES_USER: diaxel_user
       POSTGRES_PASSWORD: diaxel_password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -58,25 +58,6 @@ services:
     networks:
       - diaxel_net
 
-  telegram-service:
-    build: ./telegram-service
-    container_name: telegram-service
-    ports:
-      - "8084:8000"
-    depends_on:
-      - database-service
-      - auth-service
-    env_file:
-      - .env
-    environment:
-      - DATABASE_URL=postgresql://diaxel_user:diaxel_password@postgres:5432/diaxel
-      - AUTH_SERVICE_URL=http://auth-service:8080
-      - TARGET_ENDPOINT=http://api-gateway:8080
-      - SECRET=your_telegram_service_secret_here
-      - GATEWAY_TOKEN=your_gateway_token_here
-    networks:
-      - diaxel_net
-
   ai-service:
     build: ./ai-service
     container_name: ai-service
@@ -84,7 +65,6 @@ services:
       - "8081:8080"
     depends_on:
       - database-service
-      - auth-service
     env_file:
       - .env
     environment:
@@ -107,7 +87,6 @@ services:
     depends_on:
       - database-service
       - auth-service
-      - telegram-service
       - ai-service
     env_file:
       - .env
@@ -116,21 +95,6 @@ services:
       - GRPC_ADDRESS=database-service:50051
       - AI_SERVICE_URL=http://ai-service:8080
       - AUTH_SERVICE_URL=http://auth-service:8080
-      - TELEGRAM_SERVICE_URL=http://telegram-service:8000
-    networks:
-      - diaxel_net
-
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - api-gateway
-    env_file:
-      - .env
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8080
     networks:
       - diaxel_net
 

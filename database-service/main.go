@@ -21,7 +21,7 @@ import (
 func main() {
 	// Database connection
 	dbHost := getEnv("POSTGRES_HOST", "localhost")
-	dbPort := getEnv("POSTGRES_PORT", "5432")
+	dbPort := getEnv("POSTGRES_PORT", "5433")
 	dbUser := getEnv("POSTGRES_USER", "postgres")
 	dbPassword := getEnv("POSTGRES_PASSWORD", "dokuzu_desu")
 	dbName := getEnv("POSTGRES_DB", "diaxel_zerde")
