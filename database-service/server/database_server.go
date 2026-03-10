@@ -458,6 +458,45 @@ func (s *DatabaseServer) GetChatPage(ctx context.Context, req *proto.GetChatPage
 
 	var protoChats []*proto.ChatResponse
 	for _, chat := range chats {
+		protoChats = append(protoChats, &proto.ChatResponse{
+			Id:          chat.ID,
+			AssistantId: chat.AssistantID,
+			CustomerId: func() string {
+				if chat.CustomerID != nil {
+					return *chat.CustomerID
+				}
+				return ""
+			}(),
+			CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+			MessageCount: chat.MessageCount,
+		})
+	}
+
+	return &proto.ChatsResponse{
+		Chats: protoChats,
+	}, nil
+}
+
+func (s *DatabaseServer) GetChatPagesCountByUserID(ctx context.Context, req *proto.GetChatPagesCountByUserIDRequest) (*proto.ChatPagesCountResponse, error) {
+	pagesCount, err := s.chatRepo.GetChatPagesCountByUserID(ctx, req.UserId, req.AssistantIds, req.ChatsPerPage)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get chat pages count by user: %v", err)
+	}
+
+	return &proto.ChatPagesCountResponse{
+		PagesCount: pagesCount,
+	}, nil
+}
+
+func (s *DatabaseServer) GetChatPageByUserID(ctx context.Context, req *proto.GetChatPageByUserIDRequest) (*proto.ChatsResponse, error) {
+	chats, err := s.chatRepo.GetChatPageByUserID(ctx, req.UserId, req.AssistantIds, req.Page, req.ChatsPerPage)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get chat page by user: %v", err)
+	}
+
+	var protoChats []*proto.ChatResponse
+	for _, chat := range chats {
 		customerId := ""
 		if chat.CustomerID != nil {
 			customerId = *chat.CustomerID

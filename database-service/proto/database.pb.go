@@ -2001,6 +2001,134 @@ func (x *GetChatPageRequest) GetChatsPerPage() int32 {
 	return 0
 }
 
+type GetChatPagesCountByUserIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AssistantIds  []string               `protobuf:"bytes,2,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
+	ChatsPerPage  int32                  `protobuf:"varint,3,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatPagesCountByUserIDRequest) Reset() {
+	*x = GetChatPagesCountByUserIDRequest{}
+	mi := &file_proto_database_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatPagesCountByUserIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatPagesCountByUserIDRequest) ProtoMessage() {}
+
+func (x *GetChatPagesCountByUserIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatPagesCountByUserIDRequest.ProtoReflect.Descriptor instead.
+func (*GetChatPagesCountByUserIDRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *GetChatPagesCountByUserIDRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetChatPagesCountByUserIDRequest) GetAssistantIds() []string {
+	if x != nil {
+		return x.AssistantIds
+	}
+	return nil
+}
+
+func (x *GetChatPagesCountByUserIDRequest) GetChatsPerPage() int32 {
+	if x != nil {
+		return x.ChatsPerPage
+	}
+	return 0
+}
+
+type GetChatPageByUserIDRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AssistantIds  []string               `protobuf:"bytes,2,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	ChatsPerPage  int32                  `protobuf:"varint,4,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatPageByUserIDRequest) Reset() {
+	*x = GetChatPageByUserIDRequest{}
+	mi := &file_proto_database_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatPageByUserIDRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatPageByUserIDRequest) ProtoMessage() {}
+
+func (x *GetChatPageByUserIDRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatPageByUserIDRequest.ProtoReflect.Descriptor instead.
+func (*GetChatPageByUserIDRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *GetChatPageByUserIDRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetChatPageByUserIDRequest) GetAssistantIds() []string {
+	if x != nil {
+		return x.AssistantIds
+	}
+	return nil
+}
+
+func (x *GetChatPageByUserIDRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *GetChatPageByUserIDRequest) GetChatsPerPage() int32 {
+	if x != nil {
+		return x.ChatsPerPage
+	}
+	return 0
+}
+
 type SearchChatsByCustomerRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
@@ -2011,7 +2139,7 @@ type SearchChatsByCustomerRequest struct {
 
 func (x *SearchChatsByCustomerRequest) Reset() {
 	*x = SearchChatsByCustomerRequest{}
-	mi := &file_proto_database_proto_msgTypes[35]
+	mi := &file_proto_database_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2023,7 +2151,7 @@ func (x *SearchChatsByCustomerRequest) String() string {
 func (*SearchChatsByCustomerRequest) ProtoMessage() {}
 
 func (x *SearchChatsByCustomerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[35]
+	mi := &file_proto_database_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2036,7 +2164,7 @@ func (x *SearchChatsByCustomerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchChatsByCustomerRequest.ProtoReflect.Descriptor instead.
 func (*SearchChatsByCustomerRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{35}
+	return file_proto_database_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *SearchChatsByCustomerRequest) GetAssistantId() string {
@@ -2063,7 +2191,7 @@ type SearchChatsByCustomerResponse struct {
 
 func (x *SearchChatsByCustomerResponse) Reset() {
 	*x = SearchChatsByCustomerResponse{}
-	mi := &file_proto_database_proto_msgTypes[36]
+	mi := &file_proto_database_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2075,7 +2203,7 @@ func (x *SearchChatsByCustomerResponse) String() string {
 func (*SearchChatsByCustomerResponse) ProtoMessage() {}
 
 func (x *SearchChatsByCustomerResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[36]
+	mi := &file_proto_database_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2088,7 +2216,7 @@ func (x *SearchChatsByCustomerResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchChatsByCustomerResponse.ProtoReflect.Descriptor instead.
 func (*SearchChatsByCustomerResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{36}
+	return file_proto_database_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *SearchChatsByCustomerResponse) GetChats() []*ChatResponse {
@@ -2116,7 +2244,7 @@ type CreateAssistantRequest struct {
 
 func (x *CreateAssistantRequest) Reset() {
 	*x = CreateAssistantRequest{}
-	mi := &file_proto_database_proto_msgTypes[37]
+	mi := &file_proto_database_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2128,7 +2256,7 @@ func (x *CreateAssistantRequest) String() string {
 func (*CreateAssistantRequest) ProtoMessage() {}
 
 func (x *CreateAssistantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[37]
+	mi := &file_proto_database_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2141,7 +2269,7 @@ func (x *CreateAssistantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAssistantRequest.ProtoReflect.Descriptor instead.
 func (*CreateAssistantRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{37}
+	return file_proto_database_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *CreateAssistantRequest) GetName() string {
@@ -2180,7 +2308,7 @@ type AssistantResponse struct {
 
 func (x *AssistantResponse) Reset() {
 	*x = AssistantResponse{}
-	mi := &file_proto_database_proto_msgTypes[38]
+	mi := &file_proto_database_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2192,7 +2320,7 @@ func (x *AssistantResponse) String() string {
 func (*AssistantResponse) ProtoMessage() {}
 
 func (x *AssistantResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[38]
+	mi := &file_proto_database_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2205,7 +2333,7 @@ func (x *AssistantResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssistantResponse.ProtoReflect.Descriptor instead.
 func (*AssistantResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{38}
+	return file_proto_database_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *AssistantResponse) GetId() string {
@@ -2266,7 +2394,7 @@ type GetAssistantRequest struct {
 
 func (x *GetAssistantRequest) Reset() {
 	*x = GetAssistantRequest{}
-	mi := &file_proto_database_proto_msgTypes[39]
+	mi := &file_proto_database_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2278,7 +2406,7 @@ func (x *GetAssistantRequest) String() string {
 func (*GetAssistantRequest) ProtoMessage() {}
 
 func (x *GetAssistantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[39]
+	mi := &file_proto_database_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2291,7 +2419,7 @@ func (x *GetAssistantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAssistantRequest.ProtoReflect.Descriptor instead.
 func (*GetAssistantRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{39}
+	return file_proto_database_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *GetAssistantRequest) GetId() string {
@@ -2310,7 +2438,7 @@ type GetAssistantByAPITokenRequest struct {
 
 func (x *GetAssistantByAPITokenRequest) Reset() {
 	*x = GetAssistantByAPITokenRequest{}
-	mi := &file_proto_database_proto_msgTypes[40]
+	mi := &file_proto_database_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2322,7 +2450,7 @@ func (x *GetAssistantByAPITokenRequest) String() string {
 func (*GetAssistantByAPITokenRequest) ProtoMessage() {}
 
 func (x *GetAssistantByAPITokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[40]
+	mi := &file_proto_database_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2335,7 +2463,7 @@ func (x *GetAssistantByAPITokenRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAssistantByAPITokenRequest.ProtoReflect.Descriptor instead.
 func (*GetAssistantByAPITokenRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{40}
+	return file_proto_database_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *GetAssistantByAPITokenRequest) GetApiToken() string {
@@ -2357,7 +2485,7 @@ type UpdateAssistantRequest struct {
 
 func (x *UpdateAssistantRequest) Reset() {
 	*x = UpdateAssistantRequest{}
-	mi := &file_proto_database_proto_msgTypes[41]
+	mi := &file_proto_database_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2369,7 +2497,7 @@ func (x *UpdateAssistantRequest) String() string {
 func (*UpdateAssistantRequest) ProtoMessage() {}
 
 func (x *UpdateAssistantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[41]
+	mi := &file_proto_database_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2382,7 +2510,7 @@ func (x *UpdateAssistantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAssistantRequest.ProtoReflect.Descriptor instead.
 func (*UpdateAssistantRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{41}
+	return file_proto_database_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *UpdateAssistantRequest) GetId() string {
@@ -2422,7 +2550,7 @@ type DeleteAssistantRequest struct {
 
 func (x *DeleteAssistantRequest) Reset() {
 	*x = DeleteAssistantRequest{}
-	mi := &file_proto_database_proto_msgTypes[42]
+	mi := &file_proto_database_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2434,7 +2562,7 @@ func (x *DeleteAssistantRequest) String() string {
 func (*DeleteAssistantRequest) ProtoMessage() {}
 
 func (x *DeleteAssistantRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[42]
+	mi := &file_proto_database_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2447,7 +2575,7 @@ func (x *DeleteAssistantRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAssistantRequest.ProtoReflect.Descriptor instead.
 func (*DeleteAssistantRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{42}
+	return file_proto_database_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *DeleteAssistantRequest) GetId() string {
@@ -2466,7 +2594,7 @@ type DeleteAssistantResponse struct {
 
 func (x *DeleteAssistantResponse) Reset() {
 	*x = DeleteAssistantResponse{}
-	mi := &file_proto_database_proto_msgTypes[43]
+	mi := &file_proto_database_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2478,7 +2606,7 @@ func (x *DeleteAssistantResponse) String() string {
 func (*DeleteAssistantResponse) ProtoMessage() {}
 
 func (x *DeleteAssistantResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[43]
+	mi := &file_proto_database_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2491,7 +2619,7 @@ func (x *DeleteAssistantResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteAssistantResponse.ProtoReflect.Descriptor instead.
 func (*DeleteAssistantResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{43}
+	return file_proto_database_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *DeleteAssistantResponse) GetSuccess() bool {
@@ -2510,7 +2638,7 @@ type GetAssistantsByUserIDRequest struct {
 
 func (x *GetAssistantsByUserIDRequest) Reset() {
 	*x = GetAssistantsByUserIDRequest{}
-	mi := &file_proto_database_proto_msgTypes[44]
+	mi := &file_proto_database_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2522,7 +2650,7 @@ func (x *GetAssistantsByUserIDRequest) String() string {
 func (*GetAssistantsByUserIDRequest) ProtoMessage() {}
 
 func (x *GetAssistantsByUserIDRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[44]
+	mi := &file_proto_database_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2535,7 +2663,7 @@ func (x *GetAssistantsByUserIDRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAssistantsByUserIDRequest.ProtoReflect.Descriptor instead.
 func (*GetAssistantsByUserIDRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{44}
+	return file_proto_database_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *GetAssistantsByUserIDRequest) GetUserId() string {
@@ -2554,7 +2682,7 @@ type AssistantsResponse struct {
 
 func (x *AssistantsResponse) Reset() {
 	*x = AssistantsResponse{}
-	mi := &file_proto_database_proto_msgTypes[45]
+	mi := &file_proto_database_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2566,7 +2694,7 @@ func (x *AssistantsResponse) String() string {
 func (*AssistantsResponse) ProtoMessage() {}
 
 func (x *AssistantsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[45]
+	mi := &file_proto_database_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2579,7 +2707,7 @@ func (x *AssistantsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AssistantsResponse.ProtoReflect.Descriptor instead.
 func (*AssistantsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{45}
+	return file_proto_database_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *AssistantsResponse) GetAssistants() []*AssistantResponse {
@@ -2599,7 +2727,7 @@ type GetLatestChatByCustomerRequest struct {
 
 func (x *GetLatestChatByCustomerRequest) Reset() {
 	*x = GetLatestChatByCustomerRequest{}
-	mi := &file_proto_database_proto_msgTypes[46]
+	mi := &file_proto_database_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2611,7 +2739,7 @@ func (x *GetLatestChatByCustomerRequest) String() string {
 func (*GetLatestChatByCustomerRequest) ProtoMessage() {}
 
 func (x *GetLatestChatByCustomerRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[46]
+	mi := &file_proto_database_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2624,7 +2752,7 @@ func (x *GetLatestChatByCustomerRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestChatByCustomerRequest.ProtoReflect.Descriptor instead.
 func (*GetLatestChatByCustomerRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{46}
+	return file_proto_database_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *GetLatestChatByCustomerRequest) GetAssistantId() string {
@@ -2788,7 +2916,16 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x12GetChatPageRequest\x12!\n" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12$\n" +
-	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"Y\n" +
+	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"\x86\x01\n" +
+	" GetChatPagesCountByUserIDRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
+	"\rassistant_ids\x18\x02 \x03(\tR\fassistantIds\x12$\n" +
+	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"\x94\x01\n" +
+	"\x1aGetChatPageByUserIDRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
+	"\rassistant_ids\x18\x02 \x03(\tR\fassistantIds\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12$\n" +
+	"\x0echats_per_page\x18\x04 \x01(\x05R\fchatsPerPage\"Y\n" +
 	"\x1cSearchChatsByCustomerRequest\x12!\n" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x16\n" +
 	"\x06search\x18\x02 \x01(\tR\x06search\"n\n" +
@@ -2832,7 +2969,7 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x1eGetLatestChatByCustomerRequest\x12!\n" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x1f\n" +
 	"\vcustomer_id\x18\x02 \x01(\tR\n" +
-	"customerId2\xf6\x12\n" +
+	"customerId2\xb7\x14\n" +
 	"\x0fDatabaseService\x12G\n" +
 	"\fGetAnalytics\x12\x1a.database.AnalyticsRequest\x1a\x1b.database.AnalyticsResponse\x12]\n" +
 	"\x17GetAnalyticsByAssistant\x12%.database.AnalyticsByAssistantRequest\x1a\x1b.database.AnalyticsResponse\x12A\n" +
@@ -2867,7 +3004,9 @@ const file_proto_database_proto_rawDesc = "" +
 	"\rUpdateMessage\x12\x1e.database.UpdateMessageRequest\x1a\x19.database.MessageResponse\x12P\n" +
 	"\rDeleteMessage\x12\x1e.database.DeleteMessageRequest\x1a\x1f.database.DeleteMessageResponse\x12Y\n" +
 	"\x11GetChatPagesCount\x12\".database.GetChatPagesCountRequest\x1a .database.ChatPagesCountResponse\x12D\n" +
-	"\vGetChatPage\x12\x1c.database.GetChatPageRequest\x1a\x17.database.ChatsResponse\x12h\n" +
+	"\vGetChatPage\x12\x1c.database.GetChatPageRequest\x1a\x17.database.ChatsResponse\x12i\n" +
+	"\x19GetChatPagesCountByUserID\x12*.database.GetChatPagesCountByUserIDRequest\x1a .database.ChatPagesCountResponse\x12T\n" +
+	"\x13GetChatPageByUserID\x12$.database.GetChatPageByUserIDRequest\x1a\x17.database.ChatsResponse\x12h\n" +
 	"\x15SearchChatsByCustomer\x12&.database.SearchChatsByCustomerRequest\x1a'.database.SearchChatsByCustomerResponse\x12[\n" +
 	"\x17GetLatestChatByCustomer\x12(.database.GetLatestChatByCustomerRequest\x1a\x16.database.ChatResponseB+Z)diaxel_zerde/database-service/proto;protob\x06proto3"
 
@@ -2883,61 +3022,63 @@ func file_proto_database_proto_rawDescGZIP() []byte {
 	return file_proto_database_proto_rawDescData
 }
 
-var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
+var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 49)
 var file_proto_database_proto_goTypes = []any{
-	(*AnalyticsRequest)(nil),               // 0: database.AnalyticsRequest
-	(*AnalyticsByAssistantRequest)(nil),    // 1: database.AnalyticsByAssistantRequest
-	(*AnalyticsResponse)(nil),              // 2: database.AnalyticsResponse
-	(*CreateUserRequest)(nil),              // 3: database.CreateUserRequest
-	(*GetUserRequest)(nil),                 // 4: database.GetUserRequest
-	(*UserResponse)(nil),                   // 5: database.UserResponse
-	(*SaveRefreshTokenRequest)(nil),        // 6: database.SaveRefreshTokenRequest
-	(*SaveRefreshTokenResponse)(nil),       // 7: database.SaveRefreshTokenResponse
-	(*GetRefreshTokenRequest)(nil),         // 8: database.GetRefreshTokenRequest
-	(*RefreshTokenResponse)(nil),           // 9: database.RefreshTokenResponse
-	(*DeleteRefreshTokenRequest)(nil),      // 10: database.DeleteRefreshTokenRequest
-	(*DeleteRefreshTokenResponse)(nil),     // 11: database.DeleteRefreshTokenResponse
-	(*CreateChatRequest)(nil),              // 12: database.CreateChatRequest
-	(*ChatResponse)(nil),                   // 13: database.ChatResponse
-	(*SaveMessageRequest)(nil),             // 14: database.SaveMessageRequest
-	(*MessageResponse)(nil),                // 15: database.MessageResponse
-	(*GetChatMessagesRequest)(nil),         // 16: database.GetChatMessagesRequest
-	(*GetAllChatMessagesRequest)(nil),      // 17: database.GetAllChatMessagesRequest
-	(*MessagesResponse)(nil),               // 18: database.MessagesResponse
-	(*GetUserByEmailRequest)(nil),          // 19: database.GetUserByEmailRequest
-	(*UpdateUserRequest)(nil),              // 20: database.UpdateUserRequest
-	(*DeleteUserRequest)(nil),              // 21: database.DeleteUserRequest
-	(*DeleteUserResponse)(nil),             // 22: database.DeleteUserResponse
-	(*GetChatRequest)(nil),                 // 23: database.GetChatRequest
-	(*GetChatsByUserRequest)(nil),          // 24: database.GetChatsByUserRequest
-	(*ChatsResponse)(nil),                  // 25: database.ChatsResponse
-	(*UpdateChatRequest)(nil),              // 26: database.UpdateChatRequest
-	(*DeleteChatRequest)(nil),              // 27: database.DeleteChatRequest
-	(*DeleteChatResponse)(nil),             // 28: database.DeleteChatResponse
-	(*UpdateMessageRequest)(nil),           // 29: database.UpdateMessageRequest
-	(*DeleteMessageRequest)(nil),           // 30: database.DeleteMessageRequest
-	(*DeleteMessageResponse)(nil),          // 31: database.DeleteMessageResponse
-	(*GetChatPagesCountRequest)(nil),       // 32: database.GetChatPagesCountRequest
-	(*ChatPagesCountResponse)(nil),         // 33: database.ChatPagesCountResponse
-	(*GetChatPageRequest)(nil),             // 34: database.GetChatPageRequest
-	(*SearchChatsByCustomerRequest)(nil),   // 35: database.SearchChatsByCustomerRequest
-	(*SearchChatsByCustomerResponse)(nil),  // 36: database.SearchChatsByCustomerResponse
-	(*CreateAssistantRequest)(nil),         // 37: database.CreateAssistantRequest
-	(*AssistantResponse)(nil),              // 38: database.AssistantResponse
-	(*GetAssistantRequest)(nil),            // 39: database.GetAssistantRequest
-	(*GetAssistantByAPITokenRequest)(nil),  // 40: database.GetAssistantByAPITokenRequest
-	(*UpdateAssistantRequest)(nil),         // 41: database.UpdateAssistantRequest
-	(*DeleteAssistantRequest)(nil),         // 42: database.DeleteAssistantRequest
-	(*DeleteAssistantResponse)(nil),        // 43: database.DeleteAssistantResponse
-	(*GetAssistantsByUserIDRequest)(nil),   // 44: database.GetAssistantsByUserIDRequest
-	(*AssistantsResponse)(nil),             // 45: database.AssistantsResponse
-	(*GetLatestChatByCustomerRequest)(nil), // 46: database.GetLatestChatByCustomerRequest
+	(*AnalyticsRequest)(nil),                 // 0: database.AnalyticsRequest
+	(*AnalyticsByAssistantRequest)(nil),      // 1: database.AnalyticsByAssistantRequest
+	(*AnalyticsResponse)(nil),                // 2: database.AnalyticsResponse
+	(*CreateUserRequest)(nil),                // 3: database.CreateUserRequest
+	(*GetUserRequest)(nil),                   // 4: database.GetUserRequest
+	(*UserResponse)(nil),                     // 5: database.UserResponse
+	(*SaveRefreshTokenRequest)(nil),          // 6: database.SaveRefreshTokenRequest
+	(*SaveRefreshTokenResponse)(nil),         // 7: database.SaveRefreshTokenResponse
+	(*GetRefreshTokenRequest)(nil),           // 8: database.GetRefreshTokenRequest
+	(*RefreshTokenResponse)(nil),             // 9: database.RefreshTokenResponse
+	(*DeleteRefreshTokenRequest)(nil),        // 10: database.DeleteRefreshTokenRequest
+	(*DeleteRefreshTokenResponse)(nil),       // 11: database.DeleteRefreshTokenResponse
+	(*CreateChatRequest)(nil),                // 12: database.CreateChatRequest
+	(*ChatResponse)(nil),                     // 13: database.ChatResponse
+	(*SaveMessageRequest)(nil),               // 14: database.SaveMessageRequest
+	(*MessageResponse)(nil),                  // 15: database.MessageResponse
+	(*GetChatMessagesRequest)(nil),           // 16: database.GetChatMessagesRequest
+	(*GetAllChatMessagesRequest)(nil),        // 17: database.GetAllChatMessagesRequest
+	(*MessagesResponse)(nil),                 // 18: database.MessagesResponse
+	(*GetUserByEmailRequest)(nil),            // 19: database.GetUserByEmailRequest
+	(*UpdateUserRequest)(nil),                // 20: database.UpdateUserRequest
+	(*DeleteUserRequest)(nil),                // 21: database.DeleteUserRequest
+	(*DeleteUserResponse)(nil),               // 22: database.DeleteUserResponse
+	(*GetChatRequest)(nil),                   // 23: database.GetChatRequest
+	(*GetChatsByUserRequest)(nil),            // 24: database.GetChatsByUserRequest
+	(*ChatsResponse)(nil),                    // 25: database.ChatsResponse
+	(*UpdateChatRequest)(nil),                // 26: database.UpdateChatRequest
+	(*DeleteChatRequest)(nil),                // 27: database.DeleteChatRequest
+	(*DeleteChatResponse)(nil),               // 28: database.DeleteChatResponse
+	(*UpdateMessageRequest)(nil),             // 29: database.UpdateMessageRequest
+	(*DeleteMessageRequest)(nil),             // 30: database.DeleteMessageRequest
+	(*DeleteMessageResponse)(nil),            // 31: database.DeleteMessageResponse
+	(*GetChatPagesCountRequest)(nil),         // 32: database.GetChatPagesCountRequest
+	(*ChatPagesCountResponse)(nil),           // 33: database.ChatPagesCountResponse
+	(*GetChatPageRequest)(nil),               // 34: database.GetChatPageRequest
+	(*GetChatPagesCountByUserIDRequest)(nil), // 35: database.GetChatPagesCountByUserIDRequest
+	(*GetChatPageByUserIDRequest)(nil),       // 36: database.GetChatPageByUserIDRequest
+	(*SearchChatsByCustomerRequest)(nil),     // 37: database.SearchChatsByCustomerRequest
+	(*SearchChatsByCustomerResponse)(nil),    // 38: database.SearchChatsByCustomerResponse
+	(*CreateAssistantRequest)(nil),           // 39: database.CreateAssistantRequest
+	(*AssistantResponse)(nil),                // 40: database.AssistantResponse
+	(*GetAssistantRequest)(nil),              // 41: database.GetAssistantRequest
+	(*GetAssistantByAPITokenRequest)(nil),    // 42: database.GetAssistantByAPITokenRequest
+	(*UpdateAssistantRequest)(nil),           // 43: database.UpdateAssistantRequest
+	(*DeleteAssistantRequest)(nil),           // 44: database.DeleteAssistantRequest
+	(*DeleteAssistantResponse)(nil),          // 45: database.DeleteAssistantResponse
+	(*GetAssistantsByUserIDRequest)(nil),     // 46: database.GetAssistantsByUserIDRequest
+	(*AssistantsResponse)(nil),               // 47: database.AssistantsResponse
+	(*GetLatestChatByCustomerRequest)(nil),   // 48: database.GetLatestChatByCustomerRequest
 }
 var file_proto_database_proto_depIdxs = []int32{
 	15, // 0: database.MessagesResponse.messages:type_name -> database.MessageResponse
 	13, // 1: database.ChatsResponse.chats:type_name -> database.ChatResponse
 	13, // 2: database.SearchChatsByCustomerResponse.chats:type_name -> database.ChatResponse
-	38, // 3: database.AssistantsResponse.assistants:type_name -> database.AssistantResponse
+	40, // 3: database.AssistantsResponse.assistants:type_name -> database.AssistantResponse
 	0,  // 4: database.DatabaseService.GetAnalytics:input_type -> database.AnalyticsRequest
 	1,  // 5: database.DatabaseService.GetAnalyticsByAssistant:input_type -> database.AnalyticsByAssistantRequest
 	3,  // 6: database.DatabaseService.CreateUser:input_type -> database.CreateUserRequest
@@ -2948,12 +3089,12 @@ var file_proto_database_proto_depIdxs = []int32{
 	6,  // 11: database.DatabaseService.SaveRefreshToken:input_type -> database.SaveRefreshTokenRequest
 	8,  // 12: database.DatabaseService.GetRefreshToken:input_type -> database.GetRefreshTokenRequest
 	10, // 13: database.DatabaseService.DeleteRefreshToken:input_type -> database.DeleteRefreshTokenRequest
-	37, // 14: database.DatabaseService.CreateAssistant:input_type -> database.CreateAssistantRequest
-	39, // 15: database.DatabaseService.GetAssistant:input_type -> database.GetAssistantRequest
-	40, // 16: database.DatabaseService.GetAssistantByAPIToken:input_type -> database.GetAssistantByAPITokenRequest
-	41, // 17: database.DatabaseService.UpdateAssistant:input_type -> database.UpdateAssistantRequest
-	42, // 18: database.DatabaseService.DeleteAssistant:input_type -> database.DeleteAssistantRequest
-	44, // 19: database.DatabaseService.GetAssistantsByUserID:input_type -> database.GetAssistantsByUserIDRequest
+	39, // 14: database.DatabaseService.CreateAssistant:input_type -> database.CreateAssistantRequest
+	41, // 15: database.DatabaseService.GetAssistant:input_type -> database.GetAssistantRequest
+	42, // 16: database.DatabaseService.GetAssistantByAPIToken:input_type -> database.GetAssistantByAPITokenRequest
+	43, // 17: database.DatabaseService.UpdateAssistant:input_type -> database.UpdateAssistantRequest
+	44, // 18: database.DatabaseService.DeleteAssistant:input_type -> database.DeleteAssistantRequest
+	46, // 19: database.DatabaseService.GetAssistantsByUserID:input_type -> database.GetAssistantsByUserIDRequest
 	12, // 20: database.DatabaseService.CreateChat:input_type -> database.CreateChatRequest
 	23, // 21: database.DatabaseService.GetChat:input_type -> database.GetChatRequest
 	24, // 22: database.DatabaseService.GetChatsByUser:input_type -> database.GetChatsByUserRequest
@@ -2966,40 +3107,44 @@ var file_proto_database_proto_depIdxs = []int32{
 	30, // 29: database.DatabaseService.DeleteMessage:input_type -> database.DeleteMessageRequest
 	32, // 30: database.DatabaseService.GetChatPagesCount:input_type -> database.GetChatPagesCountRequest
 	34, // 31: database.DatabaseService.GetChatPage:input_type -> database.GetChatPageRequest
-	35, // 32: database.DatabaseService.SearchChatsByCustomer:input_type -> database.SearchChatsByCustomerRequest
-	46, // 33: database.DatabaseService.GetLatestChatByCustomer:input_type -> database.GetLatestChatByCustomerRequest
-	2,  // 34: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
-	2,  // 35: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
-	5,  // 36: database.DatabaseService.CreateUser:output_type -> database.UserResponse
-	5,  // 37: database.DatabaseService.GetUser:output_type -> database.UserResponse
-	5,  // 38: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
-	5,  // 39: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
-	22, // 40: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
-	7,  // 41: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
-	9,  // 42: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
-	11, // 43: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
-	38, // 44: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
-	38, // 45: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
-	38, // 46: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
-	38, // 47: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
-	43, // 48: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
-	45, // 49: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
-	13, // 50: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
-	13, // 51: database.DatabaseService.GetChat:output_type -> database.ChatResponse
-	25, // 52: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
-	13, // 53: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
-	28, // 54: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
-	15, // 55: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
-	18, // 56: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
-	18, // 57: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
-	15, // 58: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
-	31, // 59: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
-	33, // 60: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
-	25, // 61: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
-	36, // 62: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
-	13, // 63: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
-	34, // [34:64] is the sub-list for method output_type
-	4,  // [4:34] is the sub-list for method input_type
+	35, // 32: database.DatabaseService.GetChatPagesCountByUserID:input_type -> database.GetChatPagesCountByUserIDRequest
+	36, // 33: database.DatabaseService.GetChatPageByUserID:input_type -> database.GetChatPageByUserIDRequest
+	37, // 34: database.DatabaseService.SearchChatsByCustomer:input_type -> database.SearchChatsByCustomerRequest
+	48, // 35: database.DatabaseService.GetLatestChatByCustomer:input_type -> database.GetLatestChatByCustomerRequest
+	2,  // 36: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
+	2,  // 37: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
+	5,  // 38: database.DatabaseService.CreateUser:output_type -> database.UserResponse
+	5,  // 39: database.DatabaseService.GetUser:output_type -> database.UserResponse
+	5,  // 40: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
+	5,  // 41: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
+	22, // 42: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
+	7,  // 43: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
+	9,  // 44: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
+	11, // 45: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
+	40, // 46: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
+	40, // 47: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
+	40, // 48: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
+	40, // 49: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
+	45, // 50: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
+	47, // 51: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
+	13, // 52: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
+	13, // 53: database.DatabaseService.GetChat:output_type -> database.ChatResponse
+	25, // 54: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
+	13, // 55: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
+	28, // 56: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
+	15, // 57: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
+	18, // 58: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
+	18, // 59: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
+	15, // 60: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
+	31, // 61: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
+	33, // 62: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
+	25, // 63: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
+	33, // 64: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
+	25, // 65: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
+	38, // 66: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
+	13, // 67: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
+	36, // [36:68] is the sub-list for method output_type
+	4,  // [4:36] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -3016,7 +3161,7 @@ func file_proto_database_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_database_proto_rawDesc), len(file_proto_database_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   47,
+			NumMessages:   49,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

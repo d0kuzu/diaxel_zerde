@@ -203,6 +203,43 @@ func (c *Client) GetChatPage(assistantID string, page, chatsPerPage int32) ([]*d
 	return resp.Chats, nil
 }
 
+func (c *Client) GetChatPagesCountByUserID(userID string, assistantIDs []string, chatsPerPage int32) (int32, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetChatPagesCountByUserIDRequest{
+		UserId:       userID,
+		AssistantIds: assistantIDs,
+		ChatsPerPage: chatsPerPage,
+	}
+
+	resp, err := c.DB.GetChatPagesCountByUserID(ctx, req)
+	if err != nil {
+		return 0, err
+	}
+
+	return resp.PagesCount, nil
+}
+
+func (c *Client) GetChatPageByUserID(userID string, assistantIDs []string, page, chatsPerPage int32) ([]*dbpb.ChatResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetChatPageByUserIDRequest{
+		UserId:       userID,
+		AssistantIds: assistantIDs,
+		Page:         page,
+		ChatsPerPage: chatsPerPage,
+	}
+
+	resp, err := c.DB.GetChatPageByUserID(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Chats, nil
+}
+
 func (c *Client) GetChatPagesCount(assistantID string, chatsPerPage int32) (int32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

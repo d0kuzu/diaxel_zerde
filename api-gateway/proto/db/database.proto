@@ -20,6 +20,7 @@ service DatabaseService {
   rpc GetAssistantByAPIToken(GetAssistantByAPITokenRequest) returns (AssistantResponse);
   rpc UpdateAssistant(UpdateAssistantRequest) returns (AssistantResponse);
   rpc DeleteAssistant(DeleteAssistantRequest) returns (DeleteAssistantResponse);
+  rpc GetAssistantsByUserID(GetAssistantsByUserIDRequest) returns (AssistantsResponse);
   rpc CreateChat(CreateChatRequest) returns (ChatResponse);
   rpc GetChat(GetChatRequest) returns (ChatResponse);
   rpc GetChatsByUser(GetChatsByUserRequest) returns (ChatsResponse);
@@ -32,6 +33,8 @@ service DatabaseService {
   rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
   rpc GetChatPagesCount(GetChatPagesCountRequest) returns (ChatPagesCountResponse);
   rpc GetChatPage(GetChatPageRequest) returns (ChatsResponse);
+  rpc GetChatPagesCountByUserID(GetChatPagesCountByUserIDRequest) returns (ChatPagesCountResponse);
+  rpc GetChatPageByUserID(GetChatPageByUserIDRequest) returns (ChatsResponse);
   rpc SearchChatsByCustomer(SearchChatsByCustomerRequest) returns (SearchChatsByCustomerResponse);
   rpc GetLatestChatByCustomer(GetLatestChatByCustomerRequest) returns (ChatResponse);
 }
@@ -231,6 +234,19 @@ message GetChatPageRequest {
   int32 chats_per_page = 3;
 }
 
+message GetChatPagesCountByUserIDRequest {
+  string user_id = 1;
+  repeated string assistant_ids = 2;
+  int32 chats_per_page = 3;
+}
+
+message GetChatPageByUserIDRequest {
+  string user_id = 1;
+  repeated string assistant_ids = 2;
+  int32 page = 3;
+  int32 chats_per_page = 4;
+}
+
 message SearchChatsByCustomerRequest {
   string assistant_id = 1;
   string search = 2;
@@ -278,6 +294,14 @@ message DeleteAssistantRequest {
 
 message DeleteAssistantResponse {
   bool success = 1;
+}
+
+message GetAssistantsByUserIDRequest {
+  string user_id = 1;
+}
+
+message AssistantsResponse {
+  repeated AssistantResponse assistants = 1;
 }
 
 message GetLatestChatByCustomerRequest {

@@ -5,6 +5,7 @@ import (
 	"diaxel/internal/grpc/db"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,21 +20,27 @@ func NewChatHandler(cfg *config.Settings, db *db.Client) *ChatHandler {
 }
 
 func (h *ChatHandler) GetAllChats(c *gin.Context) {
+	userID := c.GetHeader("X-User-Id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "X-User-Id header is required"})
+		return
+	}
+
 	pageStr := c.DefaultQuery("page", "1")
 	page, err := strconv.ParseInt(pageStr, 10, 32)
 	if err != nil || page < 1 {
 		page = 1
 	}
 
-	assistantID := c.Query("assistant_id")
-	if assistantID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
-		return
+	// Optional filtering by assistant IDs (comma separated)
+	var assistantIDs []string
+	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
+		assistantIDs = strings.Split(assistantsParam, ",")
 	}
 
 	chatsPerPage := int32(10)
 
-	chats, err := h.db.GetChatPage(assistantID, int32(page), chatsPerPage)
+	chats, err := h.db.GetChatPageByUserID(userID, assistantIDs, int32(page), chatsPerPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch chats", "details": err.Error()})
 		return
@@ -45,14 +52,20 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 }
 
 func (h *ChatHandler) GetPagination(c *gin.Context) {
-	assistantID := c.Query("assistant_id")
-	if assistantID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
+	userID := c.GetHeader("X-User-Id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "X-User-Id header is required"})
 		return
 	}
 
+	// Optional filtering by assistant IDs (comma separated)
+	var assistantIDs []string
+	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
+		assistantIDs = strings.Split(assistantsParam, ",")
+	}
+
 	chatsPerPage := int32(10)
-	pagesCount, err := h.db.GetChatPagesCount(assistantID, chatsPerPage)
+	pagesCount, err := h.db.GetChatPagesCountByUserID(userID, assistantIDs, chatsPerPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch pagination", "details": err.Error()})
 		return

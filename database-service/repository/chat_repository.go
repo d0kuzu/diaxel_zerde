@@ -20,6 +20,8 @@ type ChatRepository interface {
 	DeleteChat(ctx context.Context, id string) error
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
+	GetChatPagesCountByUserID(ctx context.Context, userID string, assistantIDs []string, chatsPerPage int32) (int32, error)
+	GetChatPageByUserID(ctx context.Context, userID string, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error)
 	SearchChatsByCustomer(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error)
 	GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error)
 	UpdateMessageCount(ctx context.Context, chatID string) error
@@ -102,6 +104,48 @@ func (r *chatRepository) GetChatPage(ctx context.Context, assistantID string, pa
 		Offset(int(offset)).
 		Find(&chats).Error; err != nil {
 		return nil, fmt.Errorf("failed to get chat page: %w", err)
+	}
+
+	return chats, nil
+}
+
+func (r *chatRepository) GetChatPagesCountByUserID(ctx context.Context, userID string, assistantIDs []string, chatsPerPage int32) (int32, error) {
+	var count int64
+	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("user_id = ?", userID)
+	if len(assistantIDs) > 0 {
+		query = query.Where("assistant_id IN ?", assistantIDs)
+	}
+
+	if err := query.Count(&count).Error; err != nil {
+		return 0, fmt.Errorf("failed to count chats by user id: %w", err)
+	}
+
+	if chatsPerPage <= 0 {
+		chatsPerPage = 10
+	}
+
+	pagesCount := int32((count + int64(chatsPerPage) - 1) / int64(chatsPerPage))
+	return pagesCount, nil
+}
+
+func (r *chatRepository) GetChatPageByUserID(ctx context.Context, userID string, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error) {
+	if page <= 0 {
+		page = 1
+	}
+	if chatsPerPage <= 0 {
+		chatsPerPage = 10
+	}
+
+	offset := (page - 1) * chatsPerPage
+
+	var chats []*models.Chat
+	query := r.db.WithContext(ctx).Where("user_id = ?", userID)
+	if len(assistantIDs) > 0 {
+		query = query.Where("assistant_id IN ?", assistantIDs)
+	}
+
+	if err := query.Order("created_at DESC").Limit(int(chatsPerPage)).Offset(int(offset)).Find(&chats).Error; err != nil {
+		return nil, fmt.Errorf("failed to get chat page by user id: %w", err)
 	}
 
 	return chats, nil
