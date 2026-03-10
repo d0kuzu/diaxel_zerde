@@ -91,6 +91,23 @@ func (c *Client) GetAssistantByAPIToken(apiToken string) (*dbpb.AssistantRespons
 	return resp, nil
 }
 
+func (c *Client) GetAssistantsByUserID(userID string) ([]*dbpb.AssistantResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetAssistantsByUserIDRequest{
+		UserId: userID,
+	}
+
+	resp, err := c.DB.GetAssistantsByUserID(ctx, req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Assistants, nil
+}
+
 func (c *Client) CreateChat(assistantID, customerID, platform string) (*dbpb.ChatResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

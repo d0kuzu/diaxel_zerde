@@ -570,6 +570,30 @@ func (s *DatabaseServer) DeleteAssistant(ctx context.Context, req *proto.DeleteA
 		Success: true,
 	}, nil
 }
+
+func (s *DatabaseServer) GetAssistantsByUserID(ctx context.Context, req *proto.GetAssistantsByUserIDRequest) (*proto.AssistantsResponse, error) {
+	assistants, err := s.assistantRepo.GetAssistantsByUserID(ctx, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get assistants by user id: %v", err)
+	}
+
+	var protoAssistants []*proto.AssistantResponse
+	for _, assistant := range assistants {
+		protoAssistants = append(protoAssistants, &proto.AssistantResponse{
+			Id:            assistant.ID,
+			Name:          assistant.Name,
+			ApiToken:      assistant.APIToken,
+			UserId:        assistant.UserID,
+			CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
+			Configuration: assistant.Configuration,
+		})
+	}
+
+	return &proto.AssistantsResponse{
+		Assistants: protoAssistants,
+	}, nil
+}
 func (s *DatabaseServer) GetLatestChatByCustomer(ctx context.Context, req *proto.GetLatestChatByCustomerRequest) (*proto.ChatResponse, error) {
 	chat, err := s.chatRepo.GetLatestChatByCustomer(ctx, req.AssistantId, req.CustomerId)
 	if err != nil {

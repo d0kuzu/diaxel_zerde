@@ -20,6 +20,7 @@ service DatabaseService {
   rpc GetAssistantByAPIToken(GetAssistantByAPITokenRequest) returns (AssistantResponse);
   rpc UpdateAssistant(UpdateAssistantRequest) returns (AssistantResponse);
   rpc DeleteAssistant(DeleteAssistantRequest) returns (DeleteAssistantResponse);
+  rpc GetAssistantsByUserID(GetAssistantsByUserIDRequest) returns (AssistantsResponse);
   rpc CreateChat(CreateChatRequest) returns (ChatResponse);
   rpc GetChat(GetChatRequest) returns (ChatResponse);
   rpc GetChatsByUser(GetChatsByUserRequest) returns (ChatsResponse);
@@ -278,6 +279,14 @@ message DeleteAssistantRequest {
 
 message DeleteAssistantResponse {
   bool success = 1;
+}
+
+message GetAssistantsByUserIDRequest {
+  string user_id = 1;
+}
+
+message AssistantsResponse {
+  repeated AssistantResponse assistants = 1;
 }
 
 message GetLatestChatByCustomerRequest {

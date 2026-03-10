@@ -1,6 +1,7 @@
 package api
 
 import (
+	"diaxel/internal/api/assistant"
 	"diaxel/internal/api/chat"
 	"diaxel/internal/api/twilio"
 	"diaxel/internal/api/webhook"
@@ -26,6 +27,7 @@ func RouterStart(app *appModule.App) {
 	twilio.TwilioWebhookRoutes(r, app)
 	ws.WSRoutes(r, app)
 	chat.ChatRoutes(r, app)
+	assistant.AssistantRoutes(r, app)
 
 	// analyticsService := analytics.NewAnalyticsService(app.Db)
 	// analyticsAPI.SetupRoutes(r, analyticsService)

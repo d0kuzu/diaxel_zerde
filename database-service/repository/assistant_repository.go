@@ -15,6 +15,7 @@ type AssistantRepository interface {
 	CreateAssistant(ctx context.Context, name, apiToken, userID string) (*models.Assistant, error)
 	GetAssistantByID(ctx context.Context, id string) (*models.Assistant, error)
 	GetAssistantByAPIToken(ctx context.Context, apiToken string) (*models.Assistant, error)
+	GetAssistantsByUserID(ctx context.Context, userID string) ([]models.Assistant, error)
 	UpdateAssistant(ctx context.Context, id, name, configuration, apiToken string) (*models.Assistant, error)
 	DeleteAssistant(ctx context.Context, id string) error
 }
@@ -88,6 +89,15 @@ func (r *assistantRepository) UpdateAssistant(ctx context.Context, id, name, con
 	}
 
 	return &assistant, nil
+}
+
+func (r *assistantRepository) GetAssistantsByUserID(ctx context.Context, userID string) ([]models.Assistant, error) {
+	var assistants []models.Assistant
+	if err := r.db.WithContext(ctx).Where("user_id = ?", userID).Find(&assistants).Error; err != nil {
+		return nil, fmt.Errorf("failed to get assistants by user id: %w", err)
+	}
+
+	return assistants, nil
 }
 
 func (r *assistantRepository) DeleteAssistant(ctx context.Context, id string) error {
