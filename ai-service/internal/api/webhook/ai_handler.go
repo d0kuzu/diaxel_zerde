@@ -25,8 +25,7 @@ func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client) *A
 }
 
 type RegisterBotRequest struct {
-	Name   string `json:"name"`
-	UserID string `json:"user_id"`
+	Name string `json:"name"`
 }
 
 func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
@@ -36,13 +35,19 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 		return
 	}
 
+	userId := c.GetHeader("X-User-Id")
+	if userId == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized request from gateway"})
+		return
+	}
+
 	secureToken, err := token.GenerateSecureToken(h.cfg.TokenPrefix, h.cfg.TokenLength)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
 		return
 	}
 
-	assistant, err := h.db.CreateAssistant(req.Name, secureToken, req.UserID)
+	assistant, err := h.db.CreateAssistant(req.Name, secureToken, userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistant in database"})
 		return
