@@ -105,6 +105,10 @@ func (c *Client) GetAssistantsByUserID(userID string) ([]*dbpb.AssistantResponse
 		return nil, err
 	}
 
+	if resp.Assistants == nil {
+		return []*dbpb.AssistantResponse{}, nil
+	}
+
 	return resp.Assistants, nil
 }
 
