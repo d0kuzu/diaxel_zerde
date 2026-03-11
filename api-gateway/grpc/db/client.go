@@ -46,11 +46,14 @@ func (c *Client) GetAssistantByAPIToken(token string) (*dbpb.AssistantResponse, 
 		ApiToken: token,
 	}
 
+	fmt.Printf("[API-GATEWAY] Sending gRPC request GetAssistantByAPIToken to DB for token: '%s'\n", token)
 	resp, err := c.DB.GetAssistantByAPIToken(ctx, req)
 
 	if err != nil {
+		fmt.Printf("[API-GATEWAY] Error from DB gRPC: %v\n", err)
 		return nil, err
 	}
 
+	fmt.Printf("[API-GATEWAY] DB returned assistant successfully: %s\n", resp.Id)
 	return resp, nil
 }
