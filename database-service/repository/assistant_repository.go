@@ -59,14 +59,23 @@ func (r *assistantRepository) GetAssistantByID(ctx context.Context, id string) (
 }
 
 func (r *assistantRepository) GetAssistantByAPIToken(ctx context.Context, apiToken string) (*models.Assistant, error) {
+	fmt.Printf("--- START GetAssistantByAPIToken ---\n")
+	fmt.Printf("Searching for apiToken: '%s'\n", apiToken)
+	
 	var assistant models.Assistant
 	if err := r.db.WithContext(ctx).Where("api_token = ?", apiToken).First(&assistant).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
+			fmt.Printf("Result: Assistant NOT FOUND for token: '%s'\n", apiToken)
+			fmt.Printf("--- END GetAssistantByAPIToken ---\n")
 			return nil, fmt.Errorf("assistant not found")
 		}
+		fmt.Printf("Result: DB Error finding assistant: %v\n", err)
+		fmt.Printf("--- END GetAssistantByAPIToken ---\n")
 		return nil, fmt.Errorf("failed to get assistant: %w", err)
 	}
 
+	fmt.Printf("Result: FOUND Assistant! ID: '%s', Name: '%s'\n", assistant.ID, assistant.Name)
+	fmt.Printf("--- END GetAssistantByAPIToken ---\n")
 	return &assistant, nil
 }
 
