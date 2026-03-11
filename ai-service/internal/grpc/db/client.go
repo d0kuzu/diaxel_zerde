@@ -152,6 +152,10 @@ func (c *Client) GetAllChatMessages(chatID string) ([]*dbpb.MessageResponse, err
 		return nil, err
 	}
 
+	if resp.Messages == nil {
+		return []*dbpb.MessageResponse{}, nil
+	}
+
 	return resp.Messages, nil
 }
 
@@ -182,6 +186,10 @@ func (c *Client) GetChatMessages(chatID string, limit, offset int32) ([]*dbpb.Me
 		return nil, err
 	}
 
+	if resp.Messages == nil {
+		return []*dbpb.MessageResponse{}, nil
+	}
+
 	return resp.Messages, nil
 }
 
@@ -198,6 +206,10 @@ func (c *Client) GetChatPage(assistantID string, page, chatsPerPage int32) ([]*d
 	resp, err := c.DB.GetChatPage(ctx, req)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.Chats == nil {
+		return []*dbpb.ChatResponse{}, nil
 	}
 
 	return resp.Chats, nil
@@ -237,6 +249,10 @@ func (c *Client) GetChatPageByUserID(userID string, assistantIDs []string, page,
 		return nil, err
 	}
 
+	if resp.Chats == nil {
+		return []*dbpb.ChatResponse{}, nil
+	}
+
 	return resp.Chats, nil
 }
 
@@ -270,6 +286,10 @@ func (c *Client) SearchChatsByCustomer(assistantIDs []string, search, userID str
 	resp, err := c.DB.SearchChatsByCustomer(ctx, req)
 	if err != nil {
 		return nil, 0, err
+	}
+
+	if resp.Chats == nil {
+		return []*dbpb.ChatResponse{}, resp.TotalCount, nil
 	}
 
 	return resp.Chats, resp.TotalCount, nil
