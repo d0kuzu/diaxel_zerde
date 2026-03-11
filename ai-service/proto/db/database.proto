@@ -248,8 +248,9 @@ message GetChatPageByUserIDRequest {
 }
 
 message SearchChatsByCustomerRequest {
-  string assistant_id = 1;
+  repeated string assistant_ids = 1;
   string search = 2;
+  string user_id = 3;
 }
 
 message SearchChatsByCustomerResponse {

@@ -257,13 +257,14 @@ func (c *Client) GetChatPagesCount(assistantID string, chatsPerPage int32) (int3
 	return resp.PagesCount, nil
 }
 
-func (c *Client) SearchChatsByCustomer(assistantID, search string) ([]*dbpb.ChatResponse, int32, error) {
+func (c *Client) SearchChatsByCustomer(assistantIDs []string, search, userID string) ([]*dbpb.ChatResponse, int32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := &dbpb.SearchChatsByCustomerRequest{
-		AssistantId: assistantID,
-		Search:      search,
+		AssistantIds: assistantIDs,
+		Search:       search,
+		UserId:       userID,
 	}
 
 	resp, err := c.DB.SearchChatsByCustomer(ctx, req)

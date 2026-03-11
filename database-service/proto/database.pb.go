@@ -2131,8 +2131,9 @@ func (x *GetChatPageByUserIDRequest) GetChatsPerPage() int32 {
 
 type SearchChatsByCustomerRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	AssistantIds  []string               `protobuf:"bytes,1,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
 	Search        string                 `protobuf:"bytes,2,opt,name=search,proto3" json:"search,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2167,16 +2168,23 @@ func (*SearchChatsByCustomerRequest) Descriptor() ([]byte, []int) {
 	return file_proto_database_proto_rawDescGZIP(), []int{37}
 }
 
-func (x *SearchChatsByCustomerRequest) GetAssistantId() string {
+func (x *SearchChatsByCustomerRequest) GetAssistantIds() []string {
 	if x != nil {
-		return x.AssistantId
+		return x.AssistantIds
 	}
-	return ""
+	return nil
 }
 
 func (x *SearchChatsByCustomerRequest) GetSearch() string {
 	if x != nil {
 		return x.Search
+	}
+	return ""
+}
+
+func (x *SearchChatsByCustomerRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
 	}
 	return ""
 }
@@ -2925,10 +2933,11 @@ const file_proto_database_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
 	"\rassistant_ids\x18\x02 \x03(\tR\fassistantIds\x12\x12\n" +
 	"\x04page\x18\x03 \x01(\x05R\x04page\x12$\n" +
-	"\x0echats_per_page\x18\x04 \x01(\x05R\fchatsPerPage\"Y\n" +
-	"\x1cSearchChatsByCustomerRequest\x12!\n" +
-	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x16\n" +
-	"\x06search\x18\x02 \x01(\tR\x06search\"n\n" +
+	"\x0echats_per_page\x18\x04 \x01(\x05R\fchatsPerPage\"t\n" +
+	"\x1cSearchChatsByCustomerRequest\x12#\n" +
+	"\rassistant_ids\x18\x01 \x03(\tR\fassistantIds\x12\x16\n" +
+	"\x06search\x18\x02 \x01(\tR\x06search\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\"n\n" +
 	"\x1dSearchChatsByCustomerResponse\x12,\n" +
 	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +

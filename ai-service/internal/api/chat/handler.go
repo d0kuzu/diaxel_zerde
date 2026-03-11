@@ -96,18 +96,25 @@ func (h *ChatHandler) GetChat(c *gin.Context) {
 
 func (h *ChatHandler) SearchChat(c *gin.Context) {
 	searchTerm := c.Query("chat")
-	assistantID := c.Query("assistant_id")
-	if assistantID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
-		return
-	}
 
 	if searchTerm == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "chat parameter is required (search term)"})
 		return
 	}
 
-	chats, totalCount, err := h.db.SearchChatsByCustomer(assistantID, searchTerm)
+	userID := c.GetHeader("X-User-Id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "X-User-Id header is required"})
+		return
+	}
+
+	// Optional filtering by assistant IDs (comma separated)
+	var assistantIDs []string
+	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
+		assistantIDs = strings.Split(assistantsParam, ",")
+	}
+
+	chats, totalCount, err := h.db.SearchChatsByCustomer(assistantIDs, searchTerm, userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to search chats", "details": err.Error()})
 		return

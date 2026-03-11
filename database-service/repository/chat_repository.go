@@ -22,7 +22,7 @@ type ChatRepository interface {
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
 	GetChatPagesCountByUserID(ctx context.Context, userID string, assistantIDs []string, chatsPerPage int32) (int32, error)
 	GetChatPageByUserID(ctx context.Context, userID string, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error)
-	SearchChatsByCustomer(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error)
+	SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search, userID string) ([]*models.Chat, int32, error)
 	GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error)
 	UpdateMessageCount(ctx context.Context, chatID string) error
 }
@@ -151,15 +151,23 @@ func (r *chatRepository) GetChatPageByUserID(ctx context.Context, userID string,
 	return chats, nil
 }
 
-func (r *chatRepository) SearchChatsByCustomer(ctx context.Context, assistantID, search string) ([]*models.Chat, int32, error) {
+func (r *chatRepository) SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search, userID string) ([]*models.Chat, int32, error) {
 	var chats []*models.Chat
 	var count int64
 
-	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("assistant_id = ?", assistantID)
+	query := r.db.WithContext(ctx).Model(&models.Chat{})
+
+	if len(assistantIDs) > 0 {
+		query = query.Where("assistant_id IN ?", assistantIDs)
+	}
 
 	// If search term is provided, search by customer_id
 	if search != "" {
 		query = query.Where("customer_id LIKE ?", "%"+search+"%")
+	}
+
+	if userID != "" {
+		query = query.Where("user_id = ?", userID)
 	}
 
 	// Get total count
