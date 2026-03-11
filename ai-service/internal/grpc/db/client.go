@@ -215,12 +215,11 @@ func (c *Client) GetChatPage(assistantID string, page, chatsPerPage int32) ([]*d
 	return resp.Chats, nil
 }
 
-func (c *Client) GetChatPagesCountByUserID(userID string, assistantIDs []string, chatsPerPage int32) (int32, error) {
+func (c *Client) GetChatPagesCountByUserID(assistantIDs []string, chatsPerPage int32) (int32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := &dbpb.GetChatPagesCountByUserIDRequest{
-		UserId:       userID,
 		AssistantIds: assistantIDs,
 		ChatsPerPage: chatsPerPage,
 	}
@@ -233,12 +232,11 @@ func (c *Client) GetChatPagesCountByUserID(userID string, assistantIDs []string,
 	return resp.PagesCount, nil
 }
 
-func (c *Client) GetChatPageByUserID(userID string, assistantIDs []string, page, chatsPerPage int32) ([]*dbpb.ChatResponse, error) {
+func (c *Client) GetChatPageByUserID(assistantIDs []string, page, chatsPerPage int32) ([]*dbpb.ChatResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := &dbpb.GetChatPageByUserIDRequest{
-		UserId:       userID,
 		AssistantIds: assistantIDs,
 		Page:         page,
 		ChatsPerPage: chatsPerPage,
@@ -273,14 +271,13 @@ func (c *Client) GetChatPagesCount(assistantID string, chatsPerPage int32) (int3
 	return resp.PagesCount, nil
 }
 
-func (c *Client) SearchChatsByCustomer(assistantIDs []string, search, userID string) ([]*dbpb.ChatResponse, int32, error) {
+func (c *Client) SearchChatsByCustomer(assistantIDs []string, search string) ([]*dbpb.ChatResponse, int32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := &dbpb.SearchChatsByCustomerRequest{
 		AssistantIds: assistantIDs,
 		Search:       search,
-		UserId:       userID,
 	}
 
 	resp, err := c.DB.SearchChatsByCustomer(ctx, req)

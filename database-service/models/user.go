@@ -34,7 +34,6 @@ type Assistant struct {
 // Chat - соответствует таблице chats в БД (из AI сервиса)
 type Chat struct {
 	ID           string    `json:"id" db:"id" gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
-	UserID       string    `json:"user_id" db:"user_id" gorm:"type:uuid;not null;index;references:users(id)"`
 	AssistantID  string    `json:"assistant_id" db:"assistant_id" gorm:"type:uuid;not null;references:assistants(id)"`
 	CustomerID   *string   `json:"customer_id" db:"customer_id"`
 	MessageCount int32     `json:"message_count" db:"message_count" gorm:"default:0"`

@@ -3,6 +3,7 @@ package chat
 import (
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,6 +20,35 @@ func NewChatHandler(cfg *config.Settings, db *db.Client) *ChatHandler {
 	return &ChatHandler{cfg: cfg, db: db}
 }
 
+func (h *ChatHandler) getValidatedAssistantIDs(c *gin.Context, userID string) ([]string, error) {
+	assistants, err := h.db.GetAssistantsByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	validAssistantIDsMap := make(map[string]bool)
+	var userAssistantIDs []string
+	for _, a := range assistants {
+		validAssistantIDsMap[a.Id] = true
+		userAssistantIDs = append(userAssistantIDs, a.Id)
+	}
+
+	var finalAssistantIDs []string
+	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
+		requestedIDs := strings.Split(assistantsParam, ",")
+		for _, id := range requestedIDs {
+			if !validAssistantIDsMap[id] {
+				return nil, fmt.Errorf("указанный assistant_id (%s) не принадлежит пользователю", id)
+			}
+			finalAssistantIDs = append(finalAssistantIDs, id)
+		}
+	} else {
+		finalAssistantIDs = userAssistantIDs
+	}
+
+	return finalAssistantIDs, nil
+}
+
 func (h *ChatHandler) GetAllChats(c *gin.Context) {
 	userID := c.GetHeader("X-User-Id")
 	if userID == "" {
@@ -32,15 +62,20 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 		page = 1
 	}
 
-	// Optional filtering by assistant IDs (comma separated)
-	var assistantIDs []string
-	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
-		assistantIDs = strings.Split(assistantsParam, ",")
+	assistantIDs, err := h.getValidatedAssistantIDs(c, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to validate assistants", "details": err.Error()})
+		return
+	}
+
+	if len(assistantIDs) == 0 {
+		c.JSON(http.StatusOK, gin.H{"answer": []string{}})
+		return
 	}
 
 	chatsPerPage := int32(10)
 
-	chats, err := h.db.GetChatPageByUserID(userID, assistantIDs, int32(page), chatsPerPage)
+	chats, err := h.db.GetChatPageByUserID(assistantIDs, int32(page), chatsPerPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch chats", "details": err.Error()})
 		return
@@ -58,14 +93,19 @@ func (h *ChatHandler) GetPagination(c *gin.Context) {
 		return
 	}
 
-	// Optional filtering by assistant IDs (comma separated)
-	var assistantIDs []string
-	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
-		assistantIDs = strings.Split(assistantsParam, ",")
+	assistantIDs, err := h.getValidatedAssistantIDs(c, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to validate assistants", "details": err.Error()})
+		return
+	}
+
+	if len(assistantIDs) == 0 {
+		c.JSON(http.StatusOK, gin.H{"answer": 0})
+		return
 	}
 
 	chatsPerPage := int32(10)
-	pagesCount, err := h.db.GetChatPagesCountByUserID(userID, assistantIDs, chatsPerPage)
+	pagesCount, err := h.db.GetChatPagesCountByUserID(assistantIDs, chatsPerPage)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch pagination", "details": err.Error()})
 		return
@@ -108,13 +148,18 @@ func (h *ChatHandler) SearchChat(c *gin.Context) {
 		return
 	}
 
-	// Optional filtering by assistant IDs (comma separated)
-	var assistantIDs []string
-	if assistantsParam := c.Query("assistant_ids"); assistantsParam != "" {
-		assistantIDs = strings.Split(assistantsParam, ",")
+	assistantIDs, err := h.getValidatedAssistantIDs(c, userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to validate assistants", "details": err.Error()})
+		return
 	}
 
-	chats, totalCount, err := h.db.SearchChatsByCustomer(assistantIDs, searchTerm, userID)
+	if len(assistantIDs) == 0 {
+		c.JSON(http.StatusOK, gin.H{"answer": []string{}, "total_count": 0})
+		return
+	}
+
+	chats, totalCount, err := h.db.SearchChatsByCustomer(assistantIDs, searchTerm)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to search chats", "details": err.Error()})
 		return

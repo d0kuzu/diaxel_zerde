@@ -275,7 +275,7 @@ func (s *DatabaseServer) GetChat(ctx context.Context, req *proto.GetChatRequest)
 }
 
 func (s *DatabaseServer) GetChatsByUser(ctx context.Context, req *proto.GetChatsByUserRequest) (*proto.ChatsResponse, error) {
-	chats, err := s.chatRepo.GetChatsByUserID(ctx, req.UserId, req.AssistantId, req.Limit, req.Offset)
+	chats, err := s.chatRepo.GetChatsByUserID(ctx, req.AssistantIds, req.Limit, req.Offset)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get chats by user: %v", err)
 	}
@@ -479,7 +479,7 @@ func (s *DatabaseServer) GetChatPage(ctx context.Context, req *proto.GetChatPage
 }
 
 func (s *DatabaseServer) GetChatPagesCountByUserID(ctx context.Context, req *proto.GetChatPagesCountByUserIDRequest) (*proto.ChatPagesCountResponse, error) {
-	pagesCount, err := s.chatRepo.GetChatPagesCountByUserID(ctx, req.UserId, req.AssistantIds, req.ChatsPerPage)
+	pagesCount, err := s.chatRepo.GetChatPagesCountByUserID(ctx, req.AssistantIds, req.ChatsPerPage)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get chat pages count by user: %v", err)
 	}
@@ -490,7 +490,7 @@ func (s *DatabaseServer) GetChatPagesCountByUserID(ctx context.Context, req *pro
 }
 
 func (s *DatabaseServer) GetChatPageByUserID(ctx context.Context, req *proto.GetChatPageByUserIDRequest) (*proto.ChatsResponse, error) {
-	chats, err := s.chatRepo.GetChatPageByUserID(ctx, req.UserId, req.AssistantIds, req.Page, req.ChatsPerPage)
+	chats, err := s.chatRepo.GetChatPageByUserID(ctx, req.AssistantIds, req.Page, req.ChatsPerPage)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get chat page by user: %v", err)
 	}
@@ -519,7 +519,7 @@ func (s *DatabaseServer) GetChatPageByUserID(ctx context.Context, req *proto.Get
 }
 
 func (s *DatabaseServer) SearchChatsByCustomer(ctx context.Context, req *proto.SearchChatsByCustomerRequest) (*proto.SearchChatsByCustomerResponse, error) {
-	chats, totalCount, err := s.chatRepo.SearchChatsByCustomer(ctx, req.AssistantIds, req.Search, req.UserId)
+	chats, totalCount, err := s.chatRepo.SearchChatsByCustomer(ctx, req.AssistantIds, req.Search)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to search chats: %v", err)
 	}

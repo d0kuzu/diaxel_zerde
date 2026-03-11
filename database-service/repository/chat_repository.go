@@ -15,14 +15,14 @@ type ChatRepository interface {
 	CreateChat(ctx context.Context, assistantID, customerID, platform string) (*models.Chat, error)
 	GetChatByID(ctx context.Context, id string) (*models.Chat, error)
 	GetChatsByCustomerID(ctx context.Context, customerID string) ([]*models.Chat, error)
-	GetChatsByUserID(ctx context.Context, userID, assistantID string, limit, offset int32) ([]*models.Chat, error)
+	GetChatsByUserID(ctx context.Context, assistantIDs []string, limit, offset int32) ([]*models.Chat, error)
 	UpdateChat(ctx context.Context, id, assistantID, customerID string) (*models.Chat, error)
 	DeleteChat(ctx context.Context, id string) error
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
-	GetChatPagesCountByUserID(ctx context.Context, userID string, assistantIDs []string, chatsPerPage int32) (int32, error)
-	GetChatPageByUserID(ctx context.Context, userID string, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error)
-	SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search, userID string) ([]*models.Chat, int32, error)
+	GetChatPagesCountByUserID(ctx context.Context, assistantIDs []string, chatsPerPage int32) (int32, error)
+	GetChatPageByUserID(ctx context.Context, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error)
+	SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search string) ([]*models.Chat, int32, error)
 	GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error)
 	UpdateMessageCount(ctx context.Context, chatID string) error
 }
@@ -38,7 +38,6 @@ func NewChatRepository(db *gorm.DB) ChatRepository {
 func (r *chatRepository) CreateChat(ctx context.Context, assistantID, customerID, platform string) (*models.Chat, error) {
 	chat := models.Chat{
 		ID:          uuid.New().String(),
-		UserID:      uuid.New().String(),
 		AssistantID: assistantID,
 		CustomerID:  &customerID,
 		StartedAt:   time.Now(),
@@ -109,12 +108,12 @@ func (r *chatRepository) GetChatPage(ctx context.Context, assistantID string, pa
 	return chats, nil
 }
 
-func (r *chatRepository) GetChatPagesCountByUserID(ctx context.Context, userID string, assistantIDs []string, chatsPerPage int32) (int32, error) {
-	var count int64
-	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("user_id = ?", userID)
-	if len(assistantIDs) > 0 {
-		query = query.Where("assistant_id IN ?", assistantIDs)
+func (r *chatRepository) GetChatPagesCountByUserID(ctx context.Context, assistantIDs []string, chatsPerPage int32) (int32, error) {
+	if len(assistantIDs) == 0 {
+		return 0, nil
 	}
+	var count int64
+	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("assistant_id IN ?", assistantIDs)
 
 	if err := query.Count(&count).Error; err != nil {
 		return 0, fmt.Errorf("failed to count chats by user id: %w", err)
@@ -128,7 +127,10 @@ func (r *chatRepository) GetChatPagesCountByUserID(ctx context.Context, userID s
 	return pagesCount, nil
 }
 
-func (r *chatRepository) GetChatPageByUserID(ctx context.Context, userID string, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error) {
+func (r *chatRepository) GetChatPageByUserID(ctx context.Context, assistantIDs []string, page, chatsPerPage int32) ([]*models.Chat, error) {
+	if len(assistantIDs) == 0 {
+		return []*models.Chat{}, nil
+	}
 	if page <= 0 {
 		page = 1
 	}
@@ -139,10 +141,7 @@ func (r *chatRepository) GetChatPageByUserID(ctx context.Context, userID string,
 	offset := (page - 1) * chatsPerPage
 
 	var chats []*models.Chat
-	query := r.db.WithContext(ctx).Where("user_id = ?", userID)
-	if len(assistantIDs) > 0 {
-		query = query.Where("assistant_id IN ?", assistantIDs)
-	}
+	query := r.db.WithContext(ctx).Where("assistant_id IN ?", assistantIDs)
 
 	if err := query.Order("created_at DESC").Limit(int(chatsPerPage)).Offset(int(offset)).Find(&chats).Error; err != nil {
 		return nil, fmt.Errorf("failed to get chat page by user id: %w", err)
@@ -151,23 +150,18 @@ func (r *chatRepository) GetChatPageByUserID(ctx context.Context, userID string,
 	return chats, nil
 }
 
-func (r *chatRepository) SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search, userID string) ([]*models.Chat, int32, error) {
+func (r *chatRepository) SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search string) ([]*models.Chat, int32, error) {
+	if len(assistantIDs) == 0 {
+		return []*models.Chat{}, 0, nil
+	}
 	var chats []*models.Chat
 	var count int64
 
-	query := r.db.WithContext(ctx).Model(&models.Chat{})
-
-	if len(assistantIDs) > 0 {
-		query = query.Where("assistant_id IN ?", assistantIDs)
-	}
+	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("assistant_id IN ?", assistantIDs)
 
 	// If search term is provided, search by customer_id
 	if search != "" {
 		query = query.Where("customer_id LIKE ?", "%"+search+"%")
-	}
-
-	if userID != "" {
-		query = query.Where("user_id = ?", userID)
 	}
 
 	// Get total count
@@ -215,12 +209,12 @@ func (r *chatRepository) UpdateMessageCount(ctx context.Context, chatID string) 
 	return nil
 }
 
-func (r *chatRepository) GetChatsByUserID(ctx context.Context, userID, assistantID string, limit, offset int32) ([]*models.Chat, error) {
-	var chats []*models.Chat
-	query := r.db.WithContext(ctx).Where("user_id = ?", userID)
-	if assistantID != "" {
-		query = query.Where("assistant_id = ?", assistantID)
+func (r *chatRepository) GetChatsByUserID(ctx context.Context, assistantIDs []string, limit, offset int32) ([]*models.Chat, error) {
+	if len(assistantIDs) == 0 {
+		return []*models.Chat{}, nil
 	}
+	var chats []*models.Chat
+	query := r.db.WithContext(ctx).Where("assistant_id IN ?", assistantIDs)
 	if limit > 0 {
 		query = query.Limit(int(limit))
 	}
