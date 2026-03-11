@@ -125,6 +125,17 @@ func (c *Client) CreateChat(assistantID, customerID, platform string) (*dbpb.Cha
 	return c.DB.CreateChat(ctx, req)
 }
 
+func (c *Client) GetChat(chatID string) (*dbpb.ChatResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetChatRequest{
+		Id: chatID,
+	}
+
+	return c.DB.GetChat(ctx, req)
+}
+
 func (c *Client) SaveMessage(chatID, role, content, platform string) (*dbpb.MessageResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

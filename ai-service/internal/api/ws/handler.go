@@ -31,6 +31,40 @@ func (h *WSHandler) ChatPolling(c *gin.Context) {
 		return
 	}
 
+	userID := c.GetHeader("X-User-Id")
+	if userID == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "X-User-Id header is required"})
+		return
+	}
+
+	// Fetch chat to get assistant_id
+	chatResp, err := h.db.GetChat(chatID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "chat not found"})
+		return
+	}
+
+	// Fetch user's assistants
+	assistants, err := h.db.GetAssistantsByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch assistants"})
+		return
+	}
+
+	// Validate ownership
+	isOwner := false
+	for _, a := range assistants {
+		if a.Id == chatResp.AssistantId {
+			isOwner = true
+			break
+		}
+	}
+
+	if !isOwner {
+		c.JSON(http.StatusForbidden, gin.H{"error": "access denied: chat does not belong to user"})
+		return
+	}
+
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Println("upgrade error:", err)
