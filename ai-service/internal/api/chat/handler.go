@@ -4,6 +4,7 @@ import (
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -23,8 +24,10 @@ func NewChatHandler(cfg *config.Settings, db *db.Client) *ChatHandler {
 func (h *ChatHandler) getValidatedAssistantIDs(c *gin.Context, userID string) ([]string, error) {
 	assistants, err := h.db.GetAssistantsByUserID(userID)
 	if err != nil {
+		log.Printf("[getValidatedAssistantIDs] Error getting assistants for user %s: %v", userID, err)
 		return nil, err
 	}
+	log.Printf("[getValidatedAssistantIDs] Found %d assistants for user %s", len(assistants), userID)
 
 	validAssistantIDsMap := make(map[string]bool)
 	var userAssistantIDs []string
@@ -46,6 +49,7 @@ func (h *ChatHandler) getValidatedAssistantIDs(c *gin.Context, userID string) ([
 		finalAssistantIDs = userAssistantIDs
 	}
 
+	log.Printf("[getValidatedAssistantIDs] Final assistant IDs: %v", finalAssistantIDs)
 	return finalAssistantIDs, nil
 }
 
@@ -69,9 +73,12 @@ func (h *ChatHandler) GetAllChats(c *gin.Context) {
 	}
 
 	if len(assistantIDs) == 0 {
+		log.Printf("[GetAllChats] No assistant IDs for user %s, returning empty result", userID)
 		c.JSON(http.StatusOK, gin.H{"answer": []string{}})
 		return
 	}
+
+	log.Printf("[GetAllChats] Fetching chats for assistants: %v, page: %d", assistantIDs, page)
 
 	chatsPerPage := int32(10)
 
