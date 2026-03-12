@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
 
 	"diaxel_zerde/database-service/models"
@@ -112,8 +113,9 @@ func (r *chatRepository) GetChatPagesCountByUserID(ctx context.Context, assistan
 	if len(assistantIDs) == 0 {
 		return 0, nil
 	}
+	log.Printf("GetChatPagesCountByUserID: assistantIDs=%v, chatsPerPage=%d", assistantIDs, chatsPerPage)
 	var count int64
-	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("assistant_id IN ?", assistantIDs)
+	query := r.db.WithContext(ctx).Debug().Model(&models.Chat{}).Where("assistant_id IN ?", assistantIDs)
 
 	if err := query.Count(&count).Error; err != nil {
 		return 0, fmt.Errorf("failed to count chats by user id: %w", err)
@@ -140,12 +142,16 @@ func (r *chatRepository) GetChatPageByUserID(ctx context.Context, assistantIDs [
 
 	offset := (page - 1) * chatsPerPage
 
+	log.Printf("GetChatPageByUserID: assistantIDs=%v, page=%d, chatsPerPage=%d, offset=%d", assistantIDs, page, chatsPerPage, offset)
+
 	var chats []*models.Chat
-	query := r.db.WithContext(ctx).Where("assistant_id IN ?", assistantIDs)
+	query := r.db.WithContext(ctx).Debug().Where("assistant_id IN ?", assistantIDs)
 
 	if err := query.Order("created_at DESC").Limit(int(chatsPerPage)).Offset(int(offset)).Find(&chats).Error; err != nil {
 		return nil, fmt.Errorf("failed to get chat page by user id: %w", err)
 	}
+
+	log.Printf("GetChatPageByUserID: found %d chats", len(chats))
 
 	return chats, nil
 }
