@@ -91,9 +91,58 @@ func getEnv(key, defaultValue string) string {
 func runMigrations(db *gorm.DB) error {
 	log.Println("Running database migrations...")
 
-	// Import models to ensure they're registered with GORM
-	// This will automatically create all tables based on the models
-	err := db.AutoMigrate(
+	// 1. Ensure schema_migrations table exists
+	sqlDB, err := db.DB()
+	if err != nil {
+		return fmt.Errorf("failed to get sql.DB: %w", err)
+	}
+
+	_, err = sqlDB.Exec(`
+		CREATE TABLE IF NOT EXISTS schema_migrations (
+			version VARCHAR(255) PRIMARY KEY,
+			applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+		)
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to create schema_migrations table: %w", err)
+	}
+
+	// 2. Read and run SQL migrations
+	migrationFiles, err := os.ReadDir("./migrations")
+	if err != nil {
+		// Log error but continue (might be missing in development)
+		log.Printf("Warning: failed to read migrations directory: %v", err)
+	} else {
+		for _, file := range migrationFiles {
+			if file.IsDir() || len(file.Name()) < 4 || file.Name()[len(file.Name())-4:] != ".sql" {
+				continue
+			}
+
+			version := file.Name()
+			var count int64
+			db.Table("schema_migrations").Where("version = ?", version).Count(&count)
+
+			if count == 0 {
+				log.Printf("Applying migration: %s", version)
+				content, err := os.ReadFile("./migrations/" + version)
+				if err != nil {
+					return fmt.Errorf("failed to read migration file %s: %w", version, err)
+				}
+
+				if err := db.Exec(string(content)).Error; err != nil {
+					return fmt.Errorf("failed to apply migration %s: %w", version, err)
+				}
+
+				if err := db.Exec("INSERT INTO schema_migrations (version) VALUES (?)", version).Error; err != nil {
+					return fmt.Errorf("failed to record migration %s: %w", version, err)
+				}
+			}
+		}
+	}
+
+	// 3. Run GORM AutoMigrate for model synchronization
+	// Note: AutoMigrate will not drop columns!
+	err = db.AutoMigrate(
 		&models.User{},
 		&models.RefreshToken{},
 		&models.Analytics{},
@@ -103,7 +152,7 @@ func runMigrations(db *gorm.DB) error {
 	)
 
 	if err != nil {
-		return fmt.Errorf("failed to run migrations: %w", err)
+		return fmt.Errorf("failed to run AutoMigrate: %w", err)
 	}
 
 	log.Println("Database migrations completed successfully")

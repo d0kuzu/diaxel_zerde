@@ -15,6 +15,7 @@ WORKDIR /app
 RUN apk --no-cache add ca-certificates
 
 COPY --from=builder /app/database-service .
+COPY migrations ./migrations
 
 RUN chmod +x database-service
 
