@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"time"
 
@@ -490,10 +491,14 @@ func (s *DatabaseServer) GetChatPagesCountByUserID(ctx context.Context, req *pro
 }
 
 func (s *DatabaseServer) GetChatPageByUserID(ctx context.Context, req *proto.GetChatPageByUserIDRequest) (*proto.ChatsResponse, error) {
+	log.Printf("[gRPC] GetChatPageByUserID: AssistantIds=%v, Page=%d, ChatsPerPage=%d", req.AssistantIds, req.Page, req.ChatsPerPage)
 	chats, err := s.chatRepo.GetChatPageByUserID(ctx, req.AssistantIds, req.Page, req.ChatsPerPage)
 	if err != nil {
+		log.Printf("[gRPC] GetChatPageByUserID Error: %v", err)
 		return nil, status.Errorf(codes.Internal, "failed to get chat page by user: %v", err)
 	}
+
+	log.Printf("[gRPC] GetChatPageByUserID: Returning %d chats", len(chats))
 
 	var protoChats []*proto.ChatResponse
 	for _, chat := range chats {

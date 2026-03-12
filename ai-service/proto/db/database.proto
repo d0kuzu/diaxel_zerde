@@ -178,10 +178,9 @@ message GetChatRequest {
 }
 
 message GetChatsByUserRequest {
-  string user_id = 1;
-  string assistant_id = 2;
-  int32 limit = 3;
-  int32 offset = 4;
+  repeated string assistant_ids = 1;
+  int32 limit = 2;
+  int32 offset = 3;
 }
 
 message ChatsResponse {
@@ -235,22 +234,19 @@ message GetChatPageRequest {
 }
 
 message GetChatPagesCountByUserIDRequest {
-  string user_id = 1;
-  repeated string assistant_ids = 2;
-  int32 chats_per_page = 3;
+  repeated string assistant_ids = 1;
+  int32 chats_per_page = 2;
 }
 
 message GetChatPageByUserIDRequest {
-  string user_id = 1;
-  repeated string assistant_ids = 2;
-  int32 page = 3;
-  int32 chats_per_page = 4;
+  repeated string assistant_ids = 1;
+  int32 page = 2;
+  int32 chats_per_page = 3;
 }
 
 message SearchChatsByCustomerRequest {
   repeated string assistant_ids = 1;
   string search = 2;
-  string user_id = 3;
 }
 
 message SearchChatsByCustomerResponse {

@@ -1415,10 +1415,9 @@ func (x *GetChatRequest) GetId() string {
 
 type GetChatsByUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	AssistantId   string                 `protobuf:"bytes,2,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
-	Limit         int32                  `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
-	Offset        int32                  `protobuf:"varint,4,opt,name=offset,proto3" json:"offset,omitempty"`
+	AssistantIds  []string               `protobuf:"bytes,1,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset        int32                  `protobuf:"varint,3,opt,name=offset,proto3" json:"offset,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1453,18 +1452,11 @@ func (*GetChatsByUserRequest) Descriptor() ([]byte, []int) {
 	return file_proto_db_database_proto_rawDescGZIP(), []int{24}
 }
 
-func (x *GetChatsByUserRequest) GetUserId() string {
+func (x *GetChatsByUserRequest) GetAssistantIds() []string {
 	if x != nil {
-		return x.UserId
+		return x.AssistantIds
 	}
-	return ""
-}
-
-func (x *GetChatsByUserRequest) GetAssistantId() string {
-	if x != nil {
-		return x.AssistantId
-	}
-	return ""
+	return nil
 }
 
 func (x *GetChatsByUserRequest) GetLimit() int32 {
@@ -2003,9 +1995,8 @@ func (x *GetChatPageRequest) GetChatsPerPage() int32 {
 
 type GetChatPagesCountByUserIDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	AssistantIds  []string               `protobuf:"bytes,2,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
-	ChatsPerPage  int32                  `protobuf:"varint,3,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
+	AssistantIds  []string               `protobuf:"bytes,1,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
+	ChatsPerPage  int32                  `protobuf:"varint,2,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2040,13 +2031,6 @@ func (*GetChatPagesCountByUserIDRequest) Descriptor() ([]byte, []int) {
 	return file_proto_db_database_proto_rawDescGZIP(), []int{35}
 }
 
-func (x *GetChatPagesCountByUserIDRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
 func (x *GetChatPagesCountByUserIDRequest) GetAssistantIds() []string {
 	if x != nil {
 		return x.AssistantIds
@@ -2063,10 +2047,9 @@ func (x *GetChatPagesCountByUserIDRequest) GetChatsPerPage() int32 {
 
 type GetChatPageByUserIDRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	AssistantIds  []string               `protobuf:"bytes,2,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
-	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
-	ChatsPerPage  int32                  `protobuf:"varint,4,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
+	AssistantIds  []string               `protobuf:"bytes,1,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	ChatsPerPage  int32                  `protobuf:"varint,3,opt,name=chats_per_page,json=chatsPerPage,proto3" json:"chats_per_page,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2101,13 +2084,6 @@ func (*GetChatPageByUserIDRequest) Descriptor() ([]byte, []int) {
 	return file_proto_db_database_proto_rawDescGZIP(), []int{36}
 }
 
-func (x *GetChatPageByUserIDRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
 func (x *GetChatPageByUserIDRequest) GetAssistantIds() []string {
 	if x != nil {
 		return x.AssistantIds
@@ -2133,7 +2109,6 @@ type SearchChatsByCustomerRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AssistantIds  []string               `protobuf:"bytes,1,rep,name=assistant_ids,json=assistantIds,proto3" json:"assistant_ids,omitempty"`
 	Search        string                 `protobuf:"bytes,2,opt,name=search,proto3" json:"search,omitempty"`
-	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2178,13 +2153,6 @@ func (x *SearchChatsByCustomerRequest) GetAssistantIds() []string {
 func (x *SearchChatsByCustomerRequest) GetSearch() string {
 	if x != nil {
 		return x.Search
-	}
-	return ""
-}
-
-func (x *SearchChatsByCustomerRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
 	}
 	return ""
 }
@@ -2887,12 +2855,11 @@ const file_proto_db_database_proto_rawDesc = "" +
 	"\x12DeleteUserResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\" \n" +
 	"\x0eGetChatRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\"\x81\x01\n" +
-	"\x15GetChatsByUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12!\n" +
-	"\fassistant_id\x18\x02 \x01(\tR\vassistantId\x12\x14\n" +
-	"\x05limit\x18\x03 \x01(\x05R\x05limit\x12\x16\n" +
-	"\x06offset\x18\x04 \x01(\x05R\x06offset\"=\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\"j\n" +
+	"\x15GetChatsByUserRequest\x12#\n" +
+	"\rassistant_ids\x18\x01 \x03(\tR\fassistantIds\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\x12\x16\n" +
+	"\x06offset\x18\x03 \x01(\x05R\x06offset\"=\n" +
 	"\rChatsResponse\x12,\n" +
 	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\"\x83\x01\n" +
 	"\x11UpdateChatRequest\x12\x0e\n" +
@@ -2924,20 +2891,17 @@ const file_proto_db_database_proto_rawDesc = "" +
 	"\x12GetChatPageRequest\x12!\n" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12$\n" +
-	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"\x86\x01\n" +
-	" GetChatPagesCountByUserIDRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
-	"\rassistant_ids\x18\x02 \x03(\tR\fassistantIds\x12$\n" +
-	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"\x94\x01\n" +
-	"\x1aGetChatPageByUserIDRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12#\n" +
-	"\rassistant_ids\x18\x02 \x03(\tR\fassistantIds\x12\x12\n" +
-	"\x04page\x18\x03 \x01(\x05R\x04page\x12$\n" +
-	"\x0echats_per_page\x18\x04 \x01(\x05R\fchatsPerPage\"t\n" +
+	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"m\n" +
+	" GetChatPagesCountByUserIDRequest\x12#\n" +
+	"\rassistant_ids\x18\x01 \x03(\tR\fassistantIds\x12$\n" +
+	"\x0echats_per_page\x18\x02 \x01(\x05R\fchatsPerPage\"{\n" +
+	"\x1aGetChatPageByUserIDRequest\x12#\n" +
+	"\rassistant_ids\x18\x01 \x03(\tR\fassistantIds\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12$\n" +
+	"\x0echats_per_page\x18\x03 \x01(\x05R\fchatsPerPage\"[\n" +
 	"\x1cSearchChatsByCustomerRequest\x12#\n" +
 	"\rassistant_ids\x18\x01 \x03(\tR\fassistantIds\x12\x16\n" +
-	"\x06search\x18\x02 \x01(\tR\x06search\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\tR\x06userId\"n\n" +
+	"\x06search\x18\x02 \x01(\tR\x06search\"n\n" +
 	"\x1dSearchChatsByCustomerResponse\x12,\n" +
 	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
