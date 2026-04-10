@@ -258,6 +258,7 @@ message CreateAssistantRequest {
   string name = 1;
   string api_token = 2;
   string user_id = 3;
+  string telegram_bot_token = 4;
 }
 
 message AssistantResponse {
@@ -268,6 +269,7 @@ message AssistantResponse {
   string created_at = 5;
   string updated_at = 6;
   string configuration = 7;
+  string telegram_bot_token = 8;
 }
 
 message GetAssistantRequest {
@@ -283,6 +285,7 @@ message UpdateAssistantRequest {
   string name = 2;
   string api_token = 3;
   string user_id = 4;
+  string telegram_bot_token = 5;
 }
 
 message DeleteAssistantRequest {

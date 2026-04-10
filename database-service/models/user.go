@@ -22,13 +22,14 @@ type User struct {
 
 // Assistant - соответствует таблице assistants в БД
 type Assistant struct {
-	ID            string    `json:"id" db:"id"`
-	Name          string    `json:"name" db:"name"`
-	Configuration string    `json:"configuration" db:"configuration"`
-	APIToken      string    `json:"api_token" db:"api_token"`
-	UserID        string    `json:"user_id" db:"user_id"`
-	CreatedAt     time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at" db:"updated_at"`
+	ID               string    `json:"id" db:"id"`
+	Name             string    `json:"name" db:"name"`
+	Configuration    string    `json:"configuration" db:"configuration"`
+	APIToken         string    `json:"api_token" db:"api_token"`
+	TelegramBotToken string    `json:"telegram_bot_token" db:"telegram_bot_token"`
+	UserID           string    `json:"user_id" db:"user_id"`
+	CreatedAt        time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at" db:"updated_at"`
 }
 
 // Chat - соответствует таблице chats в БД (из AI сервиса)

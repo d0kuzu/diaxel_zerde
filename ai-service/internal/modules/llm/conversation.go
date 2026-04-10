@@ -1,12 +1,11 @@
 package llm
 
 import (
+	"context"
 	"log"
-
-	"github.com/gin-gonic/gin"
 )
 
-func (c *Client) Conversation(ctx *gin.Context, userId, assistantId, userMessage string) (string, error) {
+func (c *Client) Conversation(ctx context.Context, userId, assistantId, userMessage string) (string, error) {
 	log.Printf("Сообщение от пользователя %s: %s", userId, userMessage)
 	messages, err := c.GetMessages(assistantId, userId)
 	if err != nil {

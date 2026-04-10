@@ -1,12 +1,14 @@
 package main
 
 import (
+	"context"
 	"diaxel/internal/api"
 	appModule "diaxel/internal/app"
 	"diaxel/internal/cleanup"
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
+	"diaxel/internal/modules/telegram"
 	"diaxel/internal/modules/twilio"
 	"log"
 )
@@ -26,14 +28,13 @@ func main() {
 
 	twilioClient := twilio.InitClient(settings.TwilioAccountSID, settings.TwilioAuthToken)
 
-	// Убираем локальную базу данных - работаем только через gRPC
-	//database.Connect(settings)
+	tgOrchestrator := telegram.NewOrchestrator(llmClient, grpcClient, 5, 1000)
+	go tgOrchestrator.Start(context.Background())
 
 	cm := &cleanup.CleanupManager{}
-	//cm.Add(database.Disconnect)
 	go cm.Start()
 
-	app := appModule.NewApp(llmClient, twilioClient, grpcClient, settings)
+	app := appModule.NewApp(llmClient, twilioClient, grpcClient, settings, tgOrchestrator)
 
 	api.RouterStart(app)
 }

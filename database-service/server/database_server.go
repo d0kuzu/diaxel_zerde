@@ -34,19 +34,20 @@ func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repo
 }
 
 func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.ApiToken, req.UserId)
+	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.ApiToken, req.UserId, req.TelegramBotToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create assistant: %v", err)
 	}
 
 	return &proto.AssistantResponse{
-		Id:            assistant.ID,
-		Name:          assistant.Name,
-		ApiToken:      assistant.APIToken,
-		UserId:        assistant.UserID,
-		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
-		Configuration: assistant.Configuration,
+		Id:               assistant.ID,
+		Name:             assistant.Name,
+		ApiToken:         assistant.APIToken,
+		UserId:           assistant.UserID,
+		CreatedAt:        assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration:    assistant.Configuration,
+		TelegramBotToken: assistant.TelegramBotToken,
 	}, nil
 }
 
@@ -560,13 +561,14 @@ func (s *DatabaseServer) GetAssistant(ctx context.Context, req *proto.GetAssista
 	}
 
 	return &proto.AssistantResponse{
-		Id:            assistant.ID,
-		Name:          assistant.Name,
-		ApiToken:      assistant.APIToken,
-		UserId:        assistant.UserID,
-		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
-		Configuration: assistant.Configuration,
+		Id:               assistant.ID,
+		Name:             assistant.Name,
+		ApiToken:         assistant.APIToken,
+		UserId:           assistant.UserID,
+		CreatedAt:        assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration:    assistant.Configuration,
+		TelegramBotToken: assistant.TelegramBotToken,
 	}, nil
 }
 
@@ -577,30 +579,32 @@ func (s *DatabaseServer) GetAssistantByAPIToken(ctx context.Context, req *proto.
 	}
 
 	return &proto.AssistantResponse{
-		Id:            assistant.ID,
-		Name:          assistant.Name,
-		ApiToken:      assistant.APIToken,
-		UserId:        assistant.UserID,
-		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
-		Configuration: assistant.Configuration,
+		Id:               assistant.ID,
+		Name:             assistant.Name,
+		ApiToken:         assistant.APIToken,
+		UserId:           assistant.UserID,
+		CreatedAt:        assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration:    assistant.Configuration,
+		TelegramBotToken: assistant.TelegramBotToken,
 	}, nil
 }
 
 func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, "", req.ApiToken)
+	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, "", req.ApiToken, req.TelegramBotToken)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update assistant: %v", err)
 	}
 
 	return &proto.AssistantResponse{
-		Id:            assistant.ID,
-		Name:          assistant.Name,
-		ApiToken:      assistant.APIToken,
-		UserId:        assistant.UserID,
-		CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
-		Configuration: assistant.Configuration,
+		Id:               assistant.ID,
+		Name:             assistant.Name,
+		ApiToken:         assistant.APIToken,
+		UserId:           assistant.UserID,
+		CreatedAt:        assistant.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
+		Configuration:    assistant.Configuration,
+		TelegramBotToken: assistant.TelegramBotToken,
 	}, nil
 }
 
@@ -624,13 +628,14 @@ func (s *DatabaseServer) GetAssistantsByUserID(ctx context.Context, req *proto.G
 	var protoAssistants []*proto.AssistantResponse
 	for _, assistant := range assistants {
 		protoAssistants = append(protoAssistants, &proto.AssistantResponse{
-			Id:            assistant.ID,
-			Name:          assistant.Name,
-			ApiToken:      assistant.APIToken,
-			UserId:        assistant.UserID,
-			CreatedAt:     assistant.CreatedAt.Format(time.RFC3339),
-			UpdatedAt:     assistant.UpdatedAt.Format(time.RFC3339),
-			Configuration: assistant.Configuration,
+			Id:               assistant.ID,
+			Name:             assistant.Name,
+			ApiToken:         assistant.APIToken,
+			UserId:           assistant.UserID,
+			CreatedAt:        assistant.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
+			Configuration:    assistant.Configuration,
+			TelegramBotToken: assistant.TelegramBotToken,
 		})
 	}
 

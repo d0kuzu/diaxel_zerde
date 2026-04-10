@@ -1,27 +1,28 @@
 package webhook
 
 import (
-	"bytes"
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/token"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
+
+	"diaxel/internal/modules/telegram"
 
 	"github.com/gin-gonic/gin"
 )
 
 type AIHandler struct {
-	cfg *config.Settings
-	LLM *llm.Client
-	db  *db.Client
+	cfg          *config.Settings
+	LLM          *llm.Client
+	db           *db.Client
+	orchestrator *telegram.Orchestrator
 }
 
-func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client) *AIHandler {
-	return &AIHandler{cfg: cfg, LLM: llmClient, db: db}
+func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client, tgOrch *telegram.Orchestrator) *AIHandler {
+	return &AIHandler{cfg: cfg, LLM: llmClient, db: db, orchestrator: tgOrch}
 }
 
 type RegisterBotRequest struct {
@@ -56,100 +57,61 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "Assistant registered", "assistant_id": assistant.Id, "token": secureToken})
 }
 
-type TelegramMessageReq struct {
-	ChatID int64  `json:"chat_id"`
-	Text   string `json:"text"`
+type TelegramUpdate struct {
+	UpdateID int64 `json:"update_id"`
+	Message  struct {
+		Text string `json:"text"`
+		Chat struct {
+			ID int64 `json:"id"`
+		} `json:"chat"`
+		From struct {
+			ID int64 `json:"id"`
+		} `json:"from"`
+	} `json:"message"`
 }
 
 func (h *AIHandler) HandleTelegramWebhook(c *gin.Context) {
 	assistantId := c.Param("assistant_id")
 
-	var updatePayload map[string]interface{}
+	var update TelegramUpdate
 
-	if err := c.ShouldBindJSON(&updatePayload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad Request"})
+	if err := c.ShouldBindJSON(&update); err != nil {
+		c.JSON(http.StatusOK, gin.H{"status": "ignored - bad request"})
 		return
-	}
-
-	message, hasMessage := updatePayload["message"].(map[string]interface{})
-	if !hasMessage {
-		c.JSON(http.StatusOK, gin.H{"status": "ignored"})
-		return
-	}
-
-	textInterface, hasText := message["text"]
-	if !hasText {
-		fmt.Println("Received non-text message")
-		c.JSON(http.StatusOK, gin.H{"status": "ignored"})
-		return
-	}
-	userText := textInterface.(string)
-
-	chat, ok := message["chat"].(map[string]interface{})
-	var chatID int64
-	if ok {
-		if idFloat, ok := chat["id"].(float64); ok {
-			chatID = int64(idFloat)
-		}
-	}
-
-	var userIdString string
-	if from, ok := message["from"].(map[string]interface{}); ok {
-		if idFloat, ok := from["id"].(float64); ok {
-			userIdString = strconv.Itoa(int(idFloat))
-		}
-	}
-
-	if userIdString == "" {
-		fmt.Println("Could not extract user_id")
-		c.JSON(http.StatusOK, gin.H{"status": "no user id"})
-		return
-	}
-
-	// Get assistant from gRPC service instead of local DB
-	_, err := h.db.GetAssistant(assistantId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get assistant"})
-		return
-	}
-
-	aiResponse, err := h.LLM.Conversation(c, "", userIdString, userText)
-
-	if err != nil {
-		fmt.Printf("AI Error: %v\n", err)
-		c.JSON(http.StatusOK, gin.H{"status": "ai error"})
-		return
-	}
-
-	// Note: BotToken is no longer stored in database, need to get it from configuration or other source
-	// For now, this will need to be implemented based on your requirements
-	err = h.sendTelegramMessage("BOT_TOKEN_HERE", chatID, aiResponse)
-	if err != nil {
-		fmt.Printf("Failed to send to Telegram: %v\n", err)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-}
 
-func (h *AIHandler) sendTelegramMessage(token string, chatID int64, text string) error {
-	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
-
-	reqBody := TelegramMessageReq{
-		ChatID: chatID,
-		Text:   text,
+	if update.Message.Text == "" {
+		return
 	}
 
-	jsonData, _ := json.Marshal(reqBody)
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	userIdString := strconv.FormatInt(update.Message.From.ID, 10)
+	if userIdString == "0" {
+		return
+	}
+
+	assistant, err := h.db.GetAssistant(assistantId)
 	if err != nil {
-		return err
+		fmt.Printf("HandleTelegramWebhook: Failed to get assistant: %v\n", err)
+		return
 	}
-	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("status: %d", resp.StatusCode)
+	if assistant.TelegramBotToken == "" {
+		fmt.Printf("HandleTelegramWebhook: Assistant %s does not have a telegram bot token configured\n", assistantId)
+		return
 	}
-	return nil
+
+	task := telegram.TelegramTask{
+		BotToken:    assistant.TelegramBotToken,
+		ChatID:      update.Message.Chat.ID,
+		UserID:      userIdString,
+		AssistantID: assistantId,
+		UserMessage: update.Message.Text,
+		UpdateID:    update.UpdateID,
+	}
+
+	h.orchestrator.Enqueue(task)
 }
 
 func (h *AIHandler) SendMessage(c *gin.Context) {
