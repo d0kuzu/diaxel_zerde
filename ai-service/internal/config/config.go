@@ -29,6 +29,7 @@ type Settings struct {
 
 	TelegramBotToken      string
 	TelegramWebhookSecret string
+	WebhookBaseURL        string
 
 	TokenPrefix string
 	TokenLength int
@@ -69,6 +70,7 @@ func LoadConfig() (*Settings, error) {
 
 		TelegramBotToken:      os.Getenv("TELEGRAM_BOT_TOKEN"),
 		TelegramWebhookSecret: os.Getenv("TELEGRAM_WEBHOOK_SECRET"),
+		WebhookBaseURL:        os.Getenv("WEBHOOK_BASE_URL"),
 
 		TokenPrefix: os.Getenv("TOKEN_PREFIX"),
 		TokenLength: getEnvAsInt("TOKEN_LENGTH", 32),

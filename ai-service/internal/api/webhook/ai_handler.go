@@ -1,10 +1,12 @@
 package webhook
 
 import (
+	"bytes"
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/token"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -26,13 +28,95 @@ func NewAIHandler(cfg *config.Settings, llmClient *llm.Client, db *db.Client, tg
 }
 
 type RegisterBotRequest struct {
-	Name string `json:"name"`
+	Name     string `json:"name"`
+	BotToken string `json:"bot_token,omitempty"`
 }
 
 func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 	var req RegisterBotRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	if req.BotToken == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "bot_token is required"})
+		return
+	}
+
+	if req.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
+		return
+	}
+
+	userId := c.GetHeader("X-User-Id")
+	if userId == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized request from gateway"})
+		return
+	}
+
+	assistant, err := h.db.CreateAssistant(req.Name, "", userId, req.BotToken, "telegram")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistant in database"})
+		return
+	}
+
+	webhookURL := fmt.Sprintf("%s/webhooks/telegram/callback/%s", h.cfg.WebhookBaseURL, assistant.Id)
+	if err := h.setTelegramWebhook(req.BotToken, webhookURL); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to register webhook in Telegram: %v", err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":       "Telegram bot registered",
+		"assistant_id": assistant.Id,
+	})
+}
+
+func (h *AIHandler) setTelegramWebhook(botToken, webhookURL string) error {
+	url := fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook", botToken)
+
+	body, err := json.Marshal(map[string]string{
+		"url": webhookURL,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to marshal webhook request: %w", err)
+	}
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return fmt.Errorf("failed to call Telegram API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Telegram API returned status %d", resp.StatusCode)
+	}
+
+	var result struct {
+		OK          bool   `json:"ok"`
+		Description string `json:"description"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return fmt.Errorf("failed to decode Telegram response: %w", err)
+	}
+
+	if !result.OK {
+		return fmt.Errorf("Telegram setWebhook failed: %s", result.Description)
+	}
+
+	return nil
+}
+
+func (h *AIHandler) RegisterAPIBot(c *gin.Context) {
+	var req RegisterBotRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	if req.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "name is required"})
 		return
 	}
 
@@ -48,7 +132,7 @@ func (h *AIHandler) RegisterTelegramBot(c *gin.Context) {
 		return
 	}
 
-	assistant, err := h.db.CreateAssistant(req.Name, secureToken, userId)
+	assistant, err := h.db.CreateAssistant(req.Name, secureToken, userId, "", "api")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create assistant in database"})
 		return

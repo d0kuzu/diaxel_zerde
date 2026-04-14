@@ -34,7 +34,7 @@ func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repo
 }
 
 func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.ApiToken, req.UserId, req.TelegramBotToken)
+	assistant, err := s.assistantRepo.CreateAssistant(ctx, req.Name, req.ApiToken, req.UserId, req.TelegramBotToken, req.Type)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create assistant: %v", err)
 	}
@@ -48,6 +48,7 @@ func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateA
 		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
 		Configuration:    assistant.Configuration,
 		TelegramBotToken: assistant.TelegramBotToken,
+		Type:             assistant.Type,
 	}, nil
 }
 
@@ -569,6 +570,7 @@ func (s *DatabaseServer) GetAssistant(ctx context.Context, req *proto.GetAssista
 		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
 		Configuration:    assistant.Configuration,
 		TelegramBotToken: assistant.TelegramBotToken,
+		Type:             assistant.Type,
 	}, nil
 }
 
@@ -587,11 +589,12 @@ func (s *DatabaseServer) GetAssistantByAPIToken(ctx context.Context, req *proto.
 		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
 		Configuration:    assistant.Configuration,
 		TelegramBotToken: assistant.TelegramBotToken,
+		Type:             assistant.Type,
 	}, nil
 }
 
 func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, "", req.ApiToken, req.TelegramBotToken)
+	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, "", req.ApiToken, req.TelegramBotToken, req.Type)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update assistant: %v", err)
 	}
@@ -605,6 +608,7 @@ func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateA
 		UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
 		Configuration:    assistant.Configuration,
 		TelegramBotToken: assistant.TelegramBotToken,
+		Type:             assistant.Type,
 	}, nil
 }
 
@@ -636,6 +640,7 @@ func (s *DatabaseServer) GetAssistantsByUserID(ctx context.Context, req *proto.G
 			UpdatedAt:        assistant.UpdatedAt.Format(time.RFC3339),
 			Configuration:    assistant.Configuration,
 			TelegramBotToken: assistant.TelegramBotToken,
+			Type:             assistant.Type,
 		})
 	}
 

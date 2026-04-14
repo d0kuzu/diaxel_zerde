@@ -29,9 +29,6 @@ func RouterStart(app *appModule.App) {
 	chat.ChatRoutes(r, app)
 	assistant.AssistantRoutes(r, app)
 
-	// analyticsService := analytics.NewAnalyticsService(app.Db)
-	// analyticsAPI.SetupRoutes(r, analyticsService)
-
 	err := r.Run(":" + app.Cfg.HTTPPort)
 	if err != nil {
 		log.Fatal("Router start error", err)

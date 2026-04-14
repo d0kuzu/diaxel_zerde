@@ -2215,6 +2215,7 @@ type CreateAssistantRequest struct {
 	ApiToken         string                 `protobuf:"bytes,2,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
 	UserId           string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	TelegramBotToken string                 `protobuf:"bytes,4,opt,name=telegram_bot_token,json=telegramBotToken,proto3" json:"telegram_bot_token,omitempty"`
+	Type             string                 `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -2277,6 +2278,13 @@ func (x *CreateAssistantRequest) GetTelegramBotToken() string {
 	return ""
 }
 
+func (x *CreateAssistantRequest) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
 type AssistantResponse struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -2287,6 +2295,7 @@ type AssistantResponse struct {
 	UpdatedAt        string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	Configuration    string                 `protobuf:"bytes,7,opt,name=configuration,proto3" json:"configuration,omitempty"`
 	TelegramBotToken string                 `protobuf:"bytes,8,opt,name=telegram_bot_token,json=telegramBotToken,proto3" json:"telegram_bot_token,omitempty"`
+	Type             string                 `protobuf:"bytes,9,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -2373,6 +2382,13 @@ func (x *AssistantResponse) GetConfiguration() string {
 func (x *AssistantResponse) GetTelegramBotToken() string {
 	if x != nil {
 		return x.TelegramBotToken
+	}
+	return ""
+}
+
+func (x *AssistantResponse) GetType() string {
+	if x != nil {
+		return x.Type
 	}
 	return ""
 }
@@ -2472,6 +2488,7 @@ type UpdateAssistantRequest struct {
 	ApiToken         string                 `protobuf:"bytes,3,opt,name=api_token,json=apiToken,proto3" json:"api_token,omitempty"`
 	UserId           string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	TelegramBotToken string                 `protobuf:"bytes,5,opt,name=telegram_bot_token,json=telegramBotToken,proto3" json:"telegram_bot_token,omitempty"`
+	Type             string                 `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -2537,6 +2554,13 @@ func (x *UpdateAssistantRequest) GetUserId() string {
 func (x *UpdateAssistantRequest) GetTelegramBotToken() string {
 	if x != nil {
 		return x.TelegramBotToken
+	}
+	return ""
+}
+
+func (x *UpdateAssistantRequest) GetType() string {
+	if x != nil {
+		return x.Type
 	}
 	return ""
 }
@@ -2929,12 +2953,13 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x1dSearchChatsByCustomerResponse\x12,\n" +
 	"\x05chats\x18\x01 \x03(\v2\x16.database.ChatResponseR\x05chats\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
-	"totalCount\"\x90\x01\n" +
+	"totalCount\"\xa4\x01\n" +
 	"\x16CreateAssistantRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1b\n" +
 	"\tapi_token\x18\x02 \x01(\tR\bapiToken\x12\x17\n" +
 	"\auser_id\x18\x03 \x01(\tR\x06userId\x12,\n" +
-	"\x12telegram_bot_token\x18\x04 \x01(\tR\x10telegramBotToken\"\xff\x01\n" +
+	"\x12telegram_bot_token\x18\x04 \x01(\tR\x10telegramBotToken\x12\x12\n" +
+	"\x04type\x18\x05 \x01(\tR\x04type\"\x93\x02\n" +
 	"\x11AssistantResponse\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
@@ -2945,17 +2970,19 @@ const file_proto_database_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\x06 \x01(\tR\tupdatedAt\x12$\n" +
 	"\rconfiguration\x18\a \x01(\tR\rconfiguration\x12,\n" +
-	"\x12telegram_bot_token\x18\b \x01(\tR\x10telegramBotToken\"%\n" +
+	"\x12telegram_bot_token\x18\b \x01(\tR\x10telegramBotToken\x12\x12\n" +
+	"\x04type\x18\t \x01(\tR\x04type\"%\n" +
 	"\x13GetAssistantRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"<\n" +
 	"\x1dGetAssistantByAPITokenRequest\x12\x1b\n" +
-	"\tapi_token\x18\x01 \x01(\tR\bapiToken\"\xa0\x01\n" +
+	"\tapi_token\x18\x01 \x01(\tR\bapiToken\"\xb4\x01\n" +
 	"\x16UpdateAssistantRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
 	"\tapi_token\x18\x03 \x01(\tR\bapiToken\x12\x17\n" +
 	"\auser_id\x18\x04 \x01(\tR\x06userId\x12,\n" +
-	"\x12telegram_bot_token\x18\x05 \x01(\tR\x10telegramBotToken\"(\n" +
+	"\x12telegram_bot_token\x18\x05 \x01(\tR\x10telegramBotToken\x12\x12\n" +
+	"\x04type\x18\x06 \x01(\tR\x04type\"(\n" +
 	"\x16DeleteAssistantRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"3\n" +
 	"\x17DeleteAssistantResponse\x12\x18\n" +

@@ -12,11 +12,11 @@ import (
 )
 
 type AssistantRepository interface {
-	CreateAssistant(ctx context.Context, name, apiToken, userID, telegramBotToken string) (*models.Assistant, error)
+	CreateAssistant(ctx context.Context, name, apiToken, userID, telegramBotToken, assistantType string) (*models.Assistant, error)
 	GetAssistantByID(ctx context.Context, id string) (*models.Assistant, error)
 	GetAssistantByAPIToken(ctx context.Context, apiToken string) (*models.Assistant, error)
 	GetAssistantsByUserID(ctx context.Context, userID string) ([]models.Assistant, error)
-	UpdateAssistant(ctx context.Context, id, name, configuration, apiToken, telegramBotToken string) (*models.Assistant, error)
+	UpdateAssistant(ctx context.Context, id, name, configuration, apiToken, telegramBotToken, assistantType string) (*models.Assistant, error)
 	DeleteAssistant(ctx context.Context, id string) error
 }
 
@@ -28,13 +28,17 @@ func NewAssistantRepository(db *gorm.DB) AssistantRepository {
 	return &assistantRepository{db: db}
 }
 
-func (r *assistantRepository) CreateAssistant(ctx context.Context, name, apiToken, userID, telegramBotToken string) (*models.Assistant, error) {
+func (r *assistantRepository) CreateAssistant(ctx context.Context, name, apiToken, userID, telegramBotToken, assistantType string) (*models.Assistant, error) {
+	if assistantType == "" {
+		assistantType = "api"
+	}
 	assistant := models.Assistant{
 		ID:               uuid.New().String(),
 		Name:             name,
 		Configuration:    "",
 		APIToken:         apiToken,
 		TelegramBotToken: telegramBotToken,
+		Type:             assistantType,
 		UserID:           userID,
 		CreatedAt:        time.Now(),
 		UpdatedAt:        time.Now(),
@@ -80,7 +84,7 @@ func (r *assistantRepository) GetAssistantByAPIToken(ctx context.Context, apiTok
 	return &assistant, nil
 }
 
-func (r *assistantRepository) UpdateAssistant(ctx context.Context, id, name, configuration, apiToken, telegramBotToken string) (*models.Assistant, error) {
+func (r *assistantRepository) UpdateAssistant(ctx context.Context, id, name, configuration, apiToken, telegramBotToken, assistantType string) (*models.Assistant, error) {
 	var assistant models.Assistant
 	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&assistant).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -93,6 +97,9 @@ func (r *assistantRepository) UpdateAssistant(ctx context.Context, id, name, con
 	assistant.Configuration = configuration
 	assistant.APIToken = apiToken
 	assistant.TelegramBotToken = telegramBotToken
+	if assistantType != "" {
+		assistant.Type = assistantType
+	}
 	assistant.UpdatedAt = time.Now()
 
 	if err := r.db.WithContext(ctx).Save(&assistant).Error; err != nil {
