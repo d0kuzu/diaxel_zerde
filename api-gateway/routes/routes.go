@@ -22,6 +22,10 @@ func SetupRoutes(r *gin.Engine, cfg *config.Config, db *db.Client) {
 		public.Any("/auth/*any",
 			proxy.NewReverseProxy(cfg.AuthServiceURL, "/auth"),
 		)
+
+		public.Any("/webhooks/telegram/callback/*any",
+			proxy.NewReverseProxy(cfg.AIServiceURL, ""),
+		)
 	}
 
 	userPrivate := r.Group("/")

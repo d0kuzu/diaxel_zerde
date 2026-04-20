@@ -20,14 +20,9 @@ type Settings struct {
 
 	OpenaiApiKey string
 
-	ApiKey    string
-	BaseID    string
-	TableName string
-
 	TwilioAccountSID string
 	TwilioAuthToken  string
 
-	TelegramBotToken      string
 	TelegramWebhookSecret string
 	WebhookBaseURL        string
 
@@ -61,14 +56,9 @@ func LoadConfig() (*Settings, error) {
 
 		OpenaiApiKey: os.Getenv("OPENAI_API_KEY"),
 
-		ApiKey:    os.Getenv("API_KEY"),
-		BaseID:    os.Getenv("BASE_ID"),
-		TableName: os.Getenv("TABLE_NAME"),
-
 		TwilioAccountSID: os.Getenv("TWILIO_ACCOUNT_SID"),
 		TwilioAuthToken:  os.Getenv("TWILIO_AUTH_TOKEN"),
 
-		TelegramBotToken:      os.Getenv("TELEGRAM_BOT_TOKEN"),
 		TelegramWebhookSecret: os.Getenv("TELEGRAM_WEBHOOK_SECRET"),
 		WebhookBaseURL:        os.Getenv("WEBHOOK_BASE_URL"),
 

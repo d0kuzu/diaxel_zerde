@@ -77,7 +77,8 @@ func (h *AIHandler) setTelegramWebhook(botToken, webhookURL string) error {
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/setWebhook", botToken)
 
 	body, err := json.Marshal(map[string]string{
-		"url": webhookURL,
+		"url":          webhookURL,
+		"secret_token": h.cfg.TelegramWebhookSecret,
 	})
 	if err != nil {
 		return fmt.Errorf("failed to marshal webhook request: %w", err)
@@ -156,6 +157,12 @@ type TelegramUpdate struct {
 
 func (h *AIHandler) HandleTelegramWebhook(c *gin.Context) {
 	assistantId := c.Param("assistant_id")
+
+	secretToken := c.GetHeader("X-Telegram-Bot-Api-Secret-Token")
+	if h.cfg.TelegramWebhookSecret != "" && secretToken != h.cfg.TelegramWebhookSecret {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid secret token"})
+		return
+	}
 
 	var update TelegramUpdate
 
