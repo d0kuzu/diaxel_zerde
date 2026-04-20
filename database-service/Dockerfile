@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN go build -o database-service .
+RUN CGO_ENABLED=0 GOOS=linux go build -o database-service .
 
 FROM alpine:latest
 
