@@ -1,34 +1,43 @@
+version: "3.9"
+
 networks:
-  diaxel_net:
-    driver: bridge
+  microservices-net:
+    external: true
 
 services:
   postgres:
-    image: postgres:16
-    container_name: diaxel_postgres
+    image: postgres:16-alpine
+    container_name: database-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: diaxel
-      POSTGRES_USER: diaxel_user
-      POSTGRES_PASSWORD: diaxel_password
+      POSTGRES_DB: database_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - diaxel_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d database_service"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
     networks:
-      - diaxel_net
+      - microservices-net
 
   database-service:
     build: ./database-service
     container_name: database-service
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "50051:50051"
     env_file:
       - ./database-service/.env
+    restart: unless-stopped
     networks:
-      - diaxel_net
+      - microservices-net
 
   auth-service:
     build: ./auth-service
@@ -39,8 +48,9 @@ services:
       - database-service
     env_file:
       - ./auth-service/.env
+    restart: unless-stopped
     networks:
-      - diaxel_net
+      - microservices-net
 
   ai-service:
     build: ./ai-service
@@ -51,22 +61,25 @@ services:
       - database-service
     env_file:
       - ./ai-service/.env
+    restart: unless-stopped
     networks:
-      - diaxel_net
+      - microservices-net
 
   api-gateway:
     build: ./api-gateway
-    container_name: api-gateway
+    container_name: api-gateway-service
     ports:
-      - "8080:8080"
+      - "8085:8080"
     depends_on:
       - database-service
       - auth-service
       - ai-service
     env_file:
       - ./api-gateway/.env
+    restart: unless-stopped
     networks:
-      - diaxel_net
+      - microservices-net
 
 volumes:
-  postgres_data:
+  diaxel_postgres_data:
+    name: database-service_diaxel_postgres_data
