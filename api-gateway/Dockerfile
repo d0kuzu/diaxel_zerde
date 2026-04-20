@@ -7,7 +7,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN go build -o serverfile .
+RUN CGO_ENABLED=0 GOOS=linux go build -o serverfile .
 
 FROM alpine:latest
 

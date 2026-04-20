@@ -3,3 +3,5 @@
 .env
 *.md
 docker-compose*.yml
+serverfile
+*.exe
