@@ -4,10 +4,10 @@ FROM golang:1.24-alpine AS builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN env GOPROXY=https://goproxy.io,direct GOSUMDB=off go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o serverfile .
+RUN CGO_ENABLED=0 GOOS=linux go build -v -p 1 -o serverfile .
 
 FROM alpine:latest
 
