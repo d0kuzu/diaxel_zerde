@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"diaxel_zerde/database-service/models"
 	"diaxel_zerde/database-service/proto"
 	"diaxel_zerde/database-service/repository"
 
@@ -725,4 +726,3 @@ func (s *DatabaseServer) DeleteTwilioConfig(ctx context.Context, req *proto.Dele
 		Success: true,
 	}, nil
 }
-

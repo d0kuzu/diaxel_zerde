@@ -26,7 +26,7 @@ func main() {
 
 	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient)
 
-	twilioClient := twilio.InitClient(settings.TwilioAccountSID, settings.TwilioAuthToken)
+	twilioClient := twilio.InitClient()
 
 	tgOrchestrator := telegram.NewOrchestrator(llmClient, grpcClient, 5, 1000)
 	go tgOrchestrator.Start(context.Background())
