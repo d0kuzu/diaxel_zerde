@@ -597,7 +597,7 @@ func (s *DatabaseServer) GetAssistantByAPIToken(ctx context.Context, req *proto.
 }
 
 func (s *DatabaseServer) UpdateAssistant(ctx context.Context, req *proto.UpdateAssistantRequest) (*proto.AssistantResponse, error) {
-	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, "", req.ApiToken, req.TelegramBotToken, req.Type)
+	assistant, err := s.assistantRepo.UpdateAssistant(ctx, req.Id, req.Name, req.Configuration, req.ApiToken, req.TelegramBotToken, req.Type)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update assistant: %v", err)
 	}

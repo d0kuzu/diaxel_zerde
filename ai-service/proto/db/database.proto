@@ -292,6 +292,7 @@ message UpdateAssistantRequest {
   string user_id = 4;
   string telegram_bot_token = 5;
   string type = 6;
+  string configuration = 7;
 }
 
 message DeleteAssistantRequest {

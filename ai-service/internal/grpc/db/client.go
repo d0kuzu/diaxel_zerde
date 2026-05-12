@@ -76,6 +76,22 @@ func (c *Client) GetAssistant(id string) (*dbpb.AssistantResponse, error) {
 	return resp, nil
 }
 
+func (c *Client) UpdateAssistant(id, name, configuration, apiToken, telegramBotToken, assistantType string) (*dbpb.AssistantResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.UpdateAssistantRequest{
+		Id:               id,
+		Name:             name,
+		Configuration:    configuration,
+		ApiToken:         apiToken,
+		TelegramBotToken: telegramBotToken,
+		Type:             assistantType,
+	}
+
+	return c.DB.UpdateAssistant(ctx, req)
+}
+
 func (c *Client) GetAssistantByAPIToken(apiToken string) (*dbpb.AssistantResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

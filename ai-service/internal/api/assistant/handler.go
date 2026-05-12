@@ -34,3 +34,66 @@ func (h *AssistantHandler) GetAssistants(c *gin.Context) {
 		"answer": assistants,
 	})
 }
+
+func (h *AssistantHandler) GetAssistant(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+
+	assistant, err := h.db.GetAssistant(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch assistant", "details": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"answer": assistant,
+	})
+}
+
+func (h *AssistantHandler) UpdateAssistant(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id is required"})
+		return
+	}
+
+	var req struct {
+		Name          string `json:"name"`
+		Configuration string `json:"configuration"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body", "details": err.Error()})
+		return
+	}
+
+	// Fetch existing assistant to keep other fields (like tokens, etc.)
+	// because database service's UpdateAssistant overwrites everything.
+	existing, err := h.db.GetAssistant(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch existing assistant", "details": err.Error()})
+		return
+	}
+
+	// Update only name and configuration, keep others
+	resp, err := h.db.UpdateAssistant(
+		id,
+		req.Name,
+		req.Configuration,
+		existing.ApiToken,
+		existing.TelegramBotToken,
+		existing.Type,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to update assistant", "details": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"answer": resp,
+	})
+}

@@ -12,5 +12,7 @@ func AssistantRoutes(router *gin.Engine, app *appModule.App) {
 	assistantGroup := router.Group("assistants")
 	{
 		assistantGroup.GET("/list", h.GetAssistants)
+		assistantGroup.GET("/:id", h.GetAssistant)
+		assistantGroup.PATCH("/:id", h.UpdateAssistant)
 	}
 }
