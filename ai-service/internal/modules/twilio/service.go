@@ -19,6 +19,10 @@ func (c *Client) SendMessage(ctx context.Context, accountSID, authToken, from, t
 		return err
 	}
 
-	fmt.Println("Message SID:", *resp.Sid)
+	if resp.Sid != nil {
+		fmt.Printf("[Twilio REST] Message sent successfully. SID: %s, From: %s, To: %s\n", *resp.Sid, from, to)
+	} else {
+		fmt.Printf("[Twilio REST] Message sent, but SID is nil. From: %s, To: %s\n", from, to)
+	}
 	return nil
 }

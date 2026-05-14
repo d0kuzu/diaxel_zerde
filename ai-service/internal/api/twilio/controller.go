@@ -47,13 +47,12 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 	from := c.PostForm("From")
 	body := c.PostForm("Body")
 
+	log.Printf("[Twilio Webhook] Received message from %s: %s", from, body)
+
 	if from != "+16692430929" {
-		log.Printf("Received message from unknown number %s", from)
-		c.XML(http.StatusOK, gin.H{
-			"Response": gin.H{
-				"Message": "OK",
-			},
-		})
+		log.Printf("[Twilio Webhook] Ignoring message from unknown number %s", from)
+		c.Header("Content-Type", "text/xml")
+		c.String(http.StatusOK, `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`)
 		return
 	}
 
@@ -63,6 +62,8 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	log.Printf("[Twilio Webhook] Sending reply from %s to %s via REST API", twilioConfig.TwilioNumber, from)
 
 	err = h.twilio.SendMessage(c,
 		twilioConfig.AccountSid,
@@ -77,9 +78,6 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 		return
 	}
 
-	c.XML(http.StatusOK, gin.H{
-		"Response": gin.H{
-			"Message": "OK",
-		},
-	})
+	c.Header("Content-Type", "text/xml")
+	c.String(http.StatusOK, `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`)
 }
