@@ -7,8 +7,9 @@ import (
 	twilio2 "diaxel/internal/modules/twilio"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 type TwilioWebhookHandler struct {
@@ -45,6 +46,16 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 
 	from := c.PostForm("From")
 	body := c.PostForm("Body")
+
+	if from != "+16692430929" {
+		log.Printf("Received message from unknown number %s", from)
+		c.XML(http.StatusOK, gin.H{
+			"Response": gin.H{
+				"Message": "OK",
+			},
+		})
+		return
+	}
 
 	answer, err := h.LLM.Conversation(c, from, assistantID, body)
 	if err != nil {
