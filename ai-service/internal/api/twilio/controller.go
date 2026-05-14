@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type TwilioWebhookHandler struct {
@@ -30,12 +31,14 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 
 	_, err := h.db.GetAssistant(assistantID)
 	if err != nil {
+		log.Printf("Error getting assistant %s: %v", assistantID, err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "assistant not found"})
 		return
 	}
 
 	twilioConfig, err := h.db.GetTwilioConfig(assistantID)
 	if err != nil {
+		log.Printf("Error getting twilio config for assistant %s: %v", assistantID, err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "twilio configuration not found for this assistant"})
 		return
 	}
@@ -45,6 +48,7 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 
 	answer, err := h.LLM.Conversation(c, from, assistantID, body)
 	if err != nil {
+		log.Printf("LLM Conversation error for assistant %s: %v", assistantID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -57,6 +61,7 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 		answer,
 	)
 	if err != nil {
+		log.Printf("Twilio SendMessage error for assistant %s: %v", assistantID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
