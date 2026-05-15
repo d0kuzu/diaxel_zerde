@@ -7,6 +7,7 @@ import (
 	"diaxel/internal/cleanup"
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
+	"diaxel/internal/modules/calcom"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/telegram"
 	"diaxel/internal/modules/twilio"
@@ -24,7 +25,9 @@ func main() {
 		return
 	}
 
-	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient)
+	calcomClient := calcom.New(settings.CalApiKey, settings.CalEventTypeID)
+
+	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient, calcomClient)
 
 	twilioClient := twilio.InitClient()
 

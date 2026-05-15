@@ -30,6 +30,9 @@ type Settings struct {
 
 	TokenPrefix string
 	TokenLength int
+
+	CalApiKey      string
+	CalEventTypeID int
 }
 
 func LoadConfig() (*Settings, error) {
@@ -68,6 +71,9 @@ func LoadConfig() (*Settings, error) {
 
 		TokenPrefix: os.Getenv("TOKEN_PREFIX"),
 		TokenLength: getEnvAsInt("TOKEN_LENGTH", 32),
+
+		CalApiKey:      os.Getenv("CAL_API_KEY"),
+		CalEventTypeID: getEnvAsInt("CAL_EVENT_TYPE_ID", 0),
 	}, nil
 }
 
