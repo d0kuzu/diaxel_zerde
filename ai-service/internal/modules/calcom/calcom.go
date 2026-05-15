@@ -41,8 +41,6 @@ type BookingRequest struct {
 	Start       string          `json:"start"`
 	EventTypeID int             `json:"eventTypeId"`
 	Attendee    BookingAttendee `json:"attendee"`
-	TimeZone    string          `json:"timeZone"` // Некоторые версии v2 требуют в корне
-	Language    string          `json:"language"`
 }
 
 type BookingAttendee struct {
@@ -153,8 +151,6 @@ func (c *Client) CreateBooking(ctx context.Context, startTime, attendeeName, att
 			Email:    attendeeEmail,
 			TimeZone: timezone,
 		},
-		TimeZone: timezone,
-		Language: "en",
 	}
 
 	jsonBody, err := json.Marshal(bookingReq)
