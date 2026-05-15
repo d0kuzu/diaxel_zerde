@@ -13,7 +13,7 @@ import (
 
 const (
 	baseURL       = "https://api.cal.com/v2"
-	calAPIVersion = "2024-08-13" // Обновим на более стабильную версию
+	calAPIVersion = "2024-06-11" // Попробуем эту версию, она более универсальна
 )
 
 type Client struct {
