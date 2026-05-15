@@ -117,6 +117,13 @@ func (c *Client) SaveMessages(assistantId, customerId string, messages []openai.
 		if msg.Role == openai.ChatMessageRoleSystem {
 			continue
 		}
+		if msg.Role == openai.ChatMessageRoleTool {
+			continue
+		}
+		if msg.Role == openai.ChatMessageRoleAssistant && msg.Content == " " && len(msg.ToolCalls) > 0 {
+			continue
+		}
+
 		filteredMessages = append(filteredMessages, msg)
 	}
 
@@ -127,7 +134,11 @@ func (c *Client) SaveMessages(assistantId, customerId string, messages []openai.
 	newMessages := filteredMessages[messageCount:]
 
 	for _, msg := range newMessages {
-		_, err := c.db.SaveMessage(chatID, msg.Role, msg.Content, "openai")
+		content := msg.Content
+		if content == "" {
+			content = " "
+		}
+		_, err := c.db.SaveMessage(chatID, msg.Role, content, "openai")
 		if err != nil {
 			log.Printf("Failed to save message: %v", err)
 			return fmt.Errorf("failed to save message: %w", err)
@@ -155,9 +166,13 @@ func (c *Client) ConvertToOpenaiMessage(arrayMessages []Message) ([]openai.ChatC
 	var messages []openai.ChatCompletionMessage
 
 	for _, message := range arrayMessages {
+		content := message.Content
+		if content == "" {
+			content = " "
+		}
 		messages = append(messages, openai.ChatCompletionMessage{
 			Role:    message.Role,
-			Content: message.Content,
+			Content: content,
 		})
 	}
 
