@@ -30,6 +30,11 @@ func (c *Client) Conversation(ctx context.Context, userId, assistantId, userMess
 	for len(response.Choices) > 0 && len(response.Choices[0].Message.ToolCalls) > 0 {
 		// Add the assistant message with tool calls to the conversation
 		assistantMsg := response.Choices[0].Message
+		// go-openai uses `json:"content,omitempty"` — empty string is dropped to null in JSON.
+		// OpenAI API rejects null content on assistant messages, so we must ensure it's non-empty.
+		if assistantMsg.Content == "" && len(assistantMsg.ToolCalls) > 0 {
+			assistantMsg.Content = " "
+		}
 		messages = append(messages, assistantMsg)
 
 		// Process each tool call
