@@ -24,10 +24,13 @@ func (c *Client) PollLocalDB(chatID string) {
 				msg := messages[i]
 
 				var author string
-				if msg.Role == "user" {
+				switch msg.Role {
+				case "user":
 					author = "client"
-				} else {
+				case "assistant":
 					author = "bot"
+				default:
+					continue
 				}
 
 				wsMsg := Message{
