@@ -1,24 +1,17 @@
-# Используем максимально легкий образ
-FROM golang:1.24-alpine AS builder
-
-WORKDIR /app
-
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o serverfile .
-
+# Используем максимально легкий образ alpine
 FROM alpine:latest
 
 WORKDIR /app
 
+# Устанавливаем сертификаты безопасности (необходимы для HTTPS запросов)
 RUN apk --no-cache add ca-certificates
 
-COPY --from=builder /app/serverfile .
+# Копируем предварительно скомпилированный бинарный файл
+COPY serverfile .
 
+# Делаем файл исполняемым
 RUN chmod +x serverfile
 
 EXPOSE 8080
 
-CMD ["./serverfile"]
+CMD ["./serverfile"]
