@@ -66,7 +66,7 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		toPhone = "+" + toPhone
 	}
 
-	if toPhone != "+16692430929" && toPhone != "+77002744195" {
+	if toPhone != "+16692430929" && toPhone != "+12048176146" {
 		log.Printf("[CampusLogin Trigger] Ignoring message from unknown number %s", toPhone)
 		c.JSON(http.StatusOK, gin.H{"status": "ignored", "message": "phone number not in allowed list"})
 		return
