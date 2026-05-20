@@ -3,6 +3,7 @@ package campuslogin
 import (
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
+	campusloginModule "diaxel/internal/modules/campuslogin"
 	"diaxel/internal/modules/llm"
 	twilio "diaxel/internal/modules/twilio"
 	"fmt"
@@ -46,6 +47,17 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 	assistantID := c.Param("assistant_id")
 	if assistantID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id parameter is required"})
+		return
+	}
+
+	if assistantID == "test" {
+		client := campusloginModule.NewClient(h.cfg.CampusLoginAPI)
+		err := client.SendAppointment(c.Request.Context(), "2026-05-25T11:30:00", "2026-05-25T12:30:00", 5972449)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Test failed: %v", err)})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"status": "success", "message": "Test appointment successfully sent to CampusLogin"})
 		return
 	}
 

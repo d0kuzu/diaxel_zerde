@@ -109,8 +109,7 @@ func (c *Client) SendAppointment(ctx context.Context, startTime, endTime string,
 
 	req.Header.Set("Content-Type", "application/json")
 	// Using the provided API key
-	req.Header.Set("Authorization", "Bearer "+c.apiKey)
-	req.Header.Set("ApiKey", c.apiKey)
+	req.Header.Set("X-Api-Key", c.apiKey)
 
 	resp, err := c.client.Do(req)
 	if err != nil {
