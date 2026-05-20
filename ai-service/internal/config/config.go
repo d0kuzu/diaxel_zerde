@@ -27,12 +27,13 @@ type Settings struct {
 	WebhookBaseURL        string
 	BaseURL               string
 
-
 	TokenPrefix string
 	TokenLength int
 
 	CalApiKey      string
 	CalEventTypeID int
+
+	CampusLoginAPI string
 }
 
 func LoadConfig() (*Settings, error) {
@@ -68,12 +69,13 @@ func LoadConfig() (*Settings, error) {
 		WebhookBaseURL:        os.Getenv("WEBHOOK_BASE_URL"),
 		BaseURL:               os.Getenv("BASE_URL"),
 
-
 		TokenPrefix: os.Getenv("TOKEN_PREFIX"),
 		TokenLength: getEnvAsInt("TOKEN_LENGTH", 32),
 
 		CalApiKey:      os.Getenv("CAL_API_KEY"),
 		CalEventTypeID: getEnvAsInt("CAL_EVENT_TYPE_ID", 0),
+
+		CampusLoginAPI: os.Getenv("CAMPUSLOGIN_API"),
 	}, nil
 }
 

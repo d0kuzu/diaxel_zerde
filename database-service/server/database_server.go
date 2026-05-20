@@ -23,9 +23,10 @@ type DatabaseServer struct {
 	messageRepo      repository.MessageRepository
 	assistantRepo    repository.AssistantRepository
 	twilioRepo       repository.TwilioRepository
+	campusloginRepo  *repository.CampusloginRepository
 }
 
-func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository, twilioRepo repository.TwilioRepository) *DatabaseServer {
+func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository, twilioRepo repository.TwilioRepository, campusloginRepo *repository.CampusloginRepository) *DatabaseServer {
 	return &DatabaseServer{
 		userRepo:         userRepo,
 		refreshTokenRepo: refreshTokenRepo,
@@ -33,6 +34,7 @@ func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repo
 		messageRepo:      messageRepo,
 		assistantRepo:    assistantRepo,
 		twilioRepo:       twilioRepo,
+		campusloginRepo:  campusloginRepo,
 	}
 }
 
@@ -723,6 +725,33 @@ func (s *DatabaseServer) DeleteTwilioConfig(ctx context.Context, req *proto.Dele
 	}
 
 	return &proto.DeleteTwilioConfigResponse{
+		Success: true,
+	}, nil
+}
+
+func (s *DatabaseServer) GetCampusloginByUserId(ctx context.Context, req *proto.CampusloginRequest) (*proto.CampusloginResponse, error) {
+	record, err := s.campusloginRepo.GetByUserId(req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "campuslogin not found: %v", err)
+	}
+
+	return &proto.CampusloginResponse{
+		UserId:    record.UserId,
+		ContactId: int32(record.ContactID),
+	}, nil
+}
+
+func (s *DatabaseServer) UpsertCampuslogin(ctx context.Context, req *proto.UpsertCampusloginRequest) (*proto.UpsertCampusloginResponse, error) {
+	record := &models.Campuslogin{
+		UserId:    req.UserId,
+		ContactID: int(req.ContactId),
+	}
+
+	if err := s.campusloginRepo.Upsert(record); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to upsert campuslogin: %v", err)
+	}
+
+	return &proto.UpsertCampusloginResponse{
 		Success: true,
 	}, nil
 }

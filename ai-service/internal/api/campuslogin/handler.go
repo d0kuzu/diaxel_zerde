@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -62,8 +63,25 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		return
 	}
 
+	contactIDInt := 0
+	if req.ContactID != "" {
+		parsed, err := strconv.Atoi(req.ContactID)
+		if err == nil {
+			contactIDInt = parsed
+		} else {
+			log.Printf("[CampusLogin Trigger] Failed to parse ContactID '%s': %v", req.ContactID, err)
+		}
+	}
+
 	if !strings.HasPrefix(toPhone, "+") {
 		toPhone = "+" + toPhone
+	}
+
+	if contactIDInt > 0 {
+		err := h.db.UpsertCampuslogin(toPhone, contactIDInt)
+		if err != nil {
+			log.Printf("[CampusLogin Trigger] Failed to upsert Campuslogin for %s: %v", toPhone, err)
+		}
 	}
 
 	if toPhone != "+16692430929" && toPhone != "+12048176146" {

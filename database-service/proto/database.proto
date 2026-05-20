@@ -40,6 +40,8 @@ service DatabaseService {
   rpc SaveTwilioConfig(SaveTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc GetTwilioConfig(GetTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc DeleteTwilioConfig(DeleteTwilioConfigRequest) returns (DeleteTwilioConfigResponse);
+  rpc GetCampusloginByUserId(CampusloginRequest) returns (CampusloginResponse);
+  rpc UpsertCampuslogin(UpsertCampusloginRequest) returns (UpsertCampusloginResponse);
 }
 
 message AnalyticsRequest {
@@ -343,5 +345,23 @@ message DeleteTwilioConfigRequest {
 }
 
 message DeleteTwilioConfigResponse {
+  bool success = 1;
+}
+
+message CampusloginRequest {
+  string user_id = 1;
+}
+
+message UpsertCampusloginRequest {
+  string user_id = 1;
+  int32 contact_id = 2;
+}
+
+message CampusloginResponse {
+  string user_id = 1;
+  int32 contact_id = 2;
+}
+
+message UpsertCampusloginResponse {
   bool success = 1;
 }

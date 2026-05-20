@@ -8,6 +8,7 @@ import (
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/calcom"
+	"diaxel/internal/modules/campuslogin"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/telegram"
 	"diaxel/internal/modules/twilio"
@@ -26,8 +27,9 @@ func main() {
 	}
 
 	calcomClient := calcom.New(settings.CalApiKey, settings.CalEventTypeID)
+	campusloginClient := campuslogin.NewClient(settings.CampusLoginAPI)
 
-	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient, calcomClient)
+	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient, calcomClient, campusloginClient)
 
 	twilioClient := twilio.InitClient()
 

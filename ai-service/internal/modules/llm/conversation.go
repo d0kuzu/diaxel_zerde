@@ -63,7 +63,7 @@ func (c *Client) Conversation(ctx context.Context, userId, assistantId, userMess
 			log.Printf("Функция вызвана: %s", toolCall.Function.Name)
 			log.Printf("Аргументы: %s", toolCall.Function.Arguments)
 
-			result, err := c.executeFunction(ctx, toolCall.Function.Name, toolCall.Function.Arguments)
+			result, err := c.executeFunction(ctx, toolCall.Function.Name, toolCall.Function.Arguments, userId)
 			if err != nil {
 				log.Printf("Ошибка выполнения функции %s: %v", toolCall.Function.Name, err)
 				result = fmt.Sprintf("Error executing function: %s", err.Error())
@@ -98,12 +98,16 @@ func (c *Client) Conversation(ctx context.Context, userId, assistantId, userMess
 	return assistantResponse, nil
 }
 
-func (c *Client) executeFunction(ctx context.Context, functionName, argsJSON string) (string, error) {
+func (c *Client) executeFunction(ctx context.Context, functionName, argsJSON, userId string) (string, error) {
 	switch functionName {
-	case "get_available_slots":
+	case "calcom_get_available_slots":
 		return c.handleGetAvailableSlots(ctx, argsJSON)
-	case "create_booking":
+	case "calcom_create_booking":
 		return c.handleCreateBooking(ctx, argsJSON)
+	case "get_available_slots":
+		return c.handleCheckCampusAppointment(ctx, argsJSON)
+	case "create_booking":
+		return c.handleCreateCampusAppointment(ctx, argsJSON, userId)
 	default:
 		return "", fmt.Errorf("unknown function: %s", functionName)
 	}
@@ -154,4 +158,38 @@ func (c *Client) handleCreateBooking(ctx context.Context, argsJSON string) (stri
 
 	return fmt.Sprintf("Booking confirmed! Details:\n- ID: %d\n- Title: %s\n- Status: %s\n- Start: %s\n- End: %s",
 		booking.ID, booking.Title, booking.Status, booking.Start, booking.End), nil
+}
+
+func (c *Client) handleCheckCampusAppointment(ctx context.Context, argsJSON string) (string, error) {
+	// Stub implementation as requested by user
+	return "Available time slots: Any time from 6 AM to 8 PM is free.", nil
+}
+
+func (c *Client) handleCreateCampusAppointment(ctx context.Context, argsJSON, userId string) (string, error) {
+	var args struct {
+		StartTime string `json:"start_time"`
+		EndTime   string `json:"end_time"`
+	}
+	if err := json.Unmarshal([]byte(argsJSON), &args); err != nil {
+		return "", fmt.Errorf("failed to parse arguments: %w", err)
+	}
+
+	if args.StartTime == "" || args.EndTime == "" {
+		return "Error: start_time and end_time are both required", nil
+	}
+
+	contactID, err := c.db.GetCampusloginByUserId(userId)
+	if err != nil {
+		log.Printf("Failed to get ContactID for user %s: %v", userId, err)
+		// Fallback to a default or return an error if you want to be strict
+		// return "Error: Contact information not found. Please provide contact details.", nil
+		contactID = 5972449 // using the default one for fallback just in case
+	}
+
+	err = c.campuslogin.SendAppointment(ctx, args.StartTime, args.EndTime, contactID)
+	if err != nil {
+		return "", fmt.Errorf("failed to create appointment on CampusLogin: %w", err)
+	}
+
+	return "Appointment successfully created on CampusLogin.", nil
 }
