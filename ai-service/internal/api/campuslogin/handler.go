@@ -147,9 +147,8 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 	}
 
 	systemPrompt := fmt.Sprintf(
-		"This is a new lead. Name: %s %s, program: %s. Greet them by name and mention the program they chose.",
+		"This is a new lead. Name: %s, program: %s. Greet them by name and mention the program they chose.",
 		req.FirstName,
-		req.LastName,
 		programName,
 	)
 
