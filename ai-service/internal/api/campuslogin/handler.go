@@ -86,8 +86,22 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		}
 	}
 
-	if !strings.HasPrefix(toPhone, "+") {
-		toPhone = "+" + toPhone
+	var digitsOnly string
+	for _, r := range toPhone {
+		if r >= '0' && r <= '9' {
+			digitsOnly += string(r)
+		}
+	}
+
+	if len(digitsOnly) == 10 {
+		toPhone = "+1" + digitsOnly
+	} else if len(digitsOnly) == 11 && strings.HasPrefix(digitsOnly, "1") {
+		toPhone = "+" + digitsOnly
+	} else {
+		// Fallback
+		if !strings.HasPrefix(toPhone, "+") {
+			toPhone = "+" + toPhone
+		}
 	}
 
 	programIDInt := 0
