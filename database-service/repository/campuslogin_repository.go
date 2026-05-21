@@ -26,6 +26,6 @@ func (r *CampusloginRepository) GetByUserId(userId string) (*models.Campuslogin,
 func (r *CampusloginRepository) Upsert(campuslogin *models.Campuslogin) error {
 	return r.db.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "user_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"contact_id"}),
+		DoUpdates: clause.AssignmentColumns([]string{"contact_id", "program_id"}),
 	}).Create(campuslogin).Error
 }

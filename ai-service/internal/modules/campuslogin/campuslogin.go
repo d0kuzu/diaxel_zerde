@@ -58,7 +58,7 @@ type AppointmentRequest struct {
 	Automation           string `json:"Automation"`
 }
 
-func (c *Client) SendAppointment(ctx context.Context, startTime, endTime string, contactID int) error {
+func (c *Client) SendAppointment(ctx context.Context, startTime, endTime string, contactID int, programID int, description string) error {
 	reqBody := AppointmentRequest{
 		OrgId:                24900,
 		AppointmentID:        0,
@@ -69,7 +69,7 @@ func (c *Client) SendAppointment(ctx context.Context, startTime, endTime string,
 		DateFrom:             startTime,
 		DateTo:               endTime,
 		Text:                 "Appointment",
-		Description:          "Appointment created via API",
+		Description:          description,
 		WebinarLink:          "",
 		StaffID:              4839,
 		EmployeeID:           1,
@@ -86,7 +86,7 @@ func (c *Client) SendAppointment(ctx context.Context, startTime, endTime string,
 		LocationDetails:      "",
 		InitAppointmentID:    0,
 		EventUrl:             "",
-		ProgramID:            1,
+		ProgramID:            programID,
 		ApplicationID:        1,
 		CampaignID:           1,
 		ContactType:          "",

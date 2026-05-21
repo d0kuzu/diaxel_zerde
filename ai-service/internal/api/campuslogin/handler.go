@@ -2,6 +2,7 @@ package campuslogin
 
 import (
 	"diaxel/internal/config"
+	"diaxel/internal/constants"
 	"diaxel/internal/grpc/db"
 	campusloginModule "diaxel/internal/modules/campuslogin"
 	"diaxel/internal/modules/llm"
@@ -52,7 +53,7 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 
 	if assistantID == "test" {
 		client := campusloginModule.NewClient(h.cfg.CampusLoginAPI)
-		err := client.SendAppointment(c.Request.Context(), "2026-05-25T11:30:00", "2026-05-25T12:30:00", 5972449)
+		err := client.SendAppointment(c.Request.Context(), "2026-05-25T11:30:00", "2026-05-25T12:30:00", 5972449, 1, "Test appointment from API endpoint")
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Test failed: %v", err)})
 			return
@@ -89,8 +90,18 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		toPhone = "+" + toPhone
 	}
 
+	programIDInt := 0
+	if req.ProgramID != "" {
+		parsed, err := strconv.Atoi(req.ProgramID)
+		if err == nil {
+			programIDInt = parsed
+		} else {
+			log.Printf("[CampusLogin Trigger] Failed to parse ProgramID '%s': %v", req.ProgramID, err)
+		}
+	}
+
 	if contactIDInt > 0 {
-		err := h.db.UpsertCampuslogin(toPhone, contactIDInt)
+		err := h.db.UpsertCampuslogin(toPhone, contactIDInt, programIDInt)
 		if err != nil {
 			log.Printf("[CampusLogin Trigger] Failed to upsert Campuslogin for %s: %v", toPhone, err)
 		}
@@ -117,13 +128,8 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 	}
 
 	programName := req.ProgramID
-	switch req.ProgramID {
-	case "41346":
-		programName = "Hairstyling"
-	case "41664":
-		programName = "Hairstyling (evening)"
-	case "42013":
-		programName = "Makeup Artistry"
+	if name, ok := constants.ProgramIDToName[req.ProgramID]; ok {
+		programName = name
 	}
 
 	systemPrompt := fmt.Sprintf(

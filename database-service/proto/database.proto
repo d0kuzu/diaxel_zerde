@@ -355,11 +355,13 @@ message CampusloginRequest {
 message UpsertCampusloginRequest {
   string user_id = 1;
   int32 contact_id = 2;
+  int32 program_id = 3;
 }
 
 message CampusloginResponse {
   string user_id = 1;
   int32 contact_id = 2;
+  int32 program_id = 3;
 }
 
 message UpsertCampusloginResponse {

@@ -347,7 +347,7 @@ func (c *Client) SaveTwilioConfig(assistantID, userID, twilioNumber, accountSID,
 	return c.DB.SaveTwilioConfig(ctx, req)
 }
 
-func (c *Client) GetCampusloginByUserId(userID string) (int, error) {
+func (c *Client) GetCampusloginByUserId(userID string) (int, int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -357,19 +357,20 @@ func (c *Client) GetCampusloginByUserId(userID string) (int, error) {
 
 	resp, err := c.DB.GetCampusloginByUserId(ctx, req)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
-	return int(resp.ContactId), nil
+	return int(resp.ContactId), int(resp.ProgramId), nil
 }
 
-func (c *Client) UpsertCampuslogin(userID string, contactID int) error {
+func (c *Client) UpsertCampuslogin(userID string, contactID int, programID int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	req := &dbpb.UpsertCampusloginRequest{
 		UserId:    userID,
 		ContactId: int32(contactID),
+		ProgramId: int32(programID),
 	}
 
 	_, err := c.DB.UpsertCampuslogin(ctx, req)

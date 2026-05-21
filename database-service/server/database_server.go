@@ -738,16 +738,18 @@ func (s *DatabaseServer) GetCampusloginByUserId(ctx context.Context, req *proto.
 	return &proto.CampusloginResponse{
 		UserId:    record.UserId,
 		ContactId: int32(record.ContactID),
+		ProgramId: int32(record.ProgramID),
 	}, nil
 }
 
 func (s *DatabaseServer) UpsertCampuslogin(ctx context.Context, req *proto.UpsertCampusloginRequest) (*proto.UpsertCampusloginResponse, error) {
-	record := &models.Campuslogin{
+	campuslogin := &models.Campuslogin{
 		UserId:    req.UserId,
 		ContactID: int(req.ContactId),
+		ProgramID: int(req.ProgramId),
 	}
 
-	if err := s.campusloginRepo.Upsert(record); err != nil {
+	if err := s.campusloginRepo.Upsert(campuslogin); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to upsert campuslogin: %v", err)
 	}
 

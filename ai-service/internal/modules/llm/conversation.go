@@ -167,8 +167,9 @@ func (c *Client) handleCheckCampusAppointment(ctx context.Context, argsJSON stri
 
 func (c *Client) handleCreateCampusAppointment(ctx context.Context, argsJSON, userId string) (string, error) {
 	var args struct {
-		StartTime string `json:"start_time"`
-		EndTime   string `json:"end_time"`
+		StartTime   string `json:"start_time"`
+		EndTime     string `json:"end_time"`
+		Description string `json:"description"`
 	}
 	if err := json.Unmarshal([]byte(argsJSON), &args); err != nil {
 		return "", fmt.Errorf("failed to parse arguments: %w", err)
@@ -178,15 +179,16 @@ func (c *Client) handleCreateCampusAppointment(ctx context.Context, argsJSON, us
 		return "Error: start_time and end_time are both required", nil
 	}
 
-	contactID, err := c.db.GetCampusloginByUserId(userId)
+	contactID, programID, err := c.db.GetCampusloginByUserId(userId)
 	if err != nil {
-		log.Printf("Failed to get ContactID for user %s: %v", userId, err)
+		log.Printf("Failed to get ContactID/ProgramID for user %s: %v", userId, err)
 		// Fallback to a default or return an error if you want to be strict
 		// return "Error: Contact information not found. Please provide contact details.", nil
 		contactID = 5972449 // using the default one for fallback just in case
+		programID = 1
 	}
 
-	err = c.campuslogin.SendAppointment(ctx, args.StartTime, args.EndTime, contactID)
+	err = c.campuslogin.SendAppointment(ctx, args.StartTime, args.EndTime, contactID, programID, args.Description)
 	if err != nil {
 		return "", fmt.Errorf("failed to create appointment on CampusLogin: %w", err)
 	}

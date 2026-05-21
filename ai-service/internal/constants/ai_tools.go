@@ -80,8 +80,12 @@ var Tools = []openai.Tool{
 						"type":        "string",
 						"description": "The end time of the appointment (e.g. 2026-05-25T12:30:00)",
 					},
+					"description": map[string]interface{}{
+						"type":        "string",
+						"description": "Brief description of the lead",
+					},
 				},
-				"required": []string{"start_time", "end_time"},
+				"required": []string{"start_time", "end_time", "description"},
 			},
 		},
 	},

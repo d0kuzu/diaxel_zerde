@@ -3149,6 +3149,7 @@ type UpsertCampusloginRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ContactId     int32                  `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	ProgramId     int32                  `protobuf:"varint,3,opt,name=program_id,json=programId,proto3" json:"program_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3197,10 +3198,18 @@ func (x *UpsertCampusloginRequest) GetContactId() int32 {
 	return 0
 }
 
+func (x *UpsertCampusloginRequest) GetProgramId() int32 {
+	if x != nil {
+		return x.ProgramId
+	}
+	return 0
+}
+
 type CampusloginResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	ContactId     int32                  `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	ProgramId     int32                  `protobuf:"varint,3,opt,name=program_id,json=programId,proto3" json:"program_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -3245,6 +3254,13 @@ func (x *CampusloginResponse) GetUserId() string {
 func (x *CampusloginResponse) GetContactId() int32 {
 	if x != nil {
 		return x.ContactId
+	}
+	return 0
+}
+
+func (x *CampusloginResponse) GetProgramId() int32 {
+	if x != nil {
+		return x.ProgramId
 	}
 	return 0
 }
@@ -3525,15 +3541,19 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x1aDeleteTwilioConfigResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"-\n" +
 	"\x12CampusloginRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"R\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"q\n" +
 	"\x18UpsertCampusloginRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"contact_id\x18\x02 \x01(\x05R\tcontactId\"M\n" +
+	"contact_id\x18\x02 \x01(\x05R\tcontactId\x12\x1d\n" +
+	"\n" +
+	"program_id\x18\x03 \x01(\x05R\tprogramId\"l\n" +
 	"\x13CampusloginResponse\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
 	"\n" +
-	"contact_id\x18\x02 \x01(\x05R\tcontactId\"5\n" +
+	"contact_id\x18\x02 \x01(\x05R\tcontactId\x12\x1d\n" +
+	"\n" +
+	"program_id\x18\x03 \x01(\x05R\tprogramId\"5\n" +
 	"\x19UpsertCampusloginResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess2\xf9\x17\n" +
 	"\x0fDatabaseService\x12G\n" +
