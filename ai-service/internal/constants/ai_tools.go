@@ -47,6 +47,7 @@ var Tools = []openai.Tool{
 		},
 	},
 	*/
+	/*
 	{
 		Type: openai.ToolTypeFunction,
 		Function: &openai.FunctionDefinition{
@@ -64,6 +65,7 @@ var Tools = []openai.Tool{
 			},
 		},
 	},
+	*/
 	{
 		Type: openai.ToolTypeFunction,
 		Function: &openai.FunctionDefinition{

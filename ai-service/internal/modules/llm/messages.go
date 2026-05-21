@@ -75,9 +75,13 @@ func (c *Client) StartMessages(assistantId string) ([]openai.ChatCompletionMessa
 	}
 
 	// Inject current date/time so the model can resolve relative dates ("this Monday", "next Friday", etc.)
+	loc, err := time.LoadLocation("America/Winnipeg")
 	now := time.Now()
-	dateContext := fmt.Sprintf("\n\nToday is %s, %s",
-		now.Format("Monday"), now.Format("2006-01-02"))
+	if err == nil {
+		now = now.In(loc)
+	}
+	dateContext := fmt.Sprintf("\n\nToday is %s, %s, %s",
+		now.Format("Monday"), now.Format("2006-01-02"), now.Format("15:04 MST"))
 	systemPrompt += dateContext
 
 	return []openai.ChatCompletionMessage{
