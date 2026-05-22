@@ -42,7 +42,6 @@ type CampusWebhookRequest struct {
 	StudentNumber  string `form:"StudentNumber" json:"StudentNumber"`
 	ID             string `form:"ID" json:"ID"`
 	ProgramID      string `form:"ProgramID" json:"ProgramID"`
-	International  string `form:"ProgramID" json:"International"`
 }
 
 func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
@@ -53,7 +52,6 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 	}
 
 	// --- ДОБАВЛЕННЫЙ БЛОК ДЛЯ ЛОГИРОВАНИЯ ВСЕХ ПОЛЕЙ ---
-	// Парсим форму, если она еще не была распарсена
 	if err := c.Request.ParseForm(); err == nil {
 		log.Printf("[CampusLogin Debug] === НАЧАЛО ПРИНЯТЫХ ДАННЫХ ===")
 
@@ -65,7 +63,6 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 			}
 		}
 
-		// Выводим всё, что пришло в теле (Form/Post-Form параметры)
 		if len(c.Request.PostForm) > 0 {
 			log.Printf("[CampusLogin Debug] Form/Post параметры:")
 			for key, values := range c.Request.PostForm {
@@ -172,12 +169,11 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 	if name, ok := constants.ProgramIDToName[req.ProgramID]; ok {
 		programName = name
 	}
-	log.Printf("Triger data: Name: %s, Program: %s, IsInternational: %s", req.FirstName, programName, req.International)
+
 	systemPrompt := fmt.Sprintf(
-		"This is a new lead. Name: %s, program: %s, IsInternational: %s. Greet them by name and mention the program they chose.",
+		"This is a new lead. Name: %s, program: %s. Greet them by name and mention the program they chose.",
 		req.FirstName,
 		programName,
-		req.International,
 	)
 
 	answer, err := h.LLM.Conversation(c, toPhone, assistantID, "", llm.WithSystemMessage(systemPrompt))
