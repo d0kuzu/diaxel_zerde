@@ -39,9 +39,10 @@ type CampusWebhookRequest struct {
 	LastName       string `form:"Lastname" json:"Lastname"`
 	AlternatePhone string `form:"alternatephone" json:"alternatephone"`
 	Email          string `form:"Email" json:"Email"`
-	StudentNumber  string `form:"StudentNumber" json:"StudentNumber"`
-	ID             string `form:"ID" json:"ID"`
-	ProgramID      string `form:"ProgramID" json:"ProgramID"`
+	StudentNumber    string  `form:"StudentNumber" json:"StudentNumber"`
+	ID               string  `form:"ID" json:"ID"`
+	ProgramID        string  `form:"ProgramID" json:"ProgramID"`
+	AttributeID_2577 *string `form:"AttributeID_2577" json:"AttributeID_2577"`
 }
 
 func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
@@ -91,6 +92,12 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		log.Printf("[CampusLogin Trigger] Binding error: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request data: " + err.Error()})
 		return
+	}
+
+	if req.AttributeID_2577 != nil {
+		log.Printf("Have AttributeID_2577")
+	} else {
+		log.Printf("do not have AttributeID_2577")
 	}
 
 	toPhone := req.AlternatePhone
