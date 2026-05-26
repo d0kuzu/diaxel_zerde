@@ -376,3 +376,12 @@ func (c *Client) UpsertCampuslogin(userID string, contactID int, programID int) 
 	_, err := c.DB.UpsertCampuslogin(ctx, req)
 	return err
 }
+
+func (c *Client) DeleteAllChatsAndMessages() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req := &dbpb.DeleteAllChatsAndMessagesRequest{}
+	_, err := c.DB.DeleteAllChatsAndMessages(ctx, req)
+	return err
+}

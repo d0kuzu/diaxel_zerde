@@ -177,3 +177,12 @@ func (h *ChatHandler) SearchChat(c *gin.Context) {
 		"total_count": totalCount,
 	})
 }
+
+// ClearAll is a test endpoint to remove all chats and messages
+func (h *ChatHandler) ClearAll(c *gin.Context) {
+	if err := h.db.DeleteAllChatsAndMessages(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to clear all chats and messages", "details": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "success", "message": "all chats and messages have been cleared"})
+}

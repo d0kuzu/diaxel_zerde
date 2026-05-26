@@ -19,6 +19,7 @@ type ChatRepository interface {
 	GetChatsByUserID(ctx context.Context, assistantIDs []string, limit, offset int32) ([]*models.Chat, error)
 	UpdateChat(ctx context.Context, id, assistantID, customerID string) (*models.Chat, error)
 	DeleteChat(ctx context.Context, id string) error
+	DeleteAllChats(ctx context.Context) error
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
 	GetChatPage(ctx context.Context, assistantID string, page, chatsPerPage int32) ([]*models.Chat, error)
 	GetChatPagesCountByUserID(ctx context.Context, assistantIDs []string, chatsPerPage int32) (int32, error)
@@ -268,5 +269,13 @@ func (r *chatRepository) DeleteChat(ctx context.Context, id string) error {
 		return fmt.Errorf("chat not found")
 	}
 
+	return nil
+}
+
+func (r *chatRepository) DeleteAllChats(ctx context.Context) error {
+	result := r.db.WithContext(ctx).Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Chat{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete all chats: %w", result.Error)
+	}
 	return nil
 }

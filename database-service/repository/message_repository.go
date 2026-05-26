@@ -18,6 +18,7 @@ type MessageRepository interface {
 	GetAllChatMessages(ctx context.Context, chatID string) ([]*models.Message, error)
 	UpdateMessage(ctx context.Context, id uint, role, content string) (*models.Message, error)
 	DeleteMessage(ctx context.Context, id uint) error
+	DeleteAllMessages(ctx context.Context) error
 }
 
 type messageRepository struct {
@@ -117,5 +118,13 @@ func (r *messageRepository) DeleteMessage(ctx context.Context, id uint) error {
 		return fmt.Errorf("message not found")
 	}
 
+	return nil
+}
+
+func (r *messageRepository) DeleteAllMessages(ctx context.Context) error {
+	result := r.db.WithContext(ctx).Session(&gorm.Session{AllowGlobalUpdate: true}).Delete(&models.Message{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete all messages: %w", result.Error)
+	}
 	return nil
 }

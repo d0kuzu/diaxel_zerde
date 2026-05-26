@@ -757,3 +757,16 @@ func (s *DatabaseServer) UpsertCampuslogin(ctx context.Context, req *proto.Upser
 		Success: true,
 	}, nil
 }
+
+func (s *DatabaseServer) DeleteAllChatsAndMessages(ctx context.Context, req *proto.DeleteAllChatsAndMessagesRequest) (*proto.DeleteAllChatsAndMessagesResponse, error) {
+	if err := s.messageRepo.DeleteAllMessages(ctx); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete all messages: %v", err)
+	}
+	if err := s.chatRepo.DeleteAllChats(ctx); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete all chats: %v", err)
+	}
+
+	return &proto.DeleteAllChatsAndMessagesResponse{
+		Success: true,
+	}, nil
+}
