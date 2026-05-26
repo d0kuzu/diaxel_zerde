@@ -55,6 +55,7 @@ const (
 	DatabaseService_GetTwilioConfig_FullMethodName           = "/database.DatabaseService/GetTwilioConfig"
 	DatabaseService_DeleteTwilioConfig_FullMethodName        = "/database.DatabaseService/DeleteTwilioConfig"
 	DatabaseService_GetCampusloginByUserId_FullMethodName    = "/database.DatabaseService/GetCampusloginByUserId"
+	DatabaseService_UpsertCampuslogin_FullMethodName         = "/database.DatabaseService/UpsertCampuslogin"
 	DatabaseService_DeleteAllChatsAndMessages_FullMethodName = "/database.DatabaseService/DeleteAllChatsAndMessages"
 )
 
@@ -98,6 +99,7 @@ type DatabaseServiceClient interface {
 	GetTwilioConfig(ctx context.Context, in *GetTwilioConfigRequest, opts ...grpc.CallOption) (*TwilioConfigResponse, error)
 	DeleteTwilioConfig(ctx context.Context, in *DeleteTwilioConfigRequest, opts ...grpc.CallOption) (*DeleteTwilioConfigResponse, error)
 	GetCampusloginByUserId(ctx context.Context, in *CampusloginRequest, opts ...grpc.CallOption) (*CampusloginResponse, error)
+	UpsertCampuslogin(ctx context.Context, in *UpsertCampusloginRequest, opts ...grpc.CallOption) (*UpsertCampusloginResponse, error)
 	DeleteAllChatsAndMessages(ctx context.Context, in *DeleteAllChatsAndMessagesRequest, opts ...grpc.CallOption) (*DeleteAllChatsAndMessagesResponse, error)
 }
 
@@ -469,6 +471,16 @@ func (c *databaseServiceClient) GetCampusloginByUserId(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *databaseServiceClient) UpsertCampuslogin(ctx context.Context, in *UpsertCampusloginRequest, opts ...grpc.CallOption) (*UpsertCampusloginResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpsertCampusloginResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_UpsertCampuslogin_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *databaseServiceClient) DeleteAllChatsAndMessages(ctx context.Context, in *DeleteAllChatsAndMessagesRequest, opts ...grpc.CallOption) (*DeleteAllChatsAndMessagesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteAllChatsAndMessagesResponse)
@@ -519,6 +531,7 @@ type DatabaseServiceServer interface {
 	GetTwilioConfig(context.Context, *GetTwilioConfigRequest) (*TwilioConfigResponse, error)
 	DeleteTwilioConfig(context.Context, *DeleteTwilioConfigRequest) (*DeleteTwilioConfigResponse, error)
 	GetCampusloginByUserId(context.Context, *CampusloginRequest) (*CampusloginResponse, error)
+	UpsertCampuslogin(context.Context, *UpsertCampusloginRequest) (*UpsertCampusloginResponse, error)
 	DeleteAllChatsAndMessages(context.Context, *DeleteAllChatsAndMessagesRequest) (*DeleteAllChatsAndMessagesResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
@@ -637,6 +650,9 @@ func (UnimplementedDatabaseServiceServer) DeleteTwilioConfig(context.Context, *D
 }
 func (UnimplementedDatabaseServiceServer) GetCampusloginByUserId(context.Context, *CampusloginRequest) (*CampusloginResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetCampusloginByUserId not implemented")
+}
+func (UnimplementedDatabaseServiceServer) UpsertCampuslogin(context.Context, *UpsertCampusloginRequest) (*UpsertCampusloginResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpsertCampuslogin not implemented")
 }
 func (UnimplementedDatabaseServiceServer) DeleteAllChatsAndMessages(context.Context, *DeleteAllChatsAndMessagesRequest) (*DeleteAllChatsAndMessagesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAllChatsAndMessages not implemented")
@@ -1310,6 +1326,24 @@ func _DatabaseService_GetCampusloginByUserId_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_UpsertCampuslogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpsertCampusloginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).UpsertCampuslogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_UpsertCampuslogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).UpsertCampuslogin(ctx, req.(*UpsertCampusloginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _DatabaseService_DeleteAllChatsAndMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteAllChatsAndMessagesRequest)
 	if err := dec(in); err != nil {
@@ -1478,6 +1512,10 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCampusloginByUserId",
 			Handler:    _DatabaseService_GetCampusloginByUserId_Handler,
+		},
+		{
+			MethodName: "UpsertCampuslogin",
+			Handler:    _DatabaseService_UpsertCampuslogin_Handler,
 		},
 		{
 			MethodName: "DeleteAllChatsAndMessages",

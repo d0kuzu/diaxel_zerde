@@ -41,6 +41,7 @@ service DatabaseService {
   rpc GetTwilioConfig(GetTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc DeleteTwilioConfig(DeleteTwilioConfigRequest) returns (DeleteTwilioConfigResponse);
   rpc GetCampusloginByUserId(CampusloginRequest) returns (CampusloginResponse);
+  rpc UpsertCampuslogin(UpsertCampusloginRequest) returns (UpsertCampusloginResponse);
   rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
 }
 

@@ -3638,7 +3638,7 @@ const file_proto_database_proto_rawDesc = "" +
 	"\n" +
 	"program_id\x18\x03 \x01(\x05R\tprogramId\"5\n" +
 	"\x19UpsertCampusloginResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\x91\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess2\xef\x18\n" +
 	"\x0fDatabaseService\x12G\n" +
 	"\fGetAnalytics\x12\x1a.database.AnalyticsRequest\x1a\x1b.database.AnalyticsResponse\x12]\n" +
 	"\x17GetAnalyticsByAssistant\x12%.database.AnalyticsByAssistantRequest\x1a\x1b.database.AnalyticsResponse\x12A\n" +
@@ -3681,7 +3681,8 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x10SaveTwilioConfig\x12!.database.SaveTwilioConfigRequest\x1a\x1e.database.TwilioConfigResponse\x12S\n" +
 	"\x0fGetTwilioConfig\x12 .database.GetTwilioConfigRequest\x1a\x1e.database.TwilioConfigResponse\x12_\n" +
 	"\x12DeleteTwilioConfig\x12#.database.DeleteTwilioConfigRequest\x1a$.database.DeleteTwilioConfigResponse\x12U\n" +
-	"\x16GetCampusloginByUserId\x12\x1c.database.CampusloginRequest\x1a\x1d.database.CampusloginResponse\x12t\n" +
+	"\x16GetCampusloginByUserId\x12\x1c.database.CampusloginRequest\x1a\x1d.database.CampusloginResponse\x12\\\n" +
+	"\x11UpsertCampuslogin\x12\".database.UpsertCampusloginRequest\x1a#.database.UpsertCampusloginResponse\x12t\n" +
 	"\x19DeleteAllChatsAndMessages\x12*.database.DeleteAllChatsAndMessagesRequest\x1a+.database.DeleteAllChatsAndMessagesResponseB+Z)diaxel_zerde/database-service/proto;protob\x06proto3"
 
 var (
@@ -3800,46 +3801,48 @@ var file_proto_database_proto_depIdxs = []int32{
 	52, // 37: database.DatabaseService.GetTwilioConfig:input_type -> database.GetTwilioConfigRequest
 	54, // 38: database.DatabaseService.DeleteTwilioConfig:input_type -> database.DeleteTwilioConfigRequest
 	56, // 39: database.DatabaseService.GetCampusloginByUserId:input_type -> database.CampusloginRequest
-	0,  // 40: database.DatabaseService.DeleteAllChatsAndMessages:input_type -> database.DeleteAllChatsAndMessagesRequest
-	4,  // 41: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
-	4,  // 42: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
-	7,  // 43: database.DatabaseService.CreateUser:output_type -> database.UserResponse
-	7,  // 44: database.DatabaseService.GetUser:output_type -> database.UserResponse
-	7,  // 45: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
-	7,  // 46: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
-	24, // 47: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
-	9,  // 48: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
-	11, // 49: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
-	13, // 50: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
-	42, // 51: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
-	42, // 52: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
-	42, // 53: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
-	42, // 54: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
-	47, // 55: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
-	49, // 56: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
-	15, // 57: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
-	15, // 58: database.DatabaseService.GetChat:output_type -> database.ChatResponse
-	27, // 59: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
-	15, // 60: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
-	30, // 61: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
-	17, // 62: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
-	20, // 63: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
-	20, // 64: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
-	17, // 65: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
-	33, // 66: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
-	35, // 67: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
-	27, // 68: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
-	35, // 69: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
-	27, // 70: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
-	40, // 71: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
-	15, // 72: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
-	53, // 73: database.DatabaseService.SaveTwilioConfig:output_type -> database.TwilioConfigResponse
-	53, // 74: database.DatabaseService.GetTwilioConfig:output_type -> database.TwilioConfigResponse
-	55, // 75: database.DatabaseService.DeleteTwilioConfig:output_type -> database.DeleteTwilioConfigResponse
-	58, // 76: database.DatabaseService.GetCampusloginByUserId:output_type -> database.CampusloginResponse
-	1,  // 77: database.DatabaseService.DeleteAllChatsAndMessages:output_type -> database.DeleteAllChatsAndMessagesResponse
-	41, // [41:78] is the sub-list for method output_type
-	4,  // [4:41] is the sub-list for method input_type
+	57, // 40: database.DatabaseService.UpsertCampuslogin:input_type -> database.UpsertCampusloginRequest
+	0,  // 41: database.DatabaseService.DeleteAllChatsAndMessages:input_type -> database.DeleteAllChatsAndMessagesRequest
+	4,  // 42: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
+	4,  // 43: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
+	7,  // 44: database.DatabaseService.CreateUser:output_type -> database.UserResponse
+	7,  // 45: database.DatabaseService.GetUser:output_type -> database.UserResponse
+	7,  // 46: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
+	7,  // 47: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
+	24, // 48: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
+	9,  // 49: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
+	11, // 50: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
+	13, // 51: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
+	42, // 52: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
+	42, // 53: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
+	42, // 54: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
+	42, // 55: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
+	47, // 56: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
+	49, // 57: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
+	15, // 58: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
+	15, // 59: database.DatabaseService.GetChat:output_type -> database.ChatResponse
+	27, // 60: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
+	15, // 61: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
+	30, // 62: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
+	17, // 63: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
+	20, // 64: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
+	20, // 65: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
+	17, // 66: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
+	33, // 67: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
+	35, // 68: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
+	27, // 69: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
+	35, // 70: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
+	27, // 71: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
+	40, // 72: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
+	15, // 73: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
+	53, // 74: database.DatabaseService.SaveTwilioConfig:output_type -> database.TwilioConfigResponse
+	53, // 75: database.DatabaseService.GetTwilioConfig:output_type -> database.TwilioConfigResponse
+	55, // 76: database.DatabaseService.DeleteTwilioConfig:output_type -> database.DeleteTwilioConfigResponse
+	58, // 77: database.DatabaseService.GetCampusloginByUserId:output_type -> database.CampusloginResponse
+	59, // 78: database.DatabaseService.UpsertCampuslogin:output_type -> database.UpsertCampusloginResponse
+	1,  // 79: database.DatabaseService.DeleteAllChatsAndMessages:output_type -> database.DeleteAllChatsAndMessagesResponse
+	42, // [42:80] is the sub-list for method output_type
+	4,  // [4:42] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
