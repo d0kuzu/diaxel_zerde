@@ -2,6 +2,10 @@ package main
 
 import (
 	"context"
+	"log"
+
+	_ "time/tzdata"
+
 	"diaxel/internal/api"
 	appModule "diaxel/internal/app"
 	"diaxel/internal/cleanup"
@@ -12,7 +16,6 @@ import (
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/telegram"
 	"diaxel/internal/modules/twilio"
-	"log"
 )
 
 func main() {
