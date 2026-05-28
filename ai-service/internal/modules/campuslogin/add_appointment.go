@@ -8,18 +8,6 @@ import (
 	"net/http"
 )
 
-type Client struct {
-	apiKey string
-	client *http.Client
-}
-
-func NewClient(apiKey string) *Client {
-	return &Client{
-		apiKey: apiKey,
-		client: &http.Client{},
-	}
-}
-
 type AppointmentRequest struct {
 	OrgId                int    `json:"OrgId"`
 	AppointmentID        int    `json:"AppointmentID"`

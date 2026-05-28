@@ -7,10 +7,9 @@ import (
 	"log"
 	"strings"
 
+	"diaxel/internal/constants"
 	"github.com/sashabaranov/go-openai"
 )
-
-const defaultTimezone = "America/Winnipeg"
 
 type ConversationOption func(*conversationOptions)
 
@@ -108,6 +107,8 @@ func (c *Client) executeFunction(ctx context.Context, functionName, argsJSON, us
 		return c.handleCheckCampusAppointment(ctx, argsJSON)
 	case "create_booking":
 		return c.handleCreateCampusAppointment(ctx, argsJSON, userId)
+	case "send_summary":
+		return c.handleSendSummary(ctx, argsJSON, userId)
 	default:
 		return "", fmt.Errorf("unknown function: %s", functionName)
 	}
@@ -125,7 +126,7 @@ func (c *Client) handleGetAvailableSlots(ctx context.Context, argsJSON string) (
 		return "Error: date parameter is required in YYYY-MM-DD format", nil
 	}
 
-	slots, err := c.calcom.GetAvailableSlots(ctx, args.Date, defaultTimezone)
+	slots, err := c.calcom.GetAvailableSlots(ctx, args.Date, constants.DefaultTimezone)
 	if err != nil {
 		return "", fmt.Errorf("failed to get slots from Cal.com: %w", err)
 	}
@@ -151,7 +152,7 @@ func (c *Client) handleCreateBooking(ctx context.Context, argsJSON string) (stri
 		return "Error: start_time, attendee_name, and attendee_email are all required", nil
 	}
 
-	booking, err := c.calcom.CreateBooking(ctx, args.StartTime, args.AttendeeName, args.AttendeeEmail, defaultTimezone)
+	booking, err := c.calcom.CreateBooking(ctx, args.StartTime, args.AttendeeName, args.AttendeeEmail, constants.DefaultTimezone)
 	if err != nil {
 		return "", fmt.Errorf("failed to create booking on Cal.com: %w", err)
 	}
@@ -194,4 +195,30 @@ func (c *Client) handleCreateCampusAppointment(ctx context.Context, argsJSON, us
 	}
 
 	return "Appointment successfully created on CampusLogin.", nil
+}
+
+func (c *Client) handleSendSummary(ctx context.Context, argsJSON, userId string) (string, error) {
+	var args struct {
+		Summary string `json:"summary"`
+	}
+	if err := json.Unmarshal([]byte(argsJSON), &args); err != nil {
+		return "", fmt.Errorf("failed to parse arguments: %w", err)
+	}
+
+	if args.Summary == "" {
+		return "Error: summary parameter is required", nil
+	}
+
+	contactID, _, err := c.db.GetCampusloginByUserId(userId)
+	if err != nil {
+		log.Printf("Failed to get ContactID for user %s: %v", userId, err)
+		contactID = 5972449 // default fallback
+	}
+
+	err = c.campuslogin.AddNewNote(ctx, contactID, args.Summary)
+	if err != nil {
+		return "", fmt.Errorf("failed to add new note on CampusLogin: %w", err)
+	}
+
+	return "Summary successfully sent to CampusLogin.", nil
 }
