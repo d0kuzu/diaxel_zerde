@@ -385,3 +385,14 @@ func (c *Client) DeleteAllChatsAndMessages() error {
 	_, err := c.DB.DeleteAllChatsAndMessages(ctx, req)
 	return err
 }
+
+func (c *Client) DeleteChatAndMessages(chatID string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req := &dbpb.DeleteChatAndMessagesRequest{
+		ChatId: chatID,
+	}
+	_, err := c.DB.DeleteChatAndMessages(ctx, req)
+	return err
+}

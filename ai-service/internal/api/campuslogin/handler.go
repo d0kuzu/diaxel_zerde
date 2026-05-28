@@ -152,6 +152,17 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		return
 	}
 
+	existingChat, checkErr := h.db.GetLatestChatByCustomer(assistantID, toPhone)
+	if checkErr != nil {
+		log.Printf("[CampusLogin Trigger] Error checking existing chat for %s: %v", toPhone, checkErr)
+	} else if existingChat != nil && existingChat.Id != "" {
+		log.Printf("[CampusLogin Trigger] Existing chat found (ID: %s) for %s. Deleting chat and messages.", existingChat.Id, toPhone)
+		delErr := h.db.DeleteChatAndMessages(existingChat.Id)
+		if delErr != nil {
+			log.Printf("[CampusLogin Trigger] Failed to delete existing chat %s: %v", existingChat.Id, delErr)
+		}
+	}
+
 	_, err := h.db.GetAssistant(assistantID)
 	if err != nil {
 		log.Printf("Error getting assistant %s: %v", assistantID, err)

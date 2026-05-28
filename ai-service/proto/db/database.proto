@@ -40,6 +40,8 @@ service DatabaseService {
   rpc SaveTwilioConfig(SaveTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc GetTwilioConfig(GetTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc DeleteTwilioConfig(DeleteTwilioConfigRequest) returns (DeleteTwilioConfigResponse);
+  rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
+  rpc DeleteChatAndMessages(DeleteChatAndMessagesRequest) returns (DeleteChatAndMessagesResponse);
 }
 
 message AnalyticsRequest {
@@ -343,5 +345,18 @@ message DeleteTwilioConfigRequest {
 }
 
 message DeleteTwilioConfigResponse {
+  bool success = 1;
+}
+
+message DeleteAllChatsAndMessagesRequest {}
+message DeleteAllChatsAndMessagesResponse {
+  bool success = 1;
+}
+
+message DeleteChatAndMessagesRequest {
+  string chat_id = 1;
+}
+
+message DeleteChatAndMessagesResponse {
   bool success = 1;
 }

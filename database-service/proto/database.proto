@@ -43,6 +43,7 @@ service DatabaseService {
   rpc GetCampusloginByUserId(CampusloginRequest) returns (CampusloginResponse);
   rpc UpsertCampuslogin(UpsertCampusloginRequest) returns (UpsertCampusloginResponse);
   rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
+  rpc DeleteChatAndMessages(DeleteChatAndMessagesRequest) returns (DeleteChatAndMessagesResponse);
 }
 
 message DeleteAllChatsAndMessagesRequest {}
@@ -371,5 +372,13 @@ message CampusloginResponse {
 }
 
 message UpsertCampusloginResponse {
+  bool success = 1;
+}
+
+message DeleteChatAndMessagesRequest {
+  string chat_id = 1;
+}
+
+message DeleteChatAndMessagesResponse {
   bool success = 1;
 }

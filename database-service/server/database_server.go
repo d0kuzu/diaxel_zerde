@@ -760,13 +760,26 @@ func (s *DatabaseServer) UpsertCampuslogin(ctx context.Context, req *proto.Upser
 
 func (s *DatabaseServer) DeleteAllChatsAndMessages(ctx context.Context, req *proto.DeleteAllChatsAndMessagesRequest) (*proto.DeleteAllChatsAndMessagesResponse, error) {
 	if err := s.messageRepo.DeleteAllMessages(ctx); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete all messages: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete all messages: %w", err)
 	}
 	if err := s.chatRepo.DeleteAllChats(ctx); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete all chats: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete all chats: %w", err)
 	}
 
 	return &proto.DeleteAllChatsAndMessagesResponse{
+		Success: true,
+	}, nil
+}
+
+func (s *DatabaseServer) DeleteChatAndMessages(ctx context.Context, req *proto.DeleteChatAndMessagesRequest) (*proto.DeleteChatAndMessagesResponse, error) {
+	if err := s.messageRepo.DeleteMessagesByChatID(ctx, req.ChatId); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete messages for chat %s: %v", req.ChatId, err)
+	}
+	if err := s.chatRepo.DeleteChat(ctx, req.ChatId); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete chat %s: %v", req.ChatId, err)
+	}
+
+	return &proto.DeleteChatAndMessagesResponse{
 		Success: true,
 	}, nil
 }
