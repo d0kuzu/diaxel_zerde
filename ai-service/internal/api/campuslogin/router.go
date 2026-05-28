@@ -12,5 +12,6 @@ func CampusLoginRoutes(router *gin.Engine, app *appModule.App) {
 	group := router.Group("campuslogin")
 	{
 		group.POST("/triger-twilio/:assistant_id", h.HandleTriggerTwilio)
+		group.POST("/triger-twilio/reinquiry/:assistant_id", h.HandleTriggerTwilioReinquiry)
 	}
 }

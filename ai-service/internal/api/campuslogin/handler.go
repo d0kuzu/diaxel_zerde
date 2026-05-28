@@ -223,3 +223,33 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		"answer":  answer,
 	})
 }
+
+func (h *CampusLoginHandler) HandleTriggerTwilioReinquiry(c *gin.Context) {
+	assistantID := c.Param("assistant_id")
+
+	// Log all query params
+	queryParams := map[string]string{}
+	for k, v := range c.Request.URL.Query() {
+		if len(v) > 0 {
+			queryParams[k] = v[0]
+		}
+	}
+
+	// Log all form/body params
+	if err := c.Request.ParseForm(); err == nil {
+		for k, v := range c.Request.PostForm {
+			if len(v) > 0 {
+				queryParams["body."+k] = v[0]
+			}
+		}
+	}
+
+	log.Printf("[CampusLogin Reinquiry] assistant_id=%s params=%+v", assistantID, queryParams)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":       "ok",
+		"assistant_id": assistantID,
+		"params":       queryParams,
+	})
+}
+
