@@ -1,4 +1,4 @@
-package followup
+﻿package followup
 
 import (
 	"context"
@@ -24,7 +24,7 @@ func NewListener(dbClient *db.Client, twilioClient *twilio.Client) *Listener {
 }
 
 func (l *Listener) Start(ctx context.Context) {
-	ticker := time.NewTicker(1 * time.Hour)
+	ticker := time.NewTicker(6 * time.Minute)
 	defer ticker.Stop()
 	log.Println("[Followup Listener] Started.")
 	for {
@@ -39,16 +39,16 @@ func (l *Listener) Start(ctx context.Context) {
 }
 
 func (l *Listener) processFollowups(ctx context.Context) {
-	loc, err := time.LoadLocation("America/Winnipeg")
-	if err != nil {
-		log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
-		return
-	}
-	now := time.Now().In(loc)
-	if hour := now.Hour(); hour < 9 || hour >= 18 {
-		log.Printf("[Followup Listener] Outside working hours (%d). Skipping.\n", hour)
-		return
-	}
+	//loc, err := time.LoadLocation("America/Winnipeg")
+	//if err != nil {
+	//	log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
+	//	return
+	//}
+	//now := time.Now().In(loc)
+	//if hour := now.Hour(); hour < 9 || hour >= 18 {
+	//	log.Printf("[Followup Listener] Outside working hours (%d). Skipping.\n", hour)
+	//	return
+	//}
 	log.Printf("[Followup Listener] Working")
 
 	chats, err := l.dbClient.GetChatsForFollowup()
