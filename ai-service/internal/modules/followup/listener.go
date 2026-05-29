@@ -23,7 +23,7 @@ func NewListener(dbClient *db.Client, twilioClient *twilio.Client) *Listener {
 }
 
 func (l *Listener) Start(ctx context.Context) {
-	ticker := time.NewTicker(1 * time.Hour)
+	ticker := time.NewTicker(6 * time.Minute)
 	defer ticker.Stop()
 
 	log.Println("[Followup Listener] Started.")
@@ -40,22 +40,24 @@ func (l *Listener) Start(ctx context.Context) {
 }
 
 func (l *Listener) processFollowups(ctx context.Context) {
-	loc, err := time.LoadLocation("America/Winnipeg")
-	if err != nil {
-		log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
-		return
-	}
+	//loc, err := time.LoadLocation("America/Winnipeg")
+	//if err != nil {
+	//	log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
+	//	return
+	//}
+	//
+	//now := time.Now().In(loc)
+	//hour := now.Hour()
+	//
+	//if hour < 9 || hour >= 18 {
+	//	log.Printf("[Followup Listener] Outside working hours (current hour: %d in America/Winnipeg). Skipping.\n", hour)
+	//	return
+	//}
 
-	now := time.Now().In(loc)
-	hour := now.Hour()
-
-	if hour < 9 || hour >= 18 {
-		log.Printf("[Followup Listener] Outside working hours (current hour: %d in America/Winnipeg). Skipping.\n", hour)
-		return
-	}
+	log.Printf("[Followup Listener] Working")
 
 	// We want to find chats inactive for 24 hours (24 * 60 * 60 seconds)
-	inactiveDurationSeconds := int64(24 * 60 * 60)
+	inactiveDurationSeconds := int64(5 * 60)
 	chats, err := l.dbClient.GetChatsForFollowup(inactiveDurationSeconds)
 	if err != nil {
 		log.Printf("[Followup Listener] Error getting chats for followup: %v\n", err)
@@ -63,6 +65,7 @@ func (l *Listener) processFollowups(ctx context.Context) {
 	}
 
 	for _, chat := range chats {
+		log.Printf("[Followup Listener] customer: %s", chat.CustomerId)
 		// Only process if platform is twilio or we have customer id (phone number)
 		// Assuming customerId is the phone number
 		if chat.CustomerId == "" {
@@ -96,5 +99,7 @@ func (l *Listener) processFollowups(ctx context.Context) {
 		} else {
 			log.Printf("[Followup Listener] Successfully sent followup and ended chat %s\n", chat.Id)
 		}
+
+		log.Printf("[Followup Listener] Work ended")
 	}
 }
