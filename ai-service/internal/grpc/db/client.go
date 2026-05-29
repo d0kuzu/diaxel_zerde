@@ -396,3 +396,35 @@ func (c *Client) DeleteChatAndMessages(chatID string) error {
 	_, err := c.DB.DeleteChatAndMessages(ctx, req)
 	return err
 }
+
+func (c *Client) UpdateChatIsEnd(chatID string, isEnd bool) (*dbpb.ChatResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.UpdateChatIsEndRequest{
+		Id:    chatID,
+		IsEnd: isEnd,
+	}
+
+	return c.DB.UpdateChatIsEnd(ctx, req)
+}
+
+func (c *Client) GetChatsForFollowup(inactiveDurationSeconds int64) ([]*dbpb.ChatResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetChatsForFollowupRequest{
+		InactiveDurationSeconds: inactiveDurationSeconds,
+	}
+
+	resp, err := c.DB.GetChatsForFollowup(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.Chats == nil {
+		return []*dbpb.ChatResponse{}, nil
+	}
+
+	return resp.Chats, nil
+}

@@ -44,6 +44,8 @@ service DatabaseService {
   rpc UpsertCampuslogin(UpsertCampusloginRequest) returns (UpsertCampusloginResponse);
   rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
   rpc DeleteChatAndMessages(DeleteChatAndMessagesRequest) returns (DeleteChatAndMessagesResponse);
+  rpc UpdateChatIsEnd(UpdateChatIsEndRequest) returns (ChatResponse);
+  rpc GetChatsForFollowup(GetChatsForFollowupRequest) returns (ChatsResponse);
 }
 
 message DeleteAllChatsAndMessagesRequest {}
@@ -134,6 +136,7 @@ message ChatResponse {
   string created_at = 5;
   string updated_at = 6;
   int32 message_count = 7;
+  bool is_end = 8;
 }
 
 message SaveMessageRequest {
@@ -381,4 +384,13 @@ message DeleteChatAndMessagesRequest {
 
 message DeleteChatAndMessagesResponse {
   bool success = 1;
+}
+
+message UpdateChatIsEndRequest {
+  string id = 1;
+  bool is_end = 2;
+}
+
+message GetChatsForFollowupRequest {
+  int64 inactive_duration_seconds = 1;
 }

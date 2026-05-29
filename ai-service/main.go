@@ -13,6 +13,7 @@ import (
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/calcom"
 	"diaxel/internal/modules/campuslogin"
+	"diaxel/internal/modules/followup"
 	"diaxel/internal/modules/llm"
 	"diaxel/internal/modules/telegram"
 	"diaxel/internal/modules/twilio"
@@ -41,6 +42,9 @@ func main() {
 
 	cm := &cleanup.CleanupManager{}
 	go cm.Start()
+
+	followupListener := followup.NewListener(grpcClient, twilioClient)
+	go followupListener.Start(context.Background())
 
 	app := appModule.NewApp(llmClient, twilioClient, grpcClient, settings, tgOrchestrator)
 

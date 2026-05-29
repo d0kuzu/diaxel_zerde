@@ -62,7 +62,7 @@ func (c *Client) Conversation(ctx context.Context, userId, assistantId, userMess
 			log.Printf("Функция вызвана: %s", toolCall.Function.Name)
 			log.Printf("Аргументы: %s", toolCall.Function.Arguments)
 
-			result, err := c.executeFunction(ctx, toolCall.Function.Name, toolCall.Function.Arguments, userId)
+			result, err := c.executeFunction(ctx, toolCall.Function.Name, toolCall.Function.Arguments, userId, assistantId)
 			if err != nil {
 				log.Printf("Ошибка выполнения функции %s: %v", toolCall.Function.Name, err)
 				result = fmt.Sprintf("Error executing function: %s", err.Error())
@@ -97,7 +97,7 @@ func (c *Client) Conversation(ctx context.Context, userId, assistantId, userMess
 	return assistantResponse, nil
 }
 
-func (c *Client) executeFunction(ctx context.Context, functionName, argsJSON, userId string) (string, error) {
+func (c *Client) executeFunction(ctx context.Context, functionName, argsJSON, userId, assistantId string) (string, error) {
 	switch functionName {
 	case "calcom_get_available_slots":
 		return c.handleGetAvailableSlots(ctx, argsJSON)
@@ -108,7 +108,7 @@ func (c *Client) executeFunction(ctx context.Context, functionName, argsJSON, us
 	case "create_booking":
 		return c.handleCreateCampusAppointment(ctx, argsJSON, userId)
 	case "send_summary":
-		return c.handleSendSummary(ctx, argsJSON, userId)
+		return c.handleSendSummary(ctx, argsJSON, userId, assistantId)
 	default:
 		return "", fmt.Errorf("unknown function: %s", functionName)
 	}
@@ -197,7 +197,7 @@ func (c *Client) handleCreateCampusAppointment(ctx context.Context, argsJSON, us
 	return "Appointment successfully created on CampusLogin.", nil
 }
 
-func (c *Client) handleSendSummary(ctx context.Context, argsJSON, userId string) (string, error) {
+func (c *Client) handleSendSummary(ctx context.Context, argsJSON, userId, assistantId string) (string, error) {
 	var args struct {
 		Summary string `json:"summary"`
 	}
@@ -218,6 +218,16 @@ func (c *Client) handleSendSummary(ctx context.Context, argsJSON, userId string)
 	err = c.campuslogin.AddNewNote(ctx, contactID, args.Summary)
 	if err != nil {
 		return "", fmt.Errorf("failed to add new note on CampusLogin: %w", err)
+	}
+
+	chat, err := c.db.GetLatestChatByCustomer(assistantId, userId)
+	if err == nil && chat != nil {
+		_, err = c.db.UpdateChatIsEnd(chat.Id, true)
+		if err != nil {
+			log.Printf("Failed to update chat is_end for chat %s: %v", chat.Id, err)
+		}
+	} else {
+		log.Printf("Failed to get latest chat for customer %s to set isEnd: %v", userId, err)
 	}
 
 	return "Summary successfully sent to CampusLogin.", nil

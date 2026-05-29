@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package database;
 
-option go_package = "diaxel/proto/db;proto";
+option go_package = "diaxel_zerde/database-service/proto;proto";
 
 service DatabaseService {
   rpc GetAnalytics(AnalyticsRequest) returns (AnalyticsResponse);
@@ -40,10 +40,17 @@ service DatabaseService {
   rpc SaveTwilioConfig(SaveTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc GetTwilioConfig(GetTwilioConfigRequest) returns (TwilioConfigResponse);
   rpc DeleteTwilioConfig(DeleteTwilioConfigRequest) returns (DeleteTwilioConfigResponse);
-  rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
-  rpc DeleteChatAndMessages(DeleteChatAndMessagesRequest) returns (DeleteChatAndMessagesResponse);
   rpc GetCampusloginByUserId(CampusloginRequest) returns (CampusloginResponse);
   rpc UpsertCampuslogin(UpsertCampusloginRequest) returns (UpsertCampusloginResponse);
+  rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
+  rpc DeleteChatAndMessages(DeleteChatAndMessagesRequest) returns (DeleteChatAndMessagesResponse);
+  rpc UpdateChatIsEnd(UpdateChatIsEndRequest) returns (ChatResponse);
+  rpc GetChatsForFollowup(GetChatsForFollowupRequest) returns (ChatsResponse);
+}
+
+message DeleteAllChatsAndMessagesRequest {}
+message DeleteAllChatsAndMessagesResponse {
+  bool success = 1;
 }
 
 message AnalyticsRequest {
@@ -129,6 +136,7 @@ message ChatResponse {
   string created_at = 5;
   string updated_at = 6;
   int32 message_count = 7;
+  bool is_end = 8;
 }
 
 message SaveMessageRequest {
@@ -350,19 +358,6 @@ message DeleteTwilioConfigResponse {
   bool success = 1;
 }
 
-message DeleteAllChatsAndMessagesRequest {}
-message DeleteAllChatsAndMessagesResponse {
-  bool success = 1;
-}
-
-message DeleteChatAndMessagesRequest {
-  string chat_id = 1;
-}
-
-message DeleteChatAndMessagesResponse {
-  bool success = 1;
-}
-
 message CampusloginRequest {
   string user_id = 1;
 }
@@ -381,4 +376,21 @@ message CampusloginResponse {
 
 message UpsertCampusloginResponse {
   bool success = 1;
+}
+
+message DeleteChatAndMessagesRequest {
+  string chat_id = 1;
+}
+
+message DeleteChatAndMessagesResponse {
+  bool success = 1;
+}
+
+message UpdateChatIsEndRequest {
+  string id = 1;
+  bool is_end = 2;
+}
+
+message GetChatsForFollowupRequest {
+  int64 inactive_duration_seconds = 1;
 }

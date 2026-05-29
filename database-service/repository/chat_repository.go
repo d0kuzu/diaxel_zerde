@@ -18,6 +18,7 @@ type ChatRepository interface {
 	GetChatsByCustomerID(ctx context.Context, customerID string) ([]*models.Chat, error)
 	GetChatsByUserID(ctx context.Context, assistantIDs []string, limit, offset int32) ([]*models.Chat, error)
 	UpdateChat(ctx context.Context, id, assistantID, customerID string) (*models.Chat, error)
+	UpdateChatIsEnd(ctx context.Context, id string, isEnd bool) (*models.Chat, error)
 	DeleteChat(ctx context.Context, id string) error
 	DeleteAllChats(ctx context.Context) error
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
@@ -27,6 +28,7 @@ type ChatRepository interface {
 	SearchChatsByCustomer(ctx context.Context, assistantIDs []string, search string) ([]*models.Chat, int32, error)
 	GetLatestChatByCustomer(ctx context.Context, assistantID, customerID string) (*models.Chat, error)
 	UpdateMessageCount(ctx context.Context, chatID string) error
+	GetChatsForFollowup(ctx context.Context, inactiveDuration time.Duration) ([]*models.Chat, error)
 }
 
 type chatRepository struct {
@@ -278,4 +280,42 @@ func (r *chatRepository) DeleteAllChats(ctx context.Context) error {
 		return fmt.Errorf("failed to delete all chats: %w", result.Error)
 	}
 	return nil
+}
+
+func (r *chatRepository) UpdateChatIsEnd(ctx context.Context, id string, isEnd bool) (*models.Chat, error) {
+	var chat models.Chat
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&chat).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("chat not found")
+		}
+		return nil, fmt.Errorf("failed to get chat: %w", err)
+	}
+
+	chat.IsEnd = isEnd
+	chat.UpdatedAt = time.Now()
+
+	if err := r.db.WithContext(ctx).Save(&chat).Error; err != nil {
+		return nil, fmt.Errorf("failed to update chat is_end: %w", err)
+	}
+
+	return &chat, nil
+}
+
+func (r *chatRepository) GetChatsForFollowup(ctx context.Context, inactiveDuration time.Duration) ([]*models.Chat, error) {
+	loc, err := time.LoadLocation("America/Winnipeg")
+	if err != nil {
+		return nil, fmt.Errorf("failed to load timezone America/Winnipeg: %w", err)
+	}
+
+	var chats []*models.Chat
+	cutoffTime := time.Now().In(loc).Add(-inactiveDuration)
+
+	if err := r.db.WithContext(ctx).
+		Where("is_end = ? AND updated_at < ?", false, cutoffTime).
+		Order("updated_at ASC").
+		Find(&chats).Error; err != nil {
+		return nil, fmt.Errorf("failed to get chats for followup: %w", err)
+	}
+
+	return chats, nil
 }

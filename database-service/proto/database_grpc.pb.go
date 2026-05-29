@@ -58,6 +58,8 @@ const (
 	DatabaseService_UpsertCampuslogin_FullMethodName         = "/database.DatabaseService/UpsertCampuslogin"
 	DatabaseService_DeleteAllChatsAndMessages_FullMethodName = "/database.DatabaseService/DeleteAllChatsAndMessages"
 	DatabaseService_DeleteChatAndMessages_FullMethodName     = "/database.DatabaseService/DeleteChatAndMessages"
+	DatabaseService_UpdateChatIsEnd_FullMethodName           = "/database.DatabaseService/UpdateChatIsEnd"
+	DatabaseService_GetChatsForFollowup_FullMethodName       = "/database.DatabaseService/GetChatsForFollowup"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -103,6 +105,8 @@ type DatabaseServiceClient interface {
 	UpsertCampuslogin(ctx context.Context, in *UpsertCampusloginRequest, opts ...grpc.CallOption) (*UpsertCampusloginResponse, error)
 	DeleteAllChatsAndMessages(ctx context.Context, in *DeleteAllChatsAndMessagesRequest, opts ...grpc.CallOption) (*DeleteAllChatsAndMessagesResponse, error)
 	DeleteChatAndMessages(ctx context.Context, in *DeleteChatAndMessagesRequest, opts ...grpc.CallOption) (*DeleteChatAndMessagesResponse, error)
+	UpdateChatIsEnd(ctx context.Context, in *UpdateChatIsEndRequest, opts ...grpc.CallOption) (*ChatResponse, error)
+	GetChatsForFollowup(ctx context.Context, in *GetChatsForFollowupRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -503,6 +507,26 @@ func (c *databaseServiceClient) DeleteChatAndMessages(ctx context.Context, in *D
 	return out, nil
 }
 
+func (c *databaseServiceClient) UpdateChatIsEnd(ctx context.Context, in *UpdateChatIsEndRequest, opts ...grpc.CallOption) (*ChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_UpdateChatIsEnd_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *databaseServiceClient) GetChatsForFollowup(ctx context.Context, in *GetChatsForFollowupRequest, opts ...grpc.CallOption) (*ChatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChatsResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetChatsForFollowup_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DatabaseServiceServer is the server API for DatabaseService service.
 // All implementations must embed UnimplementedDatabaseServiceServer
 // for forward compatibility.
@@ -546,6 +570,8 @@ type DatabaseServiceServer interface {
 	UpsertCampuslogin(context.Context, *UpsertCampusloginRequest) (*UpsertCampusloginResponse, error)
 	DeleteAllChatsAndMessages(context.Context, *DeleteAllChatsAndMessagesRequest) (*DeleteAllChatsAndMessagesResponse, error)
 	DeleteChatAndMessages(context.Context, *DeleteChatAndMessagesRequest) (*DeleteChatAndMessagesResponse, error)
+	UpdateChatIsEnd(context.Context, *UpdateChatIsEndRequest) (*ChatResponse, error)
+	GetChatsForFollowup(context.Context, *GetChatsForFollowupRequest) (*ChatsResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -672,6 +698,12 @@ func (UnimplementedDatabaseServiceServer) DeleteAllChatsAndMessages(context.Cont
 }
 func (UnimplementedDatabaseServiceServer) DeleteChatAndMessages(context.Context, *DeleteChatAndMessagesRequest) (*DeleteChatAndMessagesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteChatAndMessages not implemented")
+}
+func (UnimplementedDatabaseServiceServer) UpdateChatIsEnd(context.Context, *UpdateChatIsEndRequest) (*ChatResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateChatIsEnd not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetChatsForFollowup(context.Context, *GetChatsForFollowupRequest) (*ChatsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetChatsForFollowup not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -1396,6 +1428,42 @@ func _DatabaseService_DeleteChatAndMessages_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_UpdateChatIsEnd_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChatIsEndRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).UpdateChatIsEnd(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_UpdateChatIsEnd_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).UpdateChatIsEnd(ctx, req.(*UpdateChatIsEndRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DatabaseService_GetChatsForFollowup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatsForFollowupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetChatsForFollowup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetChatsForFollowup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetChatsForFollowup(ctx, req.(*GetChatsForFollowupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DatabaseService_ServiceDesc is the grpc.ServiceDesc for DatabaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1558,6 +1626,14 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteChatAndMessages",
 			Handler:    _DatabaseService_DeleteChatAndMessages_Handler,
+		},
+		{
+			MethodName: "UpdateChatIsEnd",
+			Handler:    _DatabaseService_UpdateChatIsEnd_Handler,
+		},
+		{
+			MethodName: "GetChatsForFollowup",
+			Handler:    _DatabaseService_GetChatsForFollowup_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

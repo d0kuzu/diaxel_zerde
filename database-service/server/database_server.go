@@ -258,6 +258,7 @@ func (s *DatabaseServer) CreateChat(ctx context.Context, req *proto.CreateChatRe
 		Platform:  req.Platform,
 		CreatedAt: chat.StartedAt.Format(time.RFC3339),
 		UpdatedAt: chat.StartedAt.Format(time.RFC3339),
+		IsEnd:     chat.IsEnd,
 	}, nil
 }
 
@@ -781,5 +782,57 @@ func (s *DatabaseServer) DeleteChatAndMessages(ctx context.Context, req *proto.D
 
 	return &proto.DeleteChatAndMessagesResponse{
 		Success: true,
+	}, nil
+}
+
+func (s *DatabaseServer) UpdateChatIsEnd(ctx context.Context, req *proto.UpdateChatIsEndRequest) (*proto.ChatResponse, error) {
+	chat, err := s.chatRepo.UpdateChatIsEnd(ctx, req.Id, req.IsEnd)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update chat is_end: %v", err)
+	}
+
+	return &proto.ChatResponse{
+		Id:          chat.ID,
+		AssistantId: chat.AssistantID,
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+		MessageCount: chat.MessageCount,
+		IsEnd:        chat.IsEnd,
+	}, nil
+}
+
+func (s *DatabaseServer) GetChatsForFollowup(ctx context.Context, req *proto.GetChatsForFollowupRequest) (*proto.ChatsResponse, error) {
+	inactiveDuration := time.Duration(req.InactiveDurationSeconds) * time.Second
+	chats, err := s.chatRepo.GetChatsForFollowup(ctx, inactiveDuration)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get chats for followup: %v", err)
+	}
+
+	var protoChats []*proto.ChatResponse
+	for _, chat := range chats {
+		customerId := ""
+		if chat.CustomerID != nil {
+			customerId = *chat.CustomerID
+		}
+
+		protoChats = append(protoChats, &proto.ChatResponse{
+			Id:           chat.ID,
+			AssistantId:  chat.AssistantID,
+			CustomerId:   customerId,
+			CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+			MessageCount: chat.MessageCount,
+			IsEnd:        chat.IsEnd,
+		})
+	}
+
+	return &proto.ChatsResponse{
+		Chats: protoChats,
 	}, nil
 }

@@ -8,6 +8,7 @@ type Chat struct {
 	AssistantID  string    `json:"assistant_id" db:"assistant_id" gorm:"type:uuid;not null;references:assistants(id)"`
 	CustomerID   *string   `json:"customer_id" db:"customer_id"`
 	MessageCount int32     `json:"message_count" db:"message_count" gorm:"default:0"`
+	IsEnd        bool      `json:"is_end" db:"is_end" gorm:"default:false"`
 	StartedAt    time.Time `json:"started_at" db:"started_at" gorm:"default:now()"`
 	CreatedAt    time.Time `json:"created_at" db:"created_at" gorm:"default:now()"`
 	UpdatedAt    time.Time `json:"updated_at" db:"updated_at" gorm:"default:now()"`

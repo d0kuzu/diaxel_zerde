@@ -35,7 +35,7 @@ func (r *messageRepository) SaveMessage(ctx context.Context, chatID, role, conte
 		ChatID:  chatID,
 		Role:    role,
 		Content: content,
-		Time:    time.Now(),
+		// Time is set by PostgreSQL default:now() using session timezone (America/Winnipeg)
 	}
 
 	if err := r.db.WithContext(ctx).Create(&message).Error; err != nil {
