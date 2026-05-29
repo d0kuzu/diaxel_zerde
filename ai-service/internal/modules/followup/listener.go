@@ -23,7 +23,7 @@ func NewListener(dbClient *db.Client, twilioClient *twilio.Client) *Listener {
 }
 
 func (l *Listener) Start(ctx context.Context) {
-	ticker := time.NewTicker(6 * time.Minute)
+	ticker := time.NewTicker(1 * time.Hour)
 	defer ticker.Stop()
 
 	log.Println("[Followup Listener] Started.")
@@ -40,24 +40,24 @@ func (l *Listener) Start(ctx context.Context) {
 }
 
 func (l *Listener) processFollowups(ctx context.Context) {
-	//loc, err := time.LoadLocation("America/Winnipeg")
-	//if err != nil {
-	//	log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
-	//	return
-	//}
-	//
-	//now := time.Now().In(loc)
-	//hour := now.Hour()
-	//
-	//if hour < 9 || hour >= 18 {
-	//	log.Printf("[Followup Listener] Outside working hours (current hour: %d in America/Winnipeg). Skipping.\n", hour)
-	//	return
-	//}
+	loc, err := time.LoadLocation("America/Winnipeg")
+	if err != nil {
+		log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
+		return
+	}
+
+	now := time.Now().In(loc)
+	hour := now.Hour()
+
+	if hour < 9 || hour >= 18 {
+		log.Printf("[Followup Listener] Outside working hours (current hour: %d in America/Winnipeg). Skipping.\n", hour)
+		return
+	}
 
 	log.Printf("[Followup Listener] Working")
 
 	// We want to find chats inactive for 24 hours (24 * 60 * 60 seconds)
-	inactiveDurationSeconds := int64(5 * 60)
+	inactiveDurationSeconds := int64(24 * 60 * 60)
 	chats, err := l.dbClient.GetChatsForFollowup(inactiveDurationSeconds)
 	if err != nil {
 		log.Printf("[Followup Listener] Error getting chats for followup: %v\n", err)
@@ -90,6 +90,12 @@ func (l *Listener) processFollowups(ctx context.Context) {
 		if err != nil {
 			log.Printf("[Followup Listener] Error sending followup to %s: %v\n", chat.CustomerId, err)
 			continue
+		}
+
+		// Save the followup message to the database
+		_, err = l.dbClient.SaveMessage(chat.Id, "assistant", constants.FollowupText, "twilio")
+		if err != nil {
+			log.Printf("[Followup Listener] Error saving followup message for chat %s: %v\n", chat.Id, err)
 		}
 
 		// Update chat as ended so we don't follow up again
