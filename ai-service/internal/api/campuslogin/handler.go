@@ -145,11 +145,11 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		}
 	}
 
-	if toPhone != "+12048176146" && toPhone != "+12045909711" && toPhone != "+12045589015" {
-		log.Printf("[CampusLogin Trigger] Ignoring message from unknown number %s", toPhone)
-		c.JSON(http.StatusOK, gin.H{"status": "ignored", "message": "phone number not in allowed list"})
-		return
-	}
+	//if toPhone != "+12048176146" && toPhone != "+12045909711" && toPhone != "+12045589015" {
+	//	log.Printf("[CampusLogin Trigger] Ignoring message from unknown number %s", toPhone)
+	//	c.JSON(http.StatusOK, gin.H{"status": "ignored", "message": "phone number not in allowed list"})
+	//	return
+	//}
 
 	existingChat, checkErr := h.db.GetLatestChatByCustomer(assistantID, toPhone)
 	if checkErr != nil {
