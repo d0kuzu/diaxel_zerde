@@ -6,6 +6,7 @@ import (
 	"diaxel/internal/modules/llm"
 	twilio2 "diaxel/internal/modules/twilio"
 	"net/http"
+	"strings"
 
 	"log"
 
@@ -57,19 +58,19 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 		return
 	}
 
-	if chat == nil || chat.Id == "" {
+	if (chat == nil || chat.Id == "") && !strings.Contains(body, "3000") {
 		log.Printf("[Twilio Webhook] Ignoring message from %s: no active chat found. Must be triggered via CampusLogin first.", from)
 		c.Header("Content-Type", "text/xml")
 		c.String(http.StatusOK, `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`)
 		return
 	}
 
-	if chat.IsReviewed {
-		_, err := h.db.UpdateChatIsReviewed(chat.Id, false)
-		if err != nil {
-			log.Printf("[Twilio Webhook] Warning: Failed to reset is_reviewed for chat %s: %v", chat.Id, err)
-		}
-	}
+	//if chat.IsReviewed {
+	//	_, err := h.db.UpdateChatIsReviewed(chat.Id, false)
+	//	if err != nil {
+	//		log.Printf("[Twilio Webhook] Warning: Failed to reset is_reviewed for chat %s: %v", chat.Id, err)
+	//	}
+	//}
 
 	answer, err := h.LLM.Conversation(c, from, assistantID, body)
 	if err != nil {
