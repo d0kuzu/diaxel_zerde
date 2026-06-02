@@ -1,7 +1,9 @@
 package ws
 
 import (
+	"context"
 	"diaxel/internal/grpc/db"
+	"diaxel/internal/modules/twilio"
 	"log"
 	"sync"
 
@@ -51,11 +53,36 @@ func (c *Client) Broadcast(chatID string, msg []byte) {
 func (c *Client) Listen() {
 	defer UnregisterClient(c)
 
+	twClient := twilio.InitClient()
+
 	for {
-		_, _, err := c.conn.ReadMessage()
+		_, msg, err := c.conn.ReadMessage()
 		if err != nil {
 			log.Println("client disconnected:", err)
 			return
+		}
+
+		// Save the message to DB
+		_, err = c.Db.SaveMessage(c.chat, "assistant", string(msg), "twilio")
+		if err != nil {
+			log.Println("ws listen: failed to save message:", err)
+		}
+
+		chat, err := c.Db.GetChat(c.chat)
+		if err != nil || chat == nil {
+			log.Println("ws listen: failed to get chat:", err)
+			continue
+		}
+
+		twConfig, err := c.Db.GetTwilioConfig(chat.AssistantId)
+		if err != nil || twConfig == nil {
+			log.Println("ws listen: failed to get twilio config:", err)
+			continue
+		}
+
+		err = twClient.SendMessage(context.Background(), twConfig.AccountSid, twConfig.AuthToken, twConfig.TwilioNumber, chat.CustomerId, string(msg))
+		if err != nil {
+			log.Println("ws listen: failed to send twilio message:", err)
 		}
 	}
 }
