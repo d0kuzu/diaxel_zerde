@@ -1,9 +1,10 @@
-﻿package followup
+package followup
 
 import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"diaxel/internal/constants"
@@ -23,14 +24,29 @@ func NewListener(dbClient *db.Client, twilioClient *twilio.Client) *Listener {
 	}
 }
 
+func (l *Listener) writeLog(format string, v ...interface{}) {
+	msg := fmt.Sprintf(format, v...)
+	log.Print("[Followup Listener] " + msg)
+	
+	f, err := os.OpenFile("../followup.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		f, err = os.OpenFile("followup.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	}
+	if err == nil {
+		defer f.Close()
+		timestamp := time.Now().Format("2006-01-02 15:04:05")
+		f.WriteString(fmt.Sprintf("[%s] %s\n", timestamp, msg))
+	}
+}
+
 func (l *Listener) Start(ctx context.Context) {
 	ticker := time.NewTicker(1 * time.Hour)
 	defer ticker.Stop()
-	log.Println("[Followup Listener] Started.")
+	l.writeLog("Started.")
 	for {
 		select {
 		case <-ctx.Done():
-			log.Println("[Followup Listener] Stopped.")
+			l.writeLog("Stopped.")
 			return
 		case <-ticker.C:
 			l.processFollowups(ctx)
@@ -41,39 +57,41 @@ func (l *Listener) Start(ctx context.Context) {
 func (l *Listener) processFollowups(ctx context.Context) {
 	loc, err := time.LoadLocation("America/Winnipeg")
 	if err != nil {
-		log.Printf("[Followup Listener] Error loading timezone: %v\n", err)
+		l.writeLog("Error loading timezone: %v", err)
 		return
 	}
 	now := time.Now().In(loc)
 	if hour := now.Hour(); hour < 9 || hour >= 18 {
-		log.Printf("[Followup Listener] Outside working hours (%d). Skipping.\n", hour)
+		l.writeLog("Outside working hours (%d). Skipping.", hour)
 		return
 	}
-	log.Printf("[Followup Listener] Working")
+	l.writeLog("Working")
 
 	chats, err := l.dbClient.GetChatsForFollowup()
 	if err != nil {
-		log.Printf("[Followup Listener] Error getting chats: %v\n", err)
+		l.writeLog("Error getting chats: %v", err)
 		return
 	}
 
 	for _, chat := range chats {
 		if chat.CustomerId == "" {
+			l.writeLog("Chat %s has empty CustomerId, skipping.", chat.Id)
 			continue
 		}
 		campusLogin, err := l.dbClient.GetCampusloginByUserId(chat.CustomerId)
 		if err != nil {
-			log.Printf("[Followup Listener] Could not get campuslogin for %s: %v\n", chat.CustomerId, err)
+			l.writeLog("Could not get campuslogin for %s: %v, skipping.", chat.CustomerId, err)
 			continue
 		}
 		if campusLogin.IsGrade11OrLower || campusLogin.IsInternationalStudent {
-			log.Printf("[Followup Listener] %s is unqualified. Ending chat.", chat.CustomerId)
+			l.writeLog("%s is unqualified (Grade11OrLower: %v, International: %v). Ending chat.", chat.CustomerId, campusLogin.IsGrade11OrLower, campusLogin.IsInternationalStudent)
 			l.dbClient.UpdateChatIsEnd(chat.Id, true)
 			continue
 		}
 		programIDStr := fmt.Sprintf("%d", campusLogin.ProgramId)
 		programName, ok := constants.ProgramIDToName[programIDStr]
 		if !ok {
+			l.writeLog("Program ID %s not found in constants for %s, skipping.", programIDStr, chat.CustomerId)
 			continue
 		}
 		if programName == "Hairstyling (evening)" {
@@ -81,16 +99,19 @@ func (l *Listener) processFollowups(ctx context.Context) {
 		}
 		schedule, hasSchedule := constants.FollowupSchedules[programName]
 		if !hasSchedule {
+			l.writeLog("No followup schedule for program '%s' (Customer: %s), skipping.", programName, chat.CustomerId)
 			continue
 		}
 		currentStage := int(chat.FollowupStage)
 		stageConfig, hasStage := schedule[currentStage]
 		if !hasStage {
+			l.writeLog("No stage config for stage %d (Program: '%s', Customer: %s). Ending chat.", currentStage, programName, chat.CustomerId)
 			l.dbClient.UpdateChatIsEnd(chat.Id, true)
 			continue
 		}
 		updatedAt, err := time.Parse(time.RFC3339, chat.UpdatedAt)
 		if err != nil {
+			l.writeLog("Error parsing UpdatedAt '%s' for %s: %v. Skipping.", chat.UpdatedAt, chat.CustomerId, err)
 			continue
 		}
 		if time.Since(updatedAt) < stageConfig.Delay {
@@ -98,20 +119,21 @@ func (l *Listener) processFollowups(ctx context.Context) {
 		}
 		twilioConfig, err := l.dbClient.GetTwilioConfig(chat.AssistantId)
 		if err != nil {
+			l.writeLog("Could not get twilio config for assistant %s (Customer: %s): %v. Skipping.", chat.AssistantId, chat.CustomerId, err)
 			continue
 		}
 		if err = l.twilioClient.SendMessage(ctx, twilioConfig.AccountSid, twilioConfig.AuthToken, twilioConfig.TwilioNumber, chat.CustomerId, stageConfig.Text); err != nil {
-			log.Printf("[Followup Listener] Error sending to %s: %v\n", chat.CustomerId, err)
+			l.writeLog("Error sending Twilio message to %s at stage %d: %v", chat.CustomerId, currentStage, err)
 			continue
 		}
 		l.dbClient.SaveMessage(chat.Id, "assistant", stageConfig.Text, "twilio")
 		if _, hasNext := schedule[currentStage+1]; hasNext {
 			l.dbClient.UpdateChatFollowupStage(chat.Id, int32(currentStage+1))
-			log.Printf("[Followup Listener] Stage %d -> %d for %s\n", currentStage, currentStage+1, chat.CustomerId)
+			l.writeLog("SUCCESS: Sent followup %d to %s. Stage incremented to %d.", currentStage, chat.CustomerId, currentStage+1)
 		} else {
 			l.dbClient.UpdateChatIsEnd(chat.Id, true)
-			log.Printf("[Followup Listener] Final stage %d for %s, chat ended\n", currentStage, chat.CustomerId)
+			l.writeLog("SUCCESS: Sent final followup %d to %s. Chat ended.", currentStage, chat.CustomerId)
 		}
 	}
-	log.Printf("[Followup Listener] Work ended")
+	l.writeLog("Work ended")
 }
