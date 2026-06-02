@@ -71,8 +71,9 @@ func (s *AbandonedSummarizer) Start(ctx context.Context) {
 }
 
 func (s *AbandonedSummarizer) processAbandonedChats(ctx context.Context) {
+	log.Printf("Starting daily summarization...")
 	s.writeLog("Starting daily summarization...")
-	
+
 	chats, err := s.dbClient.GetUnreviewedActiveChats()
 	if err != nil {
 		s.writeLog("Error getting unreviewed active chats: %v", err)
