@@ -32,8 +32,8 @@ case $choice in
         echo "[3/3] Deploying all services from root..."
         echo "      Each service uses its own Dockerfile and .env"
         echo ""
-        docker-compose down
-        docker-compose up --build -d
+        docker compose down
+        docker compose up -d --build
         if [ $? -ne 0 ]; then
             echo "[ERROR] Deployment failed. Check the logs above."
             exit 1
@@ -55,7 +55,7 @@ case $choice in
     2)
         echo ""
         echo "Stopping all services..."
-        docker-compose down
+        docker compose down
         echo "Done. All services stopped."
         ;;
     *)
