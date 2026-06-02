@@ -19,6 +19,8 @@ type ChatRepository interface {
 	GetChatsByUserID(ctx context.Context, assistantIDs []string, limit, offset int32) ([]*models.Chat, error)
 	UpdateChat(ctx context.Context, id, assistantID, customerID string) (*models.Chat, error)
 	UpdateChatIsEnd(ctx context.Context, id string, isEnd bool) (*models.Chat, error)
+	UpdateChatIsReviewed(ctx context.Context, id string, isReviewed bool) (*models.Chat, error)
+	GetUnreviewedActiveChats(ctx context.Context) ([]*models.Chat, error)
 	DeleteChat(ctx context.Context, id string) error
 	DeleteAllChats(ctx context.Context) error
 	GetChatPagesCount(ctx context.Context, assistantID string, chatsPerPage int32) (int32, error)
@@ -300,6 +302,38 @@ func (r *chatRepository) UpdateChatIsEnd(ctx context.Context, id string, isEnd b
 	}
 
 	return &chat, nil
+}
+
+func (r *chatRepository) UpdateChatIsReviewed(ctx context.Context, id string, isReviewed bool) (*models.Chat, error) {
+	var chat models.Chat
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&chat).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("chat not found")
+		}
+		return nil, fmt.Errorf("failed to get chat: %w", err)
+	}
+
+	chat.IsReviewed = isReviewed
+	chat.UpdatedAt = time.Now()
+
+	if err := r.db.WithContext(ctx).Save(&chat).Error; err != nil {
+		return nil, fmt.Errorf("failed to update chat is_reviewed: %w", err)
+	}
+
+	return &chat, nil
+}
+
+func (r *chatRepository) GetUnreviewedActiveChats(ctx context.Context) ([]*models.Chat, error) {
+	var chats []*models.Chat
+
+	if err := r.db.WithContext(ctx).
+		Where("is_end = ? AND is_reviewed = ?", false, false).
+		Order("updated_at ASC").
+		Find(&chats).Error; err != nil {
+		return nil, fmt.Errorf("failed to get unreviewed active chats: %w", err)
+	}
+
+	return chats, nil
 }
 
 func (r *chatRepository) GetChatsForFollowup(ctx context.Context) ([]*models.Chat, error) {

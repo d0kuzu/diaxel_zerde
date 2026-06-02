@@ -64,6 +64,13 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 		return
 	}
 
+	if chat.IsReviewed {
+		_, err := h.db.UpdateChatIsReviewed(chat.Id, false)
+		if err != nil {
+			log.Printf("[Twilio Webhook] Warning: Failed to reset is_reviewed for chat %s: %v", chat.Id, err)
+		}
+	}
+
 	answer, err := h.LLM.Conversation(c, from, assistantID, body)
 	if err != nil {
 		log.Printf("LLM Conversation error for assistant %s: %v", assistantID, err)

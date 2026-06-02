@@ -48,6 +48,8 @@ service DatabaseService {
   rpc DeleteAllChatsAndMessages(DeleteAllChatsAndMessagesRequest) returns (DeleteAllChatsAndMessagesResponse);
   rpc DeleteChatAndMessages(DeleteChatAndMessagesRequest) returns (DeleteChatAndMessagesResponse);
   rpc UpdateChatIsEnd(UpdateChatIsEndRequest) returns (ChatResponse);
+  rpc UpdateChatIsReviewed(UpdateChatIsReviewedRequest) returns (ChatResponse);
+  rpc GetUnreviewedActiveChats(GetUnreviewedActiveChatsRequest) returns (ChatsResponse);
 }
 
 message DeleteAllChatsAndMessagesRequest {}
@@ -140,6 +142,7 @@ message ChatResponse {
   int32 message_count = 9;
   bool is_end = 10;
   int32 followup_stage = 11;
+  bool is_reviewed = 12;
 }
 
 message SaveMessageRequest {
@@ -416,3 +419,11 @@ message UpdateChatIsEndRequest {
 message GetChatsForFollowupRequest {
   int64 inactive_duration_seconds = 1;
 }
+
+message UpdateChatIsReviewedRequest {
+  string id = 1;
+  bool is_reviewed = 2;
+}
+
+message GetUnreviewedActiveChatsRequest {}
+

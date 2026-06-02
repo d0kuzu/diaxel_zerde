@@ -808,6 +808,30 @@ func (s *DatabaseServer) UpdateChatIsEnd(ctx context.Context, req *proto.UpdateC
 		UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
 		MessageCount: chat.MessageCount,
 		IsEnd:        chat.IsEnd,
+		IsReviewed:   chat.IsReviewed,
+	}, nil
+}
+
+func (s *DatabaseServer) UpdateChatIsReviewed(ctx context.Context, req *proto.UpdateChatIsReviewedRequest) (*proto.ChatResponse, error) {
+	chat, err := s.chatRepo.UpdateChatIsReviewed(ctx, req.Id, req.IsReviewed)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update chat is_reviewed: %v", err)
+	}
+
+	return &proto.ChatResponse{
+		Id:          chat.ID,
+		AssistantId: chat.AssistantID,
+		CustomerId: func() string {
+			if chat.CustomerID != nil {
+				return *chat.CustomerID
+			}
+			return ""
+		}(),
+		CreatedAt:    chat.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:    chat.UpdatedAt.Format(time.RFC3339),
+		MessageCount: chat.MessageCount,
+		IsEnd:        chat.IsEnd,
+		IsReviewed:   chat.IsReviewed,
 	}, nil
 }
 
@@ -866,6 +890,37 @@ func (s *DatabaseServer) GetChatsForFollowup(ctx context.Context, req *proto.Get
 			MessageCount:  chat.MessageCount,
 			IsEnd:         chat.IsEnd,
 			FollowupStage: int32(chat.FollowupStage),
+		})
+	}
+
+	return &proto.ChatsResponse{
+		Chats: protoChats,
+	}, nil
+}
+
+func (s *DatabaseServer) GetUnreviewedActiveChats(ctx context.Context, req *proto.GetUnreviewedActiveChatsRequest) (*proto.ChatsResponse, error) {
+	chats, err := s.chatRepo.GetUnreviewedActiveChats(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get unreviewed active chats: %v", err)
+	}
+
+	var protoChats []*proto.ChatResponse
+	for _, chat := range chats {
+		customerId := ""
+		if chat.CustomerID != nil {
+			customerId = *chat.CustomerID
+		}
+
+		protoChats = append(protoChats, &proto.ChatResponse{
+			Id:            chat.ID,
+			AssistantId:   chat.AssistantID,
+			CustomerId:    customerId,
+			CreatedAt:     chat.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:     chat.UpdatedAt.Format(time.RFC3339),
+			MessageCount:  chat.MessageCount,
+			IsEnd:         chat.IsEnd,
+			FollowupStage: int32(chat.FollowupStage),
+			IsReviewed:    chat.IsReviewed,
 		})
 	}
 

@@ -411,6 +411,32 @@ func (c *Client) UpdateChatIsEnd(chatID string, isEnd bool) (*dbpb.ChatResponse,
 	return c.DB.UpdateChatIsEnd(ctx, req)
 }
 
+func (c *Client) UpdateChatIsReviewed(chatID string, isReviewed bool) (*dbpb.ChatResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.UpdateChatIsReviewedRequest{
+		Id:         chatID,
+		IsReviewed: isReviewed,
+	}
+
+	return c.DB.UpdateChatIsReviewed(ctx, req)
+}
+
+func (c *Client) GetUnreviewedActiveChats() ([]*dbpb.ChatResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetUnreviewedActiveChatsRequest{}
+
+	resp, err := c.DB.GetUnreviewedActiveChats(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Chats, nil
+}
+
 func (c *Client) GetChatsForFollowup() ([]*dbpb.ChatResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
