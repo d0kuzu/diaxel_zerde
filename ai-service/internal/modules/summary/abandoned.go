@@ -45,7 +45,7 @@ func (s *AbandonedSummarizer) writeLog(format string, v ...interface{}) {
 }
 
 func (s *AbandonedSummarizer) Start(ctx context.Context) {
-	// Calculate time until next 7:30 AM in America/Winnipeg
+	// Calculate time until next 11:00 AM in America/Winnipeg
 	loc, err := time.LoadLocation("America/Winnipeg")
 	if err != nil {
 		log.Printf("[AbandonedSummarizer] Error loading timezone: %v\n", err)
@@ -54,7 +54,7 @@ func (s *AbandonedSummarizer) Start(ctx context.Context) {
 
 	for {
 		now := time.Now().In(loc)
-		next := time.Date(now.Year(), now.Month(), now.Day(), 7, 30, 0, 0, loc)
+		next := time.Date(now.Year(), now.Month(), now.Day(), 11, 0, 0, 0, loc)
 		if now.After(next) {
 			next = next.Add(24 * time.Hour)
 		}
