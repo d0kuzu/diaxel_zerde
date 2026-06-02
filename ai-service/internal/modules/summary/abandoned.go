@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"diaxel/internal/constants"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/campuslogin"
 	"diaxel/internal/modules/llm"
-	
+
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -25,6 +26,21 @@ func NewAbandonedSummarizer(dbClient *db.Client, campusClient *campuslogin.Clien
 		dbClient:     dbClient,
 		campusClient: campusClient,
 		llmClient:    llmClient,
+	}
+}
+
+func (s *AbandonedSummarizer) writeLog(format string, v ...interface{}) {
+	msg := fmt.Sprintf(format, v...)
+	log.Print("[AbandonedSummarizer] " + msg)
+
+	f, err := os.OpenFile("../summary_work.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		f, err = os.OpenFile("summary_work.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	}
+	if err == nil {
+		defer f.Close()
+		timestamp := time.Now().Format("2006-01-02 15:04:05")
+		f.WriteString(fmt.Sprintf("[%s] %s\n", timestamp, msg))
 	}
 }
 
@@ -55,11 +71,11 @@ func (s *AbandonedSummarizer) Start(ctx context.Context) {
 }
 
 func (s *AbandonedSummarizer) processAbandonedChats(ctx context.Context) {
-	log.Println("[AbandonedSummarizer] Starting daily summarization...")
+	s.writeLog("Starting daily summarization...")
 	
 	chats, err := s.dbClient.GetUnreviewedActiveChats()
 	if err != nil {
-		log.Printf("[AbandonedSummarizer] Error getting unreviewed active chats: %v", err)
+		s.writeLog("Error getting unreviewed active chats: %v", err)
 		return
 	}
 
@@ -70,17 +86,18 @@ func (s *AbandonedSummarizer) processAbandonedChats(ctx context.Context) {
 
 		updatedAt, err := time.Parse(time.RFC3339, chat.UpdatedAt)
 		if err != nil {
-			log.Printf("[AbandonedSummarizer] Error parsing UpdatedAt '%s' for chat %s: %v", chat.UpdatedAt, chat.Id, err)
+			s.writeLog("Error parsing UpdatedAt '%s' for chat %s: %v", chat.UpdatedAt, chat.Id, err)
 			continue
 		}
 
 		if time.Since(updatedAt) < 1*time.Hour {
-			continue // Chat is still active or updated recently
+			s.writeLog("Chat %s for customer %s was active recently, skipping.", chat.Id, chat.CustomerId)
+			continue
 		}
 
 		messages, err := s.dbClient.GetAllChatMessages(chat.Id)
 		if err != nil {
-			log.Printf("[AbandonedSummarizer] Error getting messages for chat %s: %v", chat.Id, err)
+			s.writeLog("Error getting messages for chat %s: %v", chat.Id, err)
 			continue
 		}
 
@@ -99,6 +116,7 @@ func (s *AbandonedSummarizer) processAbandonedChats(ctx context.Context) {
 
 		var summary string
 		if !hasUserMessage {
+			s.writeLog("Chat %s (customer %s): no user messages — using static summary.", chat.Id, chat.CustomerId)
 			summary = "Lead didn't answer on the first message."
 		} else {
 			// Ask LLM for summary
@@ -114,7 +132,7 @@ func (s *AbandonedSummarizer) processAbandonedChats(ctx context.Context) {
 			}
 			response, err := s.llmClient.GetAnswer(ctx, prompt)
 			if err != nil || len(response.Choices) == 0 {
-				log.Printf("[AbandonedSummarizer] Error getting LLM answer for chat %s: %v", chat.Id, err)
+				s.writeLog("Error getting LLM answer for chat %s: %v", chat.Id, err)
 				continue
 			}
 			summary = response.Choices[0].Message.Content
@@ -125,25 +143,26 @@ func (s *AbandonedSummarizer) processAbandonedChats(ctx context.Context) {
 		campusRecord, err := s.dbClient.GetCampusloginByUserId(chat.CustomerId)
 		var contactID int
 		if err != nil {
-			log.Printf("[AbandonedSummarizer] Failed to get ContactID for user %s: %v", chat.CustomerId, err)
+			s.writeLog("Failed to get ContactID for user %s: %v. Using fallback.", chat.CustomerId, err)
 			contactID = 5972449 // default fallback
 		} else {
 			contactID = int(campusRecord.ContactId)
 		}
 
+		s.writeLog("Sending summary for customer %s (contact %d, stage %d): %s", chat.CustomerId, contactID, chat.FollowupStage, summary)
 		err = s.campusClient.AddNewNote(ctx, contactID, summary)
 		if err != nil {
-			log.Printf("[AbandonedSummarizer] Failed to add note for chat %s: %v", chat.Id, err)
+			s.writeLog("Failed to add note for chat %s: %v", chat.Id, err)
 			continue
 		}
 
 		_, err = s.dbClient.UpdateChatIsReviewed(chat.Id, true)
 		if err != nil {
-			log.Printf("[AbandonedSummarizer] Failed to update chat is_reviewed for %s: %v", chat.Id, err)
+			s.writeLog("Failed to update chat is_reviewed for %s: %v", chat.Id, err)
 		} else {
-			log.Printf("[AbandonedSummarizer] Successfully summarized abandoned chat for user %s", chat.CustomerId)
+			s.writeLog("SUCCESS: Summarized abandoned chat for user %s.", chat.CustomerId)
 		}
 	}
 
-	log.Println("[AbandonedSummarizer] Finished daily summarization.")
+	s.writeLog("Finished daily summarization.")
 }
