@@ -812,6 +812,28 @@ func (s *DatabaseServer) UpdateChatIsEnd(ctx context.Context, req *proto.UpdateC
 	}, nil
 }
 
+func (s *DatabaseServer) GetPeriodMetrics(ctx context.Context, req *proto.GetPeriodMetricsRequest) (*proto.GetPeriodMetricsResponse, error) {
+	startTime, err := time.Parse(time.RFC3339, req.StartTime)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid start_time: %v", err)
+	}
+	endTime, err := time.Parse(time.RFC3339, req.EndTime)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid end_time: %v", err)
+	}
+
+	started, completed, err := s.chatRepo.GetPeriodMetrics(ctx, req.AssistantId, startTime, endTime)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get period metrics: %v", err)
+	}
+
+	return &proto.GetPeriodMetricsResponse{
+		StartedChats: started,
+		CompletedChats: completed,
+	}, nil
+}
+
+
 func (s *DatabaseServer) UpdateChatIsReviewed(ctx context.Context, req *proto.UpdateChatIsReviewedRequest) (*proto.ChatResponse, error) {
 	chat, err := s.chatRepo.UpdateChatIsReviewed(ctx, req.Id, req.IsReviewed)
 	if err != nil {

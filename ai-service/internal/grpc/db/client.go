@@ -476,3 +476,16 @@ func (c *Client) SetCampusloginFlags(userID string, isGrade11OrLower bool, isInt
 	_, err := c.DB.SetCampusloginFlags(ctx, req)
 	return err
 }
+
+func (c *Client) GetPeriodMetrics(assistantID, startTime, endTime string) (*dbpb.GetPeriodMetricsResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	req := &dbpb.GetPeriodMetricsRequest{
+		AssistantId: assistantID,
+		StartTime:   startTime,
+		EndTime:     endTime,
+	}
+
+	return c.DB.GetPeriodMetrics(ctx, req)
+}

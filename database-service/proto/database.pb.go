@@ -3873,6 +3873,118 @@ func (*GetUnreviewedActiveChatsRequest) Descriptor() ([]byte, []int) {
 	return file_proto_database_proto_rawDescGZIP(), []int{68}
 }
 
+type GetPeriodMetricsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
+	StartTime     string                 `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	EndTime       string                 `protobuf:"bytes,3,opt,name=end_time,json=endTime,proto3" json:"end_time,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPeriodMetricsRequest) Reset() {
+	*x = GetPeriodMetricsRequest{}
+	mi := &file_proto_database_proto_msgTypes[69]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPeriodMetricsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPeriodMetricsRequest) ProtoMessage() {}
+
+func (x *GetPeriodMetricsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[69]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPeriodMetricsRequest.ProtoReflect.Descriptor instead.
+func (*GetPeriodMetricsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{69}
+}
+
+func (x *GetPeriodMetricsRequest) GetAssistantId() string {
+	if x != nil {
+		return x.AssistantId
+	}
+	return ""
+}
+
+func (x *GetPeriodMetricsRequest) GetStartTime() string {
+	if x != nil {
+		return x.StartTime
+	}
+	return ""
+}
+
+func (x *GetPeriodMetricsRequest) GetEndTime() string {
+	if x != nil {
+		return x.EndTime
+	}
+	return ""
+}
+
+type GetPeriodMetricsResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	StartedChats   int32                  `protobuf:"varint,1,opt,name=started_chats,json=startedChats,proto3" json:"started_chats,omitempty"`
+	CompletedChats int32                  `protobuf:"varint,2,opt,name=completed_chats,json=completedChats,proto3" json:"completed_chats,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetPeriodMetricsResponse) Reset() {
+	*x = GetPeriodMetricsResponse{}
+	mi := &file_proto_database_proto_msgTypes[70]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPeriodMetricsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPeriodMetricsResponse) ProtoMessage() {}
+
+func (x *GetPeriodMetricsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_database_proto_msgTypes[70]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPeriodMetricsResponse.ProtoReflect.Descriptor instead.
+func (*GetPeriodMetricsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_database_proto_rawDescGZIP(), []int{70}
+}
+
+func (x *GetPeriodMetricsResponse) GetStartedChats() int32 {
+	if x != nil {
+		return x.StartedChats
+	}
+	return 0
+}
+
+func (x *GetPeriodMetricsResponse) GetCompletedChats() int32 {
+	if x != nil {
+		return x.CompletedChats
+	}
+	return 0
+}
+
 var File_proto_database_proto protoreflect.FileDescriptor
 
 const file_proto_database_proto_rawDesc = "" +
@@ -4154,7 +4266,15 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
 	"\vis_reviewed\x18\x02 \x01(\bR\n" +
 	"isReviewed\"!\n" +
-	"\x1fGetUnreviewedActiveChatsRequest2\xf4\x1d\n" +
+	"\x1fGetUnreviewedActiveChatsRequest\"v\n" +
+	"\x17GetPeriodMetricsRequest\x12!\n" +
+	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x1d\n" +
+	"\n" +
+	"start_time\x18\x02 \x01(\tR\tstartTime\x12\x19\n" +
+	"\bend_time\x18\x03 \x01(\tR\aendTime\"h\n" +
+	"\x18GetPeriodMetricsResponse\x12#\n" +
+	"\rstarted_chats\x18\x01 \x01(\x05R\fstartedChats\x12'\n" +
+	"\x0fcompleted_chats\x18\x02 \x01(\x05R\x0ecompletedChats2\xcf\x1e\n" +
 	"\x0fDatabaseService\x12G\n" +
 	"\fGetAnalytics\x12\x1a.database.AnalyticsRequest\x1a\x1b.database.AnalyticsResponse\x12]\n" +
 	"\x17GetAnalyticsByAssistant\x12%.database.AnalyticsByAssistantRequest\x1a\x1b.database.AnalyticsResponse\x12A\n" +
@@ -4206,7 +4326,8 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x15DeleteChatAndMessages\x12&.database.DeleteChatAndMessagesRequest\x1a'.database.DeleteChatAndMessagesResponse\x12K\n" +
 	"\x0fUpdateChatIsEnd\x12 .database.UpdateChatIsEndRequest\x1a\x16.database.ChatResponse\x12U\n" +
 	"\x14UpdateChatIsReviewed\x12%.database.UpdateChatIsReviewedRequest\x1a\x16.database.ChatResponse\x12^\n" +
-	"\x18GetUnreviewedActiveChats\x12).database.GetUnreviewedActiveChatsRequest\x1a\x17.database.ChatsResponseB+Z)diaxel_zerde/database-service/proto;protob\x06proto3"
+	"\x18GetUnreviewedActiveChats\x12).database.GetUnreviewedActiveChatsRequest\x1a\x17.database.ChatsResponse\x12Y\n" +
+	"\x10GetPeriodMetrics\x12!.database.GetPeriodMetricsRequest\x1a\".database.GetPeriodMetricsResponseB+Z)diaxel_zerde/database-service/proto;protob\x06proto3"
 
 var (
 	file_proto_database_proto_rawDescOnce sync.Once
@@ -4220,7 +4341,7 @@ func file_proto_database_proto_rawDescGZIP() []byte {
 	return file_proto_database_proto_rawDescData
 }
 
-var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 69)
+var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 71)
 var file_proto_database_proto_goTypes = []any{
 	(*DeleteAllChatsAndMessagesRequest)(nil),  // 0: database.DeleteAllChatsAndMessagesRequest
 	(*DeleteAllChatsAndMessagesResponse)(nil), // 1: database.DeleteAllChatsAndMessagesResponse
@@ -4291,6 +4412,8 @@ var file_proto_database_proto_goTypes = []any{
 	(*GetChatsForFollowupRequest)(nil),        // 66: database.GetChatsForFollowupRequest
 	(*UpdateChatIsReviewedRequest)(nil),       // 67: database.UpdateChatIsReviewedRequest
 	(*GetUnreviewedActiveChatsRequest)(nil),   // 68: database.GetUnreviewedActiveChatsRequest
+	(*GetPeriodMetricsRequest)(nil),           // 69: database.GetPeriodMetricsRequest
+	(*GetPeriodMetricsResponse)(nil),          // 70: database.GetPeriodMetricsResponse
 }
 var file_proto_database_proto_depIdxs = []int32{
 	17, // 0: database.MessagesResponse.messages:type_name -> database.MessageResponse
@@ -4342,53 +4465,55 @@ var file_proto_database_proto_depIdxs = []int32{
 	65, // 46: database.DatabaseService.UpdateChatIsEnd:input_type -> database.UpdateChatIsEndRequest
 	67, // 47: database.DatabaseService.UpdateChatIsReviewed:input_type -> database.UpdateChatIsReviewedRequest
 	68, // 48: database.DatabaseService.GetUnreviewedActiveChats:input_type -> database.GetUnreviewedActiveChatsRequest
-	4,  // 49: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
-	4,  // 50: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
-	7,  // 51: database.DatabaseService.CreateUser:output_type -> database.UserResponse
-	7,  // 52: database.DatabaseService.GetUser:output_type -> database.UserResponse
-	7,  // 53: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
-	7,  // 54: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
-	24, // 55: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
-	9,  // 56: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
-	11, // 57: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
-	13, // 58: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
-	42, // 59: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
-	42, // 60: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
-	42, // 61: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
-	42, // 62: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
-	47, // 63: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
-	49, // 64: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
-	15, // 65: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
-	15, // 66: database.DatabaseService.GetChat:output_type -> database.ChatResponse
-	27, // 67: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
-	15, // 68: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
-	30, // 69: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
-	17, // 70: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
-	20, // 71: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
-	20, // 72: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
-	17, // 73: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
-	33, // 74: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
-	35, // 75: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
-	27, // 76: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
-	35, // 77: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
-	27, // 78: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
-	40, // 79: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
-	15, // 80: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
-	53, // 81: database.DatabaseService.SaveTwilioConfig:output_type -> database.TwilioConfigResponse
-	53, // 82: database.DatabaseService.GetTwilioConfig:output_type -> database.TwilioConfigResponse
-	55, // 83: database.DatabaseService.DeleteTwilioConfig:output_type -> database.DeleteTwilioConfigResponse
-	27, // 84: database.DatabaseService.GetChatsForFollowup:output_type -> database.ChatsResponse
-	15, // 85: database.DatabaseService.UpdateChatFollowupStage:output_type -> database.ChatResponse
-	58, // 86: database.DatabaseService.GetCampusloginByUserId:output_type -> database.CampusloginResponse
-	62, // 87: database.DatabaseService.UpsertCampuslogin:output_type -> database.UpsertCampusloginResponse
-	60, // 88: database.DatabaseService.SetCampusloginFlags:output_type -> database.SetCampusloginFlagsResponse
-	1,  // 89: database.DatabaseService.DeleteAllChatsAndMessages:output_type -> database.DeleteAllChatsAndMessagesResponse
-	64, // 90: database.DatabaseService.DeleteChatAndMessages:output_type -> database.DeleteChatAndMessagesResponse
-	15, // 91: database.DatabaseService.UpdateChatIsEnd:output_type -> database.ChatResponse
-	15, // 92: database.DatabaseService.UpdateChatIsReviewed:output_type -> database.ChatResponse
-	27, // 93: database.DatabaseService.GetUnreviewedActiveChats:output_type -> database.ChatsResponse
-	49, // [49:94] is the sub-list for method output_type
-	4,  // [4:49] is the sub-list for method input_type
+	69, // 49: database.DatabaseService.GetPeriodMetrics:input_type -> database.GetPeriodMetricsRequest
+	4,  // 50: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
+	4,  // 51: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
+	7,  // 52: database.DatabaseService.CreateUser:output_type -> database.UserResponse
+	7,  // 53: database.DatabaseService.GetUser:output_type -> database.UserResponse
+	7,  // 54: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
+	7,  // 55: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
+	24, // 56: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
+	9,  // 57: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
+	11, // 58: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
+	13, // 59: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
+	42, // 60: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
+	42, // 61: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
+	42, // 62: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
+	42, // 63: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
+	47, // 64: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
+	49, // 65: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
+	15, // 66: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
+	15, // 67: database.DatabaseService.GetChat:output_type -> database.ChatResponse
+	27, // 68: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
+	15, // 69: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
+	30, // 70: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
+	17, // 71: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
+	20, // 72: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
+	20, // 73: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
+	17, // 74: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
+	33, // 75: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
+	35, // 76: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
+	27, // 77: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
+	35, // 78: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
+	27, // 79: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
+	40, // 80: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
+	15, // 81: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
+	53, // 82: database.DatabaseService.SaveTwilioConfig:output_type -> database.TwilioConfigResponse
+	53, // 83: database.DatabaseService.GetTwilioConfig:output_type -> database.TwilioConfigResponse
+	55, // 84: database.DatabaseService.DeleteTwilioConfig:output_type -> database.DeleteTwilioConfigResponse
+	27, // 85: database.DatabaseService.GetChatsForFollowup:output_type -> database.ChatsResponse
+	15, // 86: database.DatabaseService.UpdateChatFollowupStage:output_type -> database.ChatResponse
+	58, // 87: database.DatabaseService.GetCampusloginByUserId:output_type -> database.CampusloginResponse
+	62, // 88: database.DatabaseService.UpsertCampuslogin:output_type -> database.UpsertCampusloginResponse
+	60, // 89: database.DatabaseService.SetCampusloginFlags:output_type -> database.SetCampusloginFlagsResponse
+	1,  // 90: database.DatabaseService.DeleteAllChatsAndMessages:output_type -> database.DeleteAllChatsAndMessagesResponse
+	64, // 91: database.DatabaseService.DeleteChatAndMessages:output_type -> database.DeleteChatAndMessagesResponse
+	15, // 92: database.DatabaseService.UpdateChatIsEnd:output_type -> database.ChatResponse
+	15, // 93: database.DatabaseService.UpdateChatIsReviewed:output_type -> database.ChatResponse
+	27, // 94: database.DatabaseService.GetUnreviewedActiveChats:output_type -> database.ChatsResponse
+	70, // 95: database.DatabaseService.GetPeriodMetrics:output_type -> database.GetPeriodMetricsResponse
+	50, // [50:96] is the sub-list for method output_type
+	4,  // [4:50] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -4405,7 +4530,7 @@ func file_proto_database_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_database_proto_rawDesc), len(file_proto_database_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   69,
+			NumMessages:   71,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

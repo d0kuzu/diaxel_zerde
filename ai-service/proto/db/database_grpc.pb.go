@@ -64,6 +64,7 @@ const (
 	DatabaseService_UpdateChatIsEnd_FullMethodName           = "/database.DatabaseService/UpdateChatIsEnd"
 	DatabaseService_UpdateChatIsReviewed_FullMethodName      = "/database.DatabaseService/UpdateChatIsReviewed"
 	DatabaseService_GetUnreviewedActiveChats_FullMethodName  = "/database.DatabaseService/GetUnreviewedActiveChats"
+	DatabaseService_GetPeriodMetrics_FullMethodName          = "/database.DatabaseService/GetPeriodMetrics"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -115,6 +116,7 @@ type DatabaseServiceClient interface {
 	UpdateChatIsEnd(ctx context.Context, in *UpdateChatIsEndRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 	UpdateChatIsReviewed(ctx context.Context, in *UpdateChatIsReviewedRequest, opts ...grpc.CallOption) (*ChatResponse, error)
 	GetUnreviewedActiveChats(ctx context.Context, in *GetUnreviewedActiveChatsRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
+	GetPeriodMetrics(ctx context.Context, in *GetPeriodMetricsRequest, opts ...grpc.CallOption) (*GetPeriodMetricsResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -575,6 +577,16 @@ func (c *databaseServiceClient) GetUnreviewedActiveChats(ctx context.Context, in
 	return out, nil
 }
 
+func (c *databaseServiceClient) GetPeriodMetrics(ctx context.Context, in *GetPeriodMetricsRequest, opts ...grpc.CallOption) (*GetPeriodMetricsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPeriodMetricsResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_GetPeriodMetrics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DatabaseServiceServer is the server API for DatabaseService service.
 // All implementations must embed UnimplementedDatabaseServiceServer
 // for forward compatibility.
@@ -624,6 +636,7 @@ type DatabaseServiceServer interface {
 	UpdateChatIsEnd(context.Context, *UpdateChatIsEndRequest) (*ChatResponse, error)
 	UpdateChatIsReviewed(context.Context, *UpdateChatIsReviewedRequest) (*ChatResponse, error)
 	GetUnreviewedActiveChats(context.Context, *GetUnreviewedActiveChatsRequest) (*ChatsResponse, error)
+	GetPeriodMetrics(context.Context, *GetPeriodMetricsRequest) (*GetPeriodMetricsResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -768,6 +781,9 @@ func (UnimplementedDatabaseServiceServer) UpdateChatIsReviewed(context.Context, 
 }
 func (UnimplementedDatabaseServiceServer) GetUnreviewedActiveChats(context.Context, *GetUnreviewedActiveChatsRequest) (*ChatsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUnreviewedActiveChats not implemented")
+}
+func (UnimplementedDatabaseServiceServer) GetPeriodMetrics(context.Context, *GetPeriodMetricsRequest) (*GetPeriodMetricsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPeriodMetrics not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -1600,6 +1616,24 @@ func _DatabaseService_GetUnreviewedActiveChats_Handler(srv interface{}, ctx cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_GetPeriodMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPeriodMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).GetPeriodMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_GetPeriodMetrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).GetPeriodMetrics(ctx, req.(*GetPeriodMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DatabaseService_ServiceDesc is the grpc.ServiceDesc for DatabaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1786,6 +1820,10 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUnreviewedActiveChats",
 			Handler:    _DatabaseService_GetUnreviewedActiveChats_Handler,
+		},
+		{
+			MethodName: "GetPeriodMetrics",
+			Handler:    _DatabaseService_GetPeriodMetrics_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

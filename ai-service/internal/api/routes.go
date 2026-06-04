@@ -7,6 +7,7 @@ import (
 	"diaxel/internal/api/twilio"
 	"diaxel/internal/api/webhook"
 	"diaxel/internal/api/ws"
+	"diaxel/internal/api/analytics"
 	appModule "diaxel/internal/app"
 	"log"
 
@@ -30,6 +31,7 @@ func RouterStart(app *appModule.App) {
 	chat.ChatRoutes(r, app)
 	assistant.AssistantRoutes(r, app)
 	campuslogin.CampusLoginRoutes(r, app)
+	analytics.AnalyticsRoutes(r, app)
 
 	err := r.Run(":" + app.Cfg.HTTPPort)
 	if err != nil {

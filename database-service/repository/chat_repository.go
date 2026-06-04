@@ -32,6 +32,7 @@ type ChatRepository interface {
 	UpdateMessageCount(ctx context.Context, chatID string) error
 	GetChatsForFollowup(ctx context.Context) ([]*models.Chat, error)
 	UpdateChatFollowupStage(ctx context.Context, id string, stage int) (*models.Chat, error)
+	GetPeriodMetrics(ctx context.Context, assistantID string, startTime, endTime time.Time) (int32, int32, error)
 }
 
 type chatRepository struct {
@@ -364,4 +365,24 @@ func (r *chatRepository) UpdateChatFollowupStage(ctx context.Context, id string,
 	}
 
 	return &chat, nil
+}
+
+func (r *chatRepository) GetPeriodMetrics(ctx context.Context, assistantID string, startTime, endTime time.Time) (int32, int32, error) {
+	var startedCount int64
+	var completedCount int64
+
+	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("created_at >= ? AND created_at < ?", startTime, endTime)
+	if assistantID != "" {
+		query = query.Where("assistant_id = ?", assistantID)
+	}
+
+	if err := query.Count(&startedCount).Error; err != nil {
+		return 0, 0, fmt.Errorf("failed to get started chats count: %w", err)
+	}
+
+	if err := query.Where("is_end = ?", true).Count(&completedCount).Error; err != nil {
+		return 0, 0, fmt.Errorf("failed to get completed chats count: %w", err)
+	}
+
+	return int32(startedCount), int32(completedCount), nil
 }
