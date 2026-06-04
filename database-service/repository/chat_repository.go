@@ -371,7 +371,7 @@ func (r *chatRepository) GetPeriodMetrics(ctx context.Context, assistantID strin
 	var startedCount int64
 	var completedCount int64
 
-	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("created_at >= ? AND created_at < ?", startTime, endTime)
+	query := r.db.WithContext(ctx).Model(&models.Chat{}).Where("started_at >= ? AND started_at < ?", startTime, endTime)
 	if assistantID != "" {
 		query = query.Where("assistant_id = ?", assistantID)
 	}
