@@ -400,27 +400,33 @@ func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID 
 	}
 
 	var results []result
+	endTime := startTime.AddDate(0, 0, 7)
 
-	// Group by date in the given timezone so the returned dates match what the caller expects
-	selectClause := fmt.Sprintf("DATE(started_at AT TIME ZONE '%s') as day, COUNT(*) as count", timezone)
-	groupClause := fmt.Sprintf("DATE(started_at AT TIME ZONE '%s')", timezone)
-
-	query := r.db.WithContext(ctx).Model(&models.Chat{}).
-		Select(selectClause).
-		Where("started_at >= ? AND started_at < ?", startTime, startTime.AddDate(0, 0, 7)).
-		Group(groupClause).
-		Order("day ASC")
-
+	var err error
 	if assistantID != "" {
-		query = query.Where("assistant_id = ?", assistantID)
+		err = r.db.WithContext(ctx).Raw(`
+			SELECT DATE(started_at AT TIME ZONE ?) AS day, COUNT(*) AS count
+			FROM chats
+			WHERE started_at >= ? AND started_at < ?
+			  AND assistant_id::text = ?
+			GROUP BY DATE(started_at AT TIME ZONE ?)
+			ORDER BY day ASC
+		`, timezone, startTime, endTime, assistantID, timezone).Scan(&results).Error
+	} else {
+		err = r.db.WithContext(ctx).Raw(`
+			SELECT DATE(started_at AT TIME ZONE ?) AS day, COUNT(*) AS count
+			FROM chats
+			WHERE started_at >= ? AND started_at < ?
+			GROUP BY DATE(started_at AT TIME ZONE ?)
+			ORDER BY day ASC
+		`, timezone, startTime, endTime, timezone).Scan(&results).Error
 	}
 
-	if err := query.Scan(&results).Error; err != nil {
+	if err != nil {
 		return nil, fmt.Errorf("failed to get weekly chats: %w", err)
 	}
 
-	// Build a full 7-day map, filling zeros for missing days.
-	// Day keys from DB are now in the given timezone, so we generate Go keys the same way.
+	// Build a full 7-day slice, filling zeros for missing days
 	loc, err := time.LoadLocation(timezone)
 	if err != nil {
 		loc = time.UTC
