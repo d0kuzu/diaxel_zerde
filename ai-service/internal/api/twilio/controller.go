@@ -13,6 +13,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func forwardWebhookToCampusLogin(formData string) {
+	req, err := http.NewRequest("POST", "https://voip.campuslogin.com/TextMessage/TextIncoming.asmx/Collector", strings.NewReader(formData))
+	if err != nil {
+		log.Printf("[Twilio Webhook Forwarder] Error creating request: %v", err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("[Twilio Webhook Forwarder] Error forwarding request: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	log.Printf("[Twilio Webhook Forwarder] Forwarded request, status: %d", resp.StatusCode)
+}
+
 type TwilioWebhookHandler struct {
 	cfg    *config.Settings
 	LLM    *llm.Client
@@ -25,6 +44,14 @@ func NewTwilioWebhookHandler(cfg *config.Settings, llmClient *llm.Client, twilio
 }
 
 func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
+	// Parse form early to forward the exact payload
+	if err := c.Request.ParseForm(); err == nil {
+		formData := c.Request.PostForm.Encode()
+		go forwardWebhookToCampusLogin(formData)
+	} else {
+		log.Printf("[Twilio Webhook] Warning: Failed to parse form for forwarding: %v", err)
+	}
+
 	assistantID := c.Param("assistant_id")
 	if assistantID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "assistant_id is required"})
