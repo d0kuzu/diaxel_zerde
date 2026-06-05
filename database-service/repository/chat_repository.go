@@ -441,6 +441,8 @@ func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID 
 		return nil, fmt.Errorf("weekly chats rows error: %w", err)
 	}
 
+	log.Printf("[DEBUG GetWeeklyChatsStarted] timezone: %s, countMap: %+v", timezone, countMap)
+
 	loc, err := time.LoadLocation(timezone)
 	if err != nil {
 		loc = time.UTC
