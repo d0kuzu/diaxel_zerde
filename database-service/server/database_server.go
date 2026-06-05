@@ -839,7 +839,12 @@ func (s *DatabaseServer) GetWeeklyChatsStarted(ctx context.Context, req *proto.G
 		return nil, status.Errorf(codes.InvalidArgument, "invalid start_time: %v", err)
 	}
 
-	days, err := s.chatRepo.GetWeeklyChatsStarted(ctx, req.AssistantId, startTime)
+	timezone := req.Timezone
+	if timezone == "" {
+		timezone = "UTC"
+	}
+
+	days, err := s.chatRepo.GetWeeklyChatsStarted(ctx, req.AssistantId, startTime, timezone)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get weekly chats: %v", err)
 	}

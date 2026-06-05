@@ -33,7 +33,7 @@ type ChatRepository interface {
 	GetChatsForFollowup(ctx context.Context) ([]*models.Chat, error)
 	UpdateChatFollowupStage(ctx context.Context, id string, stage int) (*models.Chat, error)
 	GetPeriodMetrics(ctx context.Context, assistantID string, startTime, endTime time.Time) (int32, int32, error)
-	GetWeeklyChatsStarted(ctx context.Context, assistantID string, startTime time.Time) ([]DailyCount, error)
+	GetWeeklyChatsStarted(ctx context.Context, assistantID string, startTime time.Time, timezone string) ([]DailyCount, error)
 }
 
 type chatRepository struct {
@@ -393,7 +393,7 @@ type DailyCount struct {
 	Count int32
 }
 
-func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID string, startTime time.Time) ([]DailyCount, error) {
+func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID string, startTime time.Time, timezone string) ([]DailyCount, error) {
 	type result struct {
 		Day   string
 		Count int64
@@ -401,10 +401,14 @@ func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID 
 
 	var results []result
 
+	// Group by date in the given timezone so the returned dates match what the caller expects
+	selectClause := fmt.Sprintf("DATE(started_at AT TIME ZONE '%s') as day, COUNT(*) as count", timezone)
+	groupClause := fmt.Sprintf("DATE(started_at AT TIME ZONE '%s')", timezone)
+
 	query := r.db.WithContext(ctx).Model(&models.Chat{}).
-		Select("DATE(started_at) as day, COUNT(*) as count").
+		Select(selectClause).
 		Where("started_at >= ? AND started_at < ?", startTime, startTime.AddDate(0, 0, 7)).
-		Group("DATE(started_at)").
+		Group(groupClause).
 		Order("day ASC")
 
 	if assistantID != "" {
@@ -415,7 +419,13 @@ func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID 
 		return nil, fmt.Errorf("failed to get weekly chats: %w", err)
 	}
 
-	// Build a full 7-day map, filling zeros for missing days
+	// Build a full 7-day map, filling zeros for missing days.
+	// Day keys from DB are now in the given timezone, so we generate Go keys the same way.
+	loc, err := time.LoadLocation(timezone)
+	if err != nil {
+		loc = time.UTC
+	}
+
 	countMap := make(map[string]int32)
 	for _, r := range results {
 		countMap[r.Day] = int32(r.Count)
@@ -423,7 +433,7 @@ func (r *chatRepository) GetWeeklyChatsStarted(ctx context.Context, assistantID 
 
 	days := make([]DailyCount, 7)
 	for i := 0; i < 7; i++ {
-		day := startTime.AddDate(0, 0, i)
+		day := startTime.In(loc).AddDate(0, 0, i)
 		dayStr := day.Format("2006-01-02")
 		days[i] = DailyCount{
 			Date:  dayStr,

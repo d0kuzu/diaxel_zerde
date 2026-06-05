@@ -4041,6 +4041,7 @@ type GetWeeklyChatsStartedRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AssistantId   string                 `protobuf:"bytes,1,opt,name=assistant_id,json=assistantId,proto3" json:"assistant_id,omitempty"`
 	StartTime     string                 `protobuf:"bytes,2,opt,name=start_time,json=startTime,proto3" json:"start_time,omitempty"`
+	Timezone      string                 `protobuf:"bytes,3,opt,name=timezone,proto3" json:"timezone,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -4085,6 +4086,13 @@ func (x *GetWeeklyChatsStartedRequest) GetAssistantId() string {
 func (x *GetWeeklyChatsStartedRequest) GetStartTime() string {
 	if x != nil {
 		return x.StartTime
+	}
+	return ""
+}
+
+func (x *GetWeeklyChatsStartedRequest) GetTimezone() string {
+	if x != nil {
+		return x.Timezone
 	}
 	return ""
 }
@@ -4426,11 +4434,12 @@ const file_database_proto_rawDesc = "" +
 	"\n" +
 	"DailyCount\x12\x12\n" +
 	"\x04date\x18\x01 \x01(\tR\x04date\x12\x14\n" +
-	"\x05count\x18\x02 \x01(\x05R\x05count\"`\n" +
+	"\x05count\x18\x02 \x01(\x05R\x05count\"|\n" +
 	"\x1cGetWeeklyChatsStartedRequest\x12!\n" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\x12\x1d\n" +
 	"\n" +
-	"start_time\x18\x02 \x01(\tR\tstartTime\"I\n" +
+	"start_time\x18\x02 \x01(\tR\tstartTime\x12\x1a\n" +
+	"\btimezone\x18\x03 \x01(\tR\btimezone\"I\n" +
 	"\x1dGetWeeklyChatsStartedResponse\x12(\n" +
 	"\x04days\x18\x01 \x03(\v2\x14.database.DailyCountR\x04days2\xb9\x1f\n" +
 	"\x0fDatabaseService\x12G\n" +

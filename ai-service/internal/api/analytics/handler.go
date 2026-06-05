@@ -140,7 +140,7 @@ func GetAnalytics(application *app.App) gin.HandlerFunc {
 		// Weekly chart data — last 7 days starting from 7 days ago
 		y, m, d := now.Date()
 		weekStart := time.Date(y, m, d, 0, 0, 0, 0, location).AddDate(0, 0, -6)
-		weeklyResp, err := application.Db.GetWeeklyChatsStarted(assistantID, weekStart.Format(time.RFC3339))
+		weeklyResp, err := application.Db.GetWeeklyChatsStarted(assistantID, weekStart.Format(time.RFC3339), constants.DefaultTimezone)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

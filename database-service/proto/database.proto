@@ -448,6 +448,7 @@ message DailyCount {
 message GetWeeklyChatsStartedRequest {
   string assistant_id = 1;
   string start_time = 2;
+  string timezone = 3;
 }
 
 message GetWeeklyChatsStartedResponse {
