@@ -132,6 +132,13 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		}
 	}
 
+	isBlocked, err := h.db.IsCustomerBlocked(toPhone)
+	if err == nil && isBlocked {
+		log.Printf("[CampusLogin Trigger] Ignoring trigger for blocked customer %s", toPhone)
+		c.JSON(http.StatusOK, gin.H{"status": "ignored", "message": "customer is blocked"})
+		return
+	}
+
 	programIDInt := 0
 	if req.ProgramID != "" {
 		parsed, err := strconv.Atoi(req.ProgramID)
@@ -166,7 +173,7 @@ func (h *CampusLoginHandler) HandleTriggerTwilio(c *gin.Context) {
 		}
 	}
 
-	_, err := h.db.GetAssistant(assistantID)
+	_, err = h.db.GetAssistant(assistantID)
 	if err != nil {
 		log.Printf("Error getting assistant %s: %v", assistantID, err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "assistant not found"})

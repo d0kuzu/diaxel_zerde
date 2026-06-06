@@ -75,6 +75,14 @@ func (h *TwilioWebhookHandler) HandleWebhook(c *gin.Context) {
 	from := c.PostForm("From")
 	body := c.PostForm("Body")
 
+	isBlocked, err := h.db.IsCustomerBlocked(from)
+	if err == nil && isBlocked {
+		log.Printf("[Twilio Webhook] Ignoring message from blocked customer %s", from)
+		c.Header("Content-Type", "text/xml")
+		c.String(http.StatusOK, `<?xml version="1.0" encoding="UTF-8"?><Response></Response>`)
+		return
+	}
+
 	log.Printf("[Twilio Webhook] Received message from %s: %s", from, body)
 
 	chat, err := h.db.GetLatestChatByCustomer(assistantID, from)

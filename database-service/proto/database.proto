@@ -52,6 +52,7 @@ service DatabaseService {
   rpc GetUnreviewedActiveChats(GetUnreviewedActiveChatsRequest) returns (ChatsResponse);
   rpc GetPeriodMetrics(GetPeriodMetricsRequest) returns (GetPeriodMetricsResponse);
   rpc GetWeeklyChatsStarted(GetWeeklyChatsStartedRequest) returns (GetWeeklyChatsStartedResponse);
+  rpc IsCustomerBlocked(IsCustomerBlockedRequest) returns (IsCustomerBlockedResponse);
 }
 
 message DeleteAllChatsAndMessagesRequest {}
@@ -453,5 +454,13 @@ message GetWeeklyChatsStartedRequest {
 
 message GetWeeklyChatsStartedResponse {
   repeated DailyCount days = 1;
+}
+
+message IsCustomerBlockedRequest {
+  string user_id = 1;
+}
+
+message IsCustomerBlockedResponse {
+  bool is_blocked = 1;
 }
 

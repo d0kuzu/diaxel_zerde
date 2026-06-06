@@ -62,10 +62,11 @@ func main() {
 	assistantRepo := repository.NewAssistantRepository(db)
 	twilioRepo := repository.NewTwilioRepository(db)
 	campusloginRepo := repository.NewCampusloginRepository(db)
+	blockedCustomerRepo := repository.NewBlockedCustomerRepository(db)
 
 	// Initialize gRPC server
 	grpcServer := grpc.NewServer()
-	databaseServer := server.NewDatabaseServer(userRepo, refreshTokenRepo, chatRepo, messageRepo, assistantRepo, twilioRepo, campusloginRepo)
+	databaseServer := server.NewDatabaseServer(userRepo, refreshTokenRepo, chatRepo, messageRepo, assistantRepo, twilioRepo, campusloginRepo, blockedCustomerRepo)
 
 	proto.RegisterDatabaseServiceServer(grpcServer, databaseServer)
 
@@ -155,6 +156,7 @@ func runMigrations(db *gorm.DB) error {
 		&models.Message{},
 		&models.TwilioConfig{},
 		&models.Campuslogin{},
+		&models.BlockedCustomer{},
 	)
 
 	if err != nil {

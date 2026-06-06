@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.2
 // - protoc             v4.25.2
-// source: database.proto
+// source: proto/database.proto
 
 package proto
 
@@ -66,6 +66,7 @@ const (
 	DatabaseService_GetUnreviewedActiveChats_FullMethodName  = "/database.DatabaseService/GetUnreviewedActiveChats"
 	DatabaseService_GetPeriodMetrics_FullMethodName          = "/database.DatabaseService/GetPeriodMetrics"
 	DatabaseService_GetWeeklyChatsStarted_FullMethodName     = "/database.DatabaseService/GetWeeklyChatsStarted"
+	DatabaseService_IsCustomerBlocked_FullMethodName         = "/database.DatabaseService/IsCustomerBlocked"
 )
 
 // DatabaseServiceClient is the client API for DatabaseService service.
@@ -119,6 +120,7 @@ type DatabaseServiceClient interface {
 	GetUnreviewedActiveChats(ctx context.Context, in *GetUnreviewedActiveChatsRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
 	GetPeriodMetrics(ctx context.Context, in *GetPeriodMetricsRequest, opts ...grpc.CallOption) (*GetPeriodMetricsResponse, error)
 	GetWeeklyChatsStarted(ctx context.Context, in *GetWeeklyChatsStartedRequest, opts ...grpc.CallOption) (*GetWeeklyChatsStartedResponse, error)
+	IsCustomerBlocked(ctx context.Context, in *IsCustomerBlockedRequest, opts ...grpc.CallOption) (*IsCustomerBlockedResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -599,6 +601,16 @@ func (c *databaseServiceClient) GetWeeklyChatsStarted(ctx context.Context, in *G
 	return out, nil
 }
 
+func (c *databaseServiceClient) IsCustomerBlocked(ctx context.Context, in *IsCustomerBlockedRequest, opts ...grpc.CallOption) (*IsCustomerBlockedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(IsCustomerBlockedResponse)
+	err := c.cc.Invoke(ctx, DatabaseService_IsCustomerBlocked_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DatabaseServiceServer is the server API for DatabaseService service.
 // All implementations must embed UnimplementedDatabaseServiceServer
 // for forward compatibility.
@@ -650,6 +662,7 @@ type DatabaseServiceServer interface {
 	GetUnreviewedActiveChats(context.Context, *GetUnreviewedActiveChatsRequest) (*ChatsResponse, error)
 	GetPeriodMetrics(context.Context, *GetPeriodMetricsRequest) (*GetPeriodMetricsResponse, error)
 	GetWeeklyChatsStarted(context.Context, *GetWeeklyChatsStartedRequest) (*GetWeeklyChatsStartedResponse, error)
+	IsCustomerBlocked(context.Context, *IsCustomerBlockedRequest) (*IsCustomerBlockedResponse, error)
 	mustEmbedUnimplementedDatabaseServiceServer()
 }
 
@@ -800,6 +813,9 @@ func (UnimplementedDatabaseServiceServer) GetPeriodMetrics(context.Context, *Get
 }
 func (UnimplementedDatabaseServiceServer) GetWeeklyChatsStarted(context.Context, *GetWeeklyChatsStartedRequest) (*GetWeeklyChatsStartedResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetWeeklyChatsStarted not implemented")
+}
+func (UnimplementedDatabaseServiceServer) IsCustomerBlocked(context.Context, *IsCustomerBlockedRequest) (*IsCustomerBlockedResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method IsCustomerBlocked not implemented")
 }
 func (UnimplementedDatabaseServiceServer) mustEmbedUnimplementedDatabaseServiceServer() {}
 func (UnimplementedDatabaseServiceServer) testEmbeddedByValue()                         {}
@@ -1668,6 +1684,24 @@ func _DatabaseService_GetWeeklyChatsStarted_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DatabaseService_IsCustomerBlocked_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsCustomerBlockedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DatabaseServiceServer).IsCustomerBlocked(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: DatabaseService_IsCustomerBlocked_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DatabaseServiceServer).IsCustomerBlocked(ctx, req.(*IsCustomerBlockedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DatabaseService_ServiceDesc is the grpc.ServiceDesc for DatabaseService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1863,7 +1897,11 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetWeeklyChatsStarted",
 			Handler:    _DatabaseService_GetWeeklyChatsStarted_Handler,
 		},
+		{
+			MethodName: "IsCustomerBlocked",
+			Handler:    _DatabaseService_IsCustomerBlocked_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "database.proto",
+	Metadata: "proto/database.proto",
 }

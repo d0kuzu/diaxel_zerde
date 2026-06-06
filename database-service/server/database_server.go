@@ -24,9 +24,10 @@ type DatabaseServer struct {
 	assistantRepo    repository.AssistantRepository
 	twilioRepo       repository.TwilioRepository
 	campusloginRepo  *repository.CampusloginRepository
+	blockedCustomerRepo repository.BlockedCustomerRepository
 }
 
-func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository, twilioRepo repository.TwilioRepository, campusloginRepo *repository.CampusloginRepository) *DatabaseServer {
+func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository, twilioRepo repository.TwilioRepository, campusloginRepo *repository.CampusloginRepository, blockedCustomerRepo repository.BlockedCustomerRepository) *DatabaseServer {
 	return &DatabaseServer{
 		userRepo:         userRepo,
 		refreshTokenRepo: refreshTokenRepo,
@@ -35,7 +36,16 @@ func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repo
 		assistantRepo:    assistantRepo,
 		twilioRepo:       twilioRepo,
 		campusloginRepo:  campusloginRepo,
+		blockedCustomerRepo: blockedCustomerRepo,
 	}
+}
+
+func (s *DatabaseServer) IsCustomerBlocked(ctx context.Context, req *proto.IsCustomerBlockedRequest) (*proto.IsCustomerBlockedResponse, error) {
+	isBlocked, err := s.blockedCustomerRepo.IsBlocked(ctx, req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to check if customer is blocked: %v", err)
+	}
+	return &proto.IsCustomerBlockedResponse{IsBlocked: isBlocked}, nil
 }
 
 func (s *DatabaseServer) CreateAssistant(ctx context.Context, req *proto.CreateAssistantRequest) (*proto.AssistantResponse, error) {
