@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"diaxel/internal/constants"
@@ -38,6 +39,8 @@ func (l *Listener) writeLog(format string, v ...interface{}) {
 		f.WriteString(fmt.Sprintf("[%s] %s\n", timestamp, msg))
 	}
 }
+
+const fallbackText = "Enrolling at Aveda is a simple process. When are you looking to start school: right away or in the near future?"
 
 func (l *Listener) Start(ctx context.Context) {
 	ticker := time.NewTicker(1 * time.Hour)
@@ -122,6 +125,17 @@ func (l *Listener) processFollowups(ctx context.Context) {
 			l.writeLog("Could not get twilio config for assistant %s (Customer: %s): %v. Skipping.", chat.AssistantId, chat.CustomerId, err)
 			continue
 		}
+
+		if programName == "Hairstyling" && currentStage == 3 {
+			if strings.Contains(stageConfig.Text, "{FirstName}") {
+				if campusLogin.FirstName == "" {
+					stageConfig.Text = fallbackText
+				} else {
+					stageConfig.Text = strings.ReplaceAll(stageConfig.Text, "{FirstName}", campusLogin.FirstName)
+				}
+			}
+		}
+
 		if err = l.twilioClient.SendMessage(ctx, twilioConfig.AccountSid, twilioConfig.AuthToken, twilioConfig.TwilioNumber, chat.CustomerId, stageConfig.Text); err != nil {
 			l.writeLog("Error sending Twilio message to %s at stage %d: %v", chat.CustomerId, currentStage, err)
 			continue

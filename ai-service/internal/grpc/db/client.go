@@ -363,7 +363,7 @@ func (c *Client) GetCampusloginByUserId(userID string) (*dbpb.CampusloginRespons
 	return resp, nil
 }
 
-func (c *Client) UpsertCampuslogin(userID string, contactID int, programID int, isGrade11OrLower bool, isInternationalStudent bool) error {
+func (c *Client) UpsertCampuslogin(userID string, contactID int, programID int, isGrade11OrLower bool, isInternationalStudent bool, firstName string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -373,6 +373,7 @@ func (c *Client) UpsertCampuslogin(userID string, contactID int, programID int, 
 		ProgramId:              int32(programID),
 		IsGrade11OrLower:       isGrade11OrLower,
 		IsInternationalStudent: isInternationalStudent,
+		FirstName:              firstName,
 	}
 
 	_, err := c.DB.UpsertCampuslogin(ctx, req)
