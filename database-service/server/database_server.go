@@ -17,25 +17,23 @@ import (
 
 type DatabaseServer struct {
 	proto.UnimplementedDatabaseServiceServer
-	userRepo         repository.UserRepository
-	refreshTokenRepo repository.RefreshTokenRepository
-	chatRepo         repository.ChatRepository
-	messageRepo      repository.MessageRepository
-	assistantRepo    repository.AssistantRepository
-	twilioRepo       repository.TwilioRepository
-	campusloginRepo  *repository.CampusloginRepository
+	userRepo            repository.UserRepository
+	refreshTokenRepo    repository.RefreshTokenRepository
+	chatRepo            repository.ChatRepository
+	messageRepo         repository.MessageRepository
+	assistantRepo       repository.AssistantRepository
+	twilioRepo          repository.TwilioRepository
 	blockedCustomerRepo repository.BlockedCustomerRepository
 }
 
-func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository, twilioRepo repository.TwilioRepository, campusloginRepo *repository.CampusloginRepository, blockedCustomerRepo repository.BlockedCustomerRepository) *DatabaseServer {
+func NewDatabaseServer(userRepo repository.UserRepository, refreshTokenRepo repository.RefreshTokenRepository, chatRepo repository.ChatRepository, messageRepo repository.MessageRepository, assistantRepo repository.AssistantRepository, twilioRepo repository.TwilioRepository, blockedCustomerRepo repository.BlockedCustomerRepository) *DatabaseServer {
 	return &DatabaseServer{
-		userRepo:         userRepo,
-		refreshTokenRepo: refreshTokenRepo,
-		chatRepo:         chatRepo,
-		messageRepo:      messageRepo,
-		assistantRepo:    assistantRepo,
-		twilioRepo:       twilioRepo,
-		campusloginRepo:  campusloginRepo,
+		userRepo:            userRepo,
+		refreshTokenRepo:    refreshTokenRepo,
+		chatRepo:            chatRepo,
+		messageRepo:         messageRepo,
+		assistantRepo:       assistantRepo,
+		twilioRepo:          twilioRepo,
 		blockedCustomerRepo: blockedCustomerRepo,
 	}
 }
@@ -740,40 +738,7 @@ func (s *DatabaseServer) DeleteTwilioConfig(ctx context.Context, req *proto.Dele
 	}, nil
 }
 
-func (s *DatabaseServer) GetCampusloginByUserId(ctx context.Context, req *proto.CampusloginRequest) (*proto.CampusloginResponse, error) {
-	record, err := s.campusloginRepo.GetByUserId(req.UserId)
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "campuslogin not found: %v", err)
-	}
 
-	return &proto.CampusloginResponse{
-		UserId:                 record.UserId,
-		ContactId:              int32(record.ContactID),
-		ProgramId:              int32(record.ProgramID),
-		IsGrade11OrLower:       record.IsGrade11OrLower,
-		IsInternationalStudent: record.IsInternationalStudent,
-		FirstName:              record.FirstName,
-	}, nil
-}
-
-func (s *DatabaseServer) UpsertCampuslogin(ctx context.Context, req *proto.UpsertCampusloginRequest) (*proto.UpsertCampusloginResponse, error) {
-	campuslogin := &models.Campuslogin{
-		UserId:                 req.UserId,
-		ContactID:              int(req.ContactId),
-		ProgramID:              int(req.ProgramId),
-		IsGrade11OrLower:       req.IsGrade11OrLower,
-		IsInternationalStudent: req.IsInternationalStudent,
-		FirstName:              req.FirstName,
-	}
-
-	if err := s.campusloginRepo.Upsert(campuslogin); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to upsert campuslogin: %v", err)
-	}
-
-	return &proto.UpsertCampusloginResponse{
-		Success: true,
-	}, nil
-}
 
 func (s *DatabaseServer) DeleteAllChatsAndMessages(ctx context.Context, req *proto.DeleteAllChatsAndMessagesRequest) (*proto.DeleteAllChatsAndMessagesResponse, error) {
 	if err := s.messageRepo.DeleteAllMessages(ctx); err != nil {
@@ -897,15 +862,7 @@ func (s *DatabaseServer) UpdateChatIsReviewed(ctx context.Context, req *proto.Up
 	}, nil
 }
 
-func (s *DatabaseServer) SetCampusloginFlags(ctx context.Context, req *proto.SetCampusloginFlagsRequest) (*proto.SetCampusloginFlagsResponse, error) {
-	if err := s.campusloginRepo.SetFlags(req.UserId, req.IsGrade11OrLower, req.IsInternationalStudent); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to set campuslogin flags: %v", err)
-	}
 
-	return &proto.SetCampusloginFlagsResponse{
-		Success: true,
-	}, nil
-}
 
 func (s *DatabaseServer) UpdateChatFollowupStage(ctx context.Context, req *proto.UpdateChatFollowupStageRequest) (*proto.ChatResponse, error) {
 	chat, err := s.chatRepo.UpdateChatFollowupStage(ctx, req.Id, int(req.Stage))

@@ -12,10 +12,7 @@ import (
 	"diaxel/internal/config"
 	"diaxel/internal/grpc/db"
 	"diaxel/internal/modules/calcom"
-	"diaxel/internal/modules/campuslogin"
-	"diaxel/internal/modules/followup"
 	"diaxel/internal/modules/llm"
-	"diaxel/internal/modules/summary"
 	"diaxel/internal/modules/telegram"
 	"diaxel/internal/modules/twilio"
 )
@@ -32,9 +29,8 @@ func main() {
 	}
 
 	calcomClient := calcom.New(settings.CalApiKey, settings.CalEventTypeID)
-	campusloginClient := campuslogin.NewClient(settings.CampusLoginAPI)
 
-	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient, calcomClient, campusloginClient)
+	llmClient := llm.InitClient(settings.OpenaiApiKey, grpcClient, calcomClient)
 
 	twilioClient := twilio.InitClient()
 
@@ -44,11 +40,8 @@ func main() {
 	cm := &cleanup.CleanupManager{}
 	go cm.Start()
 
-	followupListener := followup.NewListener(grpcClient, twilioClient)
-	go followupListener.Start(context.Background())
-
-	abandonedSummarizer := summary.NewAbandonedSummarizer(grpcClient, campusloginClient, llmClient)
-	go abandonedSummarizer.Start(context.Background())
+	// followupListener := followup.NewListener(grpcClient, twilioClient)
+	// go followupListener.Start(context.Background())
 
 	app := appModule.NewApp(llmClient, twilioClient, grpcClient, settings, tgOrchestrator)
 

@@ -3205,322 +3205,6 @@ func (x *DeleteTwilioConfigResponse) GetSuccess() bool {
 	return false
 }
 
-type CampusloginRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CampusloginRequest) Reset() {
-	*x = CampusloginRequest{}
-	mi := &file_proto_database_proto_msgTypes[56]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CampusloginRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CampusloginRequest) ProtoMessage() {}
-
-func (x *CampusloginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[56]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CampusloginRequest.ProtoReflect.Descriptor instead.
-func (*CampusloginRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{56}
-}
-
-func (x *CampusloginRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-type UpsertCampusloginRequest struct {
-	state                  protoimpl.MessageState `protogen:"open.v1"`
-	UserId                 string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	ContactId              int32                  `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
-	ProgramId              int32                  `protobuf:"varint,3,opt,name=program_id,json=programId,proto3" json:"program_id,omitempty"`
-	IsGrade11OrLower       bool                   `protobuf:"varint,4,opt,name=is_grade11_or_lower,json=isGrade11OrLower,proto3" json:"is_grade11_or_lower,omitempty"`
-	IsInternationalStudent bool                   `protobuf:"varint,5,opt,name=is_international_student,json=isInternationalStudent,proto3" json:"is_international_student,omitempty"`
-	FirstName              string                 `protobuf:"bytes,6,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *UpsertCampusloginRequest) Reset() {
-	*x = UpsertCampusloginRequest{}
-	mi := &file_proto_database_proto_msgTypes[57]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpsertCampusloginRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpsertCampusloginRequest) ProtoMessage() {}
-
-func (x *UpsertCampusloginRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[57]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpsertCampusloginRequest.ProtoReflect.Descriptor instead.
-func (*UpsertCampusloginRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{57}
-}
-
-func (x *UpsertCampusloginRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *UpsertCampusloginRequest) GetContactId() int32 {
-	if x != nil {
-		return x.ContactId
-	}
-	return 0
-}
-
-func (x *UpsertCampusloginRequest) GetProgramId() int32 {
-	if x != nil {
-		return x.ProgramId
-	}
-	return 0
-}
-
-func (x *UpsertCampusloginRequest) GetIsGrade11OrLower() bool {
-	if x != nil {
-		return x.IsGrade11OrLower
-	}
-	return false
-}
-
-func (x *UpsertCampusloginRequest) GetIsInternationalStudent() bool {
-	if x != nil {
-		return x.IsInternationalStudent
-	}
-	return false
-}
-
-func (x *UpsertCampusloginRequest) GetFirstName() string {
-	if x != nil {
-		return x.FirstName
-	}
-	return ""
-}
-
-type CampusloginResponse struct {
-	state                  protoimpl.MessageState `protogen:"open.v1"`
-	UserId                 string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	ContactId              int32                  `protobuf:"varint,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
-	ProgramId              int32                  `protobuf:"varint,3,opt,name=program_id,json=programId,proto3" json:"program_id,omitempty"`
-	IsGrade11OrLower       bool                   `protobuf:"varint,4,opt,name=is_grade11_or_lower,json=isGrade11OrLower,proto3" json:"is_grade11_or_lower,omitempty"`
-	IsInternationalStudent bool                   `protobuf:"varint,5,opt,name=is_international_student,json=isInternationalStudent,proto3" json:"is_international_student,omitempty"`
-	FirstName              string                 `protobuf:"bytes,6,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *CampusloginResponse) Reset() {
-	*x = CampusloginResponse{}
-	mi := &file_proto_database_proto_msgTypes[58]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CampusloginResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CampusloginResponse) ProtoMessage() {}
-
-func (x *CampusloginResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[58]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CampusloginResponse.ProtoReflect.Descriptor instead.
-func (*CampusloginResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{58}
-}
-
-func (x *CampusloginResponse) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *CampusloginResponse) GetContactId() int32 {
-	if x != nil {
-		return x.ContactId
-	}
-	return 0
-}
-
-func (x *CampusloginResponse) GetProgramId() int32 {
-	if x != nil {
-		return x.ProgramId
-	}
-	return 0
-}
-
-func (x *CampusloginResponse) GetIsGrade11OrLower() bool {
-	if x != nil {
-		return x.IsGrade11OrLower
-	}
-	return false
-}
-
-func (x *CampusloginResponse) GetIsInternationalStudent() bool {
-	if x != nil {
-		return x.IsInternationalStudent
-	}
-	return false
-}
-
-func (x *CampusloginResponse) GetFirstName() string {
-	if x != nil {
-		return x.FirstName
-	}
-	return ""
-}
-
-type SetCampusloginFlagsRequest struct {
-	state                  protoimpl.MessageState `protogen:"open.v1"`
-	UserId                 string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	IsGrade11OrLower       bool                   `protobuf:"varint,2,opt,name=is_grade11_or_lower,json=isGrade11OrLower,proto3" json:"is_grade11_or_lower,omitempty"`
-	IsInternationalStudent bool                   `protobuf:"varint,3,opt,name=is_international_student,json=isInternationalStudent,proto3" json:"is_international_student,omitempty"`
-	unknownFields          protoimpl.UnknownFields
-	sizeCache              protoimpl.SizeCache
-}
-
-func (x *SetCampusloginFlagsRequest) Reset() {
-	*x = SetCampusloginFlagsRequest{}
-	mi := &file_proto_database_proto_msgTypes[59]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SetCampusloginFlagsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SetCampusloginFlagsRequest) ProtoMessage() {}
-
-func (x *SetCampusloginFlagsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[59]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SetCampusloginFlagsRequest.ProtoReflect.Descriptor instead.
-func (*SetCampusloginFlagsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{59}
-}
-
-func (x *SetCampusloginFlagsRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *SetCampusloginFlagsRequest) GetIsGrade11OrLower() bool {
-	if x != nil {
-		return x.IsGrade11OrLower
-	}
-	return false
-}
-
-func (x *SetCampusloginFlagsRequest) GetIsInternationalStudent() bool {
-	if x != nil {
-		return x.IsInternationalStudent
-	}
-	return false
-}
-
-type SetCampusloginFlagsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *SetCampusloginFlagsResponse) Reset() {
-	*x = SetCampusloginFlagsResponse{}
-	mi := &file_proto_database_proto_msgTypes[60]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *SetCampusloginFlagsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*SetCampusloginFlagsResponse) ProtoMessage() {}
-
-func (x *SetCampusloginFlagsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[60]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use SetCampusloginFlagsResponse.ProtoReflect.Descriptor instead.
-func (*SetCampusloginFlagsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{60}
-}
-
-func (x *SetCampusloginFlagsResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
 type UpdateChatFollowupStageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -3531,7 +3215,7 @@ type UpdateChatFollowupStageRequest struct {
 
 func (x *UpdateChatFollowupStageRequest) Reset() {
 	*x = UpdateChatFollowupStageRequest{}
-	mi := &file_proto_database_proto_msgTypes[61]
+	mi := &file_proto_database_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3543,7 +3227,7 @@ func (x *UpdateChatFollowupStageRequest) String() string {
 func (*UpdateChatFollowupStageRequest) ProtoMessage() {}
 
 func (x *UpdateChatFollowupStageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[61]
+	mi := &file_proto_database_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3556,7 +3240,7 @@ func (x *UpdateChatFollowupStageRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatFollowupStageRequest.ProtoReflect.Descriptor instead.
 func (*UpdateChatFollowupStageRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{61}
+	return file_proto_database_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *UpdateChatFollowupStageRequest) GetId() string {
@@ -3573,50 +3257,6 @@ func (x *UpdateChatFollowupStageRequest) GetStage() int32 {
 	return 0
 }
 
-type UpsertCampusloginResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *UpsertCampusloginResponse) Reset() {
-	*x = UpsertCampusloginResponse{}
-	mi := &file_proto_database_proto_msgTypes[62]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UpsertCampusloginResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UpsertCampusloginResponse) ProtoMessage() {}
-
-func (x *UpsertCampusloginResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[62]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UpsertCampusloginResponse.ProtoReflect.Descriptor instead.
-func (*UpsertCampusloginResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{62}
-}
-
-func (x *UpsertCampusloginResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
 type DeleteChatAndMessagesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	ChatId        string                 `protobuf:"bytes,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
@@ -3626,7 +3266,7 @@ type DeleteChatAndMessagesRequest struct {
 
 func (x *DeleteChatAndMessagesRequest) Reset() {
 	*x = DeleteChatAndMessagesRequest{}
-	mi := &file_proto_database_proto_msgTypes[63]
+	mi := &file_proto_database_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3638,7 +3278,7 @@ func (x *DeleteChatAndMessagesRequest) String() string {
 func (*DeleteChatAndMessagesRequest) ProtoMessage() {}
 
 func (x *DeleteChatAndMessagesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[63]
+	mi := &file_proto_database_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3651,7 +3291,7 @@ func (x *DeleteChatAndMessagesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChatAndMessagesRequest.ProtoReflect.Descriptor instead.
 func (*DeleteChatAndMessagesRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{63}
+	return file_proto_database_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *DeleteChatAndMessagesRequest) GetChatId() string {
@@ -3670,7 +3310,7 @@ type DeleteChatAndMessagesResponse struct {
 
 func (x *DeleteChatAndMessagesResponse) Reset() {
 	*x = DeleteChatAndMessagesResponse{}
-	mi := &file_proto_database_proto_msgTypes[64]
+	mi := &file_proto_database_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3682,7 +3322,7 @@ func (x *DeleteChatAndMessagesResponse) String() string {
 func (*DeleteChatAndMessagesResponse) ProtoMessage() {}
 
 func (x *DeleteChatAndMessagesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[64]
+	mi := &file_proto_database_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3695,7 +3335,7 @@ func (x *DeleteChatAndMessagesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteChatAndMessagesResponse.ProtoReflect.Descriptor instead.
 func (*DeleteChatAndMessagesResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{64}
+	return file_proto_database_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *DeleteChatAndMessagesResponse) GetSuccess() bool {
@@ -3715,7 +3355,7 @@ type UpdateChatIsEndRequest struct {
 
 func (x *UpdateChatIsEndRequest) Reset() {
 	*x = UpdateChatIsEndRequest{}
-	mi := &file_proto_database_proto_msgTypes[65]
+	mi := &file_proto_database_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3727,7 +3367,7 @@ func (x *UpdateChatIsEndRequest) String() string {
 func (*UpdateChatIsEndRequest) ProtoMessage() {}
 
 func (x *UpdateChatIsEndRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[65]
+	mi := &file_proto_database_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3740,7 +3380,7 @@ func (x *UpdateChatIsEndRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatIsEndRequest.ProtoReflect.Descriptor instead.
 func (*UpdateChatIsEndRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{65}
+	return file_proto_database_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *UpdateChatIsEndRequest) GetId() string {
@@ -3766,7 +3406,7 @@ type GetChatsForFollowupRequest struct {
 
 func (x *GetChatsForFollowupRequest) Reset() {
 	*x = GetChatsForFollowupRequest{}
-	mi := &file_proto_database_proto_msgTypes[66]
+	mi := &file_proto_database_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3778,7 +3418,7 @@ func (x *GetChatsForFollowupRequest) String() string {
 func (*GetChatsForFollowupRequest) ProtoMessage() {}
 
 func (x *GetChatsForFollowupRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[66]
+	mi := &file_proto_database_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3791,7 +3431,7 @@ func (x *GetChatsForFollowupRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetChatsForFollowupRequest.ProtoReflect.Descriptor instead.
 func (*GetChatsForFollowupRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{66}
+	return file_proto_database_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *GetChatsForFollowupRequest) GetInactiveDurationSeconds() int64 {
@@ -3811,7 +3451,7 @@ type UpdateChatIsReviewedRequest struct {
 
 func (x *UpdateChatIsReviewedRequest) Reset() {
 	*x = UpdateChatIsReviewedRequest{}
-	mi := &file_proto_database_proto_msgTypes[67]
+	mi := &file_proto_database_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3823,7 +3463,7 @@ func (x *UpdateChatIsReviewedRequest) String() string {
 func (*UpdateChatIsReviewedRequest) ProtoMessage() {}
 
 func (x *UpdateChatIsReviewedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[67]
+	mi := &file_proto_database_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3836,7 +3476,7 @@ func (x *UpdateChatIsReviewedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateChatIsReviewedRequest.ProtoReflect.Descriptor instead.
 func (*UpdateChatIsReviewedRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{67}
+	return file_proto_database_proto_rawDescGZIP(), []int{61}
 }
 
 func (x *UpdateChatIsReviewedRequest) GetId() string {
@@ -3861,7 +3501,7 @@ type GetUnreviewedActiveChatsRequest struct {
 
 func (x *GetUnreviewedActiveChatsRequest) Reset() {
 	*x = GetUnreviewedActiveChatsRequest{}
-	mi := &file_proto_database_proto_msgTypes[68]
+	mi := &file_proto_database_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3873,7 +3513,7 @@ func (x *GetUnreviewedActiveChatsRequest) String() string {
 func (*GetUnreviewedActiveChatsRequest) ProtoMessage() {}
 
 func (x *GetUnreviewedActiveChatsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[68]
+	mi := &file_proto_database_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3886,7 +3526,7 @@ func (x *GetUnreviewedActiveChatsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUnreviewedActiveChatsRequest.ProtoReflect.Descriptor instead.
 func (*GetUnreviewedActiveChatsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{68}
+	return file_proto_database_proto_rawDescGZIP(), []int{62}
 }
 
 type GetPeriodMetricsRequest struct {
@@ -3900,7 +3540,7 @@ type GetPeriodMetricsRequest struct {
 
 func (x *GetPeriodMetricsRequest) Reset() {
 	*x = GetPeriodMetricsRequest{}
-	mi := &file_proto_database_proto_msgTypes[69]
+	mi := &file_proto_database_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3912,7 +3552,7 @@ func (x *GetPeriodMetricsRequest) String() string {
 func (*GetPeriodMetricsRequest) ProtoMessage() {}
 
 func (x *GetPeriodMetricsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[69]
+	mi := &file_proto_database_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3925,7 +3565,7 @@ func (x *GetPeriodMetricsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPeriodMetricsRequest.ProtoReflect.Descriptor instead.
 func (*GetPeriodMetricsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{69}
+	return file_proto_database_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *GetPeriodMetricsRequest) GetAssistantId() string {
@@ -3959,7 +3599,7 @@ type GetPeriodMetricsResponse struct {
 
 func (x *GetPeriodMetricsResponse) Reset() {
 	*x = GetPeriodMetricsResponse{}
-	mi := &file_proto_database_proto_msgTypes[70]
+	mi := &file_proto_database_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3971,7 +3611,7 @@ func (x *GetPeriodMetricsResponse) String() string {
 func (*GetPeriodMetricsResponse) ProtoMessage() {}
 
 func (x *GetPeriodMetricsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[70]
+	mi := &file_proto_database_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3984,7 +3624,7 @@ func (x *GetPeriodMetricsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPeriodMetricsResponse.ProtoReflect.Descriptor instead.
 func (*GetPeriodMetricsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{70}
+	return file_proto_database_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *GetPeriodMetricsResponse) GetStartedChats() int32 {
@@ -4011,7 +3651,7 @@ type DailyCount struct {
 
 func (x *DailyCount) Reset() {
 	*x = DailyCount{}
-	mi := &file_proto_database_proto_msgTypes[71]
+	mi := &file_proto_database_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4023,7 +3663,7 @@ func (x *DailyCount) String() string {
 func (*DailyCount) ProtoMessage() {}
 
 func (x *DailyCount) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[71]
+	mi := &file_proto_database_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4036,7 +3676,7 @@ func (x *DailyCount) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DailyCount.ProtoReflect.Descriptor instead.
 func (*DailyCount) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{71}
+	return file_proto_database_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *DailyCount) GetDate() string {
@@ -4064,7 +3704,7 @@ type GetWeeklyChatsStartedRequest struct {
 
 func (x *GetWeeklyChatsStartedRequest) Reset() {
 	*x = GetWeeklyChatsStartedRequest{}
-	mi := &file_proto_database_proto_msgTypes[72]
+	mi := &file_proto_database_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4076,7 +3716,7 @@ func (x *GetWeeklyChatsStartedRequest) String() string {
 func (*GetWeeklyChatsStartedRequest) ProtoMessage() {}
 
 func (x *GetWeeklyChatsStartedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[72]
+	mi := &file_proto_database_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4089,7 +3729,7 @@ func (x *GetWeeklyChatsStartedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWeeklyChatsStartedRequest.ProtoReflect.Descriptor instead.
 func (*GetWeeklyChatsStartedRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{72}
+	return file_proto_database_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *GetWeeklyChatsStartedRequest) GetAssistantId() string {
@@ -4122,7 +3762,7 @@ type GetWeeklyChatsStartedResponse struct {
 
 func (x *GetWeeklyChatsStartedResponse) Reset() {
 	*x = GetWeeklyChatsStartedResponse{}
-	mi := &file_proto_database_proto_msgTypes[73]
+	mi := &file_proto_database_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4134,7 +3774,7 @@ func (x *GetWeeklyChatsStartedResponse) String() string {
 func (*GetWeeklyChatsStartedResponse) ProtoMessage() {}
 
 func (x *GetWeeklyChatsStartedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[73]
+	mi := &file_proto_database_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4147,7 +3787,7 @@ func (x *GetWeeklyChatsStartedResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWeeklyChatsStartedResponse.ProtoReflect.Descriptor instead.
 func (*GetWeeklyChatsStartedResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{73}
+	return file_proto_database_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *GetWeeklyChatsStartedResponse) GetDays() []*DailyCount {
@@ -4166,7 +3806,7 @@ type IsCustomerBlockedRequest struct {
 
 func (x *IsCustomerBlockedRequest) Reset() {
 	*x = IsCustomerBlockedRequest{}
-	mi := &file_proto_database_proto_msgTypes[74]
+	mi := &file_proto_database_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4178,7 +3818,7 @@ func (x *IsCustomerBlockedRequest) String() string {
 func (*IsCustomerBlockedRequest) ProtoMessage() {}
 
 func (x *IsCustomerBlockedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[74]
+	mi := &file_proto_database_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4191,7 +3831,7 @@ func (x *IsCustomerBlockedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IsCustomerBlockedRequest.ProtoReflect.Descriptor instead.
 func (*IsCustomerBlockedRequest) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{74}
+	return file_proto_database_proto_rawDescGZIP(), []int{68}
 }
 
 func (x *IsCustomerBlockedRequest) GetUserId() string {
@@ -4210,7 +3850,7 @@ type IsCustomerBlockedResponse struct {
 
 func (x *IsCustomerBlockedResponse) Reset() {
 	*x = IsCustomerBlockedResponse{}
-	mi := &file_proto_database_proto_msgTypes[75]
+	mi := &file_proto_database_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4222,7 +3862,7 @@ func (x *IsCustomerBlockedResponse) String() string {
 func (*IsCustomerBlockedResponse) ProtoMessage() {}
 
 func (x *IsCustomerBlockedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_database_proto_msgTypes[75]
+	mi := &file_proto_database_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4235,7 +3875,7 @@ func (x *IsCustomerBlockedResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use IsCustomerBlockedResponse.ProtoReflect.Descriptor instead.
 func (*IsCustomerBlockedResponse) Descriptor() ([]byte, []int) {
-	return file_proto_database_proto_rawDescGZIP(), []int{75}
+	return file_proto_database_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *IsCustomerBlockedResponse) GetIsBlocked() bool {
@@ -4483,40 +4123,10 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x19DeleteTwilioConfigRequest\x12!\n" +
 	"\fassistant_id\x18\x01 \x01(\tR\vassistantId\"6\n" +
 	"\x1aDeleteTwilioConfigResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"-\n" +
-	"\x12CampusloginRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\"\xf9\x01\n" +
-	"\x18UpsertCampusloginRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
-	"\n" +
-	"contact_id\x18\x02 \x01(\x05R\tcontactId\x12\x1d\n" +
-	"\n" +
-	"program_id\x18\x03 \x01(\x05R\tprogramId\x12-\n" +
-	"\x13is_grade11_or_lower\x18\x04 \x01(\bR\x10isGrade11OrLower\x128\n" +
-	"\x18is_international_student\x18\x05 \x01(\bR\x16isInternationalStudent\x12\x1d\n" +
-	"\n" +
-	"first_name\x18\x06 \x01(\tR\tfirstName\"\xf4\x01\n" +
-	"\x13CampusloginResponse\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1d\n" +
-	"\n" +
-	"contact_id\x18\x02 \x01(\x05R\tcontactId\x12\x1d\n" +
-	"\n" +
-	"program_id\x18\x03 \x01(\x05R\tprogramId\x12-\n" +
-	"\x13is_grade11_or_lower\x18\x04 \x01(\bR\x10isGrade11OrLower\x128\n" +
-	"\x18is_international_student\x18\x05 \x01(\bR\x16isInternationalStudent\x12\x1d\n" +
-	"\n" +
-	"first_name\x18\x06 \x01(\tR\tfirstName\"\x9e\x01\n" +
-	"\x1aSetCampusloginFlagsRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12-\n" +
-	"\x13is_grade11_or_lower\x18\x02 \x01(\bR\x10isGrade11OrLower\x128\n" +
-	"\x18is_international_student\x18\x03 \x01(\bR\x16isInternationalStudent\"7\n" +
-	"\x1bSetCampusloginFlagsResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"F\n" +
 	"\x1eUpdateChatFollowupStageRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05stage\x18\x02 \x01(\x05R\x05stage\"5\n" +
-	"\x19UpsertCampusloginResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"7\n" +
+	"\x05stage\x18\x02 \x01(\x05R\x05stage\"7\n" +
 	"\x1cDeleteChatAndMessagesRequest\x12\x17\n" +
 	"\achat_id\x18\x01 \x01(\tR\x06chatId\"9\n" +
 	"\x1dDeleteChatAndMessagesResponse\x12\x18\n" +
@@ -4554,7 +4164,7 @@ const file_proto_database_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\":\n" +
 	"\x19IsCustomerBlockedResponse\x12\x1d\n" +
 	"\n" +
-	"is_blocked\x18\x01 \x01(\bR\tisBlocked2\x97 \n" +
+	"is_blocked\x18\x01 \x01(\bR\tisBlocked2\xfe\x1d\n" +
 	"\x0fDatabaseService\x12G\n" +
 	"\fGetAnalytics\x12\x1a.database.AnalyticsRequest\x1a\x1b.database.AnalyticsResponse\x12]\n" +
 	"\x17GetAnalyticsByAssistant\x12%.database.AnalyticsByAssistantRequest\x1a\x1b.database.AnalyticsResponse\x12A\n" +
@@ -4598,10 +4208,7 @@ const file_proto_database_proto_rawDesc = "" +
 	"\x0fGetTwilioConfig\x12 .database.GetTwilioConfigRequest\x1a\x1e.database.TwilioConfigResponse\x12_\n" +
 	"\x12DeleteTwilioConfig\x12#.database.DeleteTwilioConfigRequest\x1a$.database.DeleteTwilioConfigResponse\x12T\n" +
 	"\x13GetChatsForFollowup\x12$.database.GetChatsForFollowupRequest\x1a\x17.database.ChatsResponse\x12[\n" +
-	"\x17UpdateChatFollowupStage\x12(.database.UpdateChatFollowupStageRequest\x1a\x16.database.ChatResponse\x12U\n" +
-	"\x16GetCampusloginByUserId\x12\x1c.database.CampusloginRequest\x1a\x1d.database.CampusloginResponse\x12\\\n" +
-	"\x11UpsertCampuslogin\x12\".database.UpsertCampusloginRequest\x1a#.database.UpsertCampusloginResponse\x12b\n" +
-	"\x13SetCampusloginFlags\x12$.database.SetCampusloginFlagsRequest\x1a%.database.SetCampusloginFlagsResponse\x12t\n" +
+	"\x17UpdateChatFollowupStage\x12(.database.UpdateChatFollowupStageRequest\x1a\x16.database.ChatResponse\x12t\n" +
 	"\x19DeleteAllChatsAndMessages\x12*.database.DeleteAllChatsAndMessagesRequest\x1a+.database.DeleteAllChatsAndMessagesResponse\x12h\n" +
 	"\x15DeleteChatAndMessages\x12&.database.DeleteChatAndMessagesRequest\x1a'.database.DeleteChatAndMessagesResponse\x12K\n" +
 	"\x0fUpdateChatIsEnd\x12 .database.UpdateChatIsEndRequest\x1a\x16.database.ChatResponse\x12U\n" +
@@ -4623,7 +4230,7 @@ func file_proto_database_proto_rawDescGZIP() []byte {
 	return file_proto_database_proto_rawDescData
 }
 
-var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 76)
+var file_proto_database_proto_msgTypes = make([]protoimpl.MessageInfo, 70)
 var file_proto_database_proto_goTypes = []any{
 	(*DeleteAllChatsAndMessagesRequest)(nil),  // 0: database.DeleteAllChatsAndMessagesRequest
 	(*DeleteAllChatsAndMessagesResponse)(nil), // 1: database.DeleteAllChatsAndMessagesResponse
@@ -4681,33 +4288,27 @@ var file_proto_database_proto_goTypes = []any{
 	(*TwilioConfigResponse)(nil),              // 53: database.TwilioConfigResponse
 	(*DeleteTwilioConfigRequest)(nil),         // 54: database.DeleteTwilioConfigRequest
 	(*DeleteTwilioConfigResponse)(nil),        // 55: database.DeleteTwilioConfigResponse
-	(*CampusloginRequest)(nil),                // 56: database.CampusloginRequest
-	(*UpsertCampusloginRequest)(nil),          // 57: database.UpsertCampusloginRequest
-	(*CampusloginResponse)(nil),               // 58: database.CampusloginResponse
-	(*SetCampusloginFlagsRequest)(nil),        // 59: database.SetCampusloginFlagsRequest
-	(*SetCampusloginFlagsResponse)(nil),       // 60: database.SetCampusloginFlagsResponse
-	(*UpdateChatFollowupStageRequest)(nil),    // 61: database.UpdateChatFollowupStageRequest
-	(*UpsertCampusloginResponse)(nil),         // 62: database.UpsertCampusloginResponse
-	(*DeleteChatAndMessagesRequest)(nil),      // 63: database.DeleteChatAndMessagesRequest
-	(*DeleteChatAndMessagesResponse)(nil),     // 64: database.DeleteChatAndMessagesResponse
-	(*UpdateChatIsEndRequest)(nil),            // 65: database.UpdateChatIsEndRequest
-	(*GetChatsForFollowupRequest)(nil),        // 66: database.GetChatsForFollowupRequest
-	(*UpdateChatIsReviewedRequest)(nil),       // 67: database.UpdateChatIsReviewedRequest
-	(*GetUnreviewedActiveChatsRequest)(nil),   // 68: database.GetUnreviewedActiveChatsRequest
-	(*GetPeriodMetricsRequest)(nil),           // 69: database.GetPeriodMetricsRequest
-	(*GetPeriodMetricsResponse)(nil),          // 70: database.GetPeriodMetricsResponse
-	(*DailyCount)(nil),                        // 71: database.DailyCount
-	(*GetWeeklyChatsStartedRequest)(nil),      // 72: database.GetWeeklyChatsStartedRequest
-	(*GetWeeklyChatsStartedResponse)(nil),     // 73: database.GetWeeklyChatsStartedResponse
-	(*IsCustomerBlockedRequest)(nil),          // 74: database.IsCustomerBlockedRequest
-	(*IsCustomerBlockedResponse)(nil),         // 75: database.IsCustomerBlockedResponse
+	(*UpdateChatFollowupStageRequest)(nil),    // 56: database.UpdateChatFollowupStageRequest
+	(*DeleteChatAndMessagesRequest)(nil),      // 57: database.DeleteChatAndMessagesRequest
+	(*DeleteChatAndMessagesResponse)(nil),     // 58: database.DeleteChatAndMessagesResponse
+	(*UpdateChatIsEndRequest)(nil),            // 59: database.UpdateChatIsEndRequest
+	(*GetChatsForFollowupRequest)(nil),        // 60: database.GetChatsForFollowupRequest
+	(*UpdateChatIsReviewedRequest)(nil),       // 61: database.UpdateChatIsReviewedRequest
+	(*GetUnreviewedActiveChatsRequest)(nil),   // 62: database.GetUnreviewedActiveChatsRequest
+	(*GetPeriodMetricsRequest)(nil),           // 63: database.GetPeriodMetricsRequest
+	(*GetPeriodMetricsResponse)(nil),          // 64: database.GetPeriodMetricsResponse
+	(*DailyCount)(nil),                        // 65: database.DailyCount
+	(*GetWeeklyChatsStartedRequest)(nil),      // 66: database.GetWeeklyChatsStartedRequest
+	(*GetWeeklyChatsStartedResponse)(nil),     // 67: database.GetWeeklyChatsStartedResponse
+	(*IsCustomerBlockedRequest)(nil),          // 68: database.IsCustomerBlockedRequest
+	(*IsCustomerBlockedResponse)(nil),         // 69: database.IsCustomerBlockedResponse
 }
 var file_proto_database_proto_depIdxs = []int32{
 	17, // 0: database.MessagesResponse.messages:type_name -> database.MessageResponse
 	15, // 1: database.ChatsResponse.chats:type_name -> database.ChatResponse
 	15, // 2: database.SearchChatsByCustomerResponse.chats:type_name -> database.ChatResponse
 	42, // 3: database.AssistantsResponse.assistants:type_name -> database.AssistantResponse
-	71, // 4: database.GetWeeklyChatsStartedResponse.days:type_name -> database.DailyCount
+	65, // 4: database.GetWeeklyChatsStartedResponse.days:type_name -> database.DailyCount
 	2,  // 5: database.DatabaseService.GetAnalytics:input_type -> database.AnalyticsRequest
 	3,  // 6: database.DatabaseService.GetAnalyticsByAssistant:input_type -> database.AnalyticsByAssistantRequest
 	5,  // 7: database.DatabaseService.CreateUser:input_type -> database.CreateUserRequest
@@ -4743,69 +4344,63 @@ var file_proto_database_proto_depIdxs = []int32{
 	51, // 37: database.DatabaseService.SaveTwilioConfig:input_type -> database.SaveTwilioConfigRequest
 	52, // 38: database.DatabaseService.GetTwilioConfig:input_type -> database.GetTwilioConfigRequest
 	54, // 39: database.DatabaseService.DeleteTwilioConfig:input_type -> database.DeleteTwilioConfigRequest
-	66, // 40: database.DatabaseService.GetChatsForFollowup:input_type -> database.GetChatsForFollowupRequest
-	61, // 41: database.DatabaseService.UpdateChatFollowupStage:input_type -> database.UpdateChatFollowupStageRequest
-	56, // 42: database.DatabaseService.GetCampusloginByUserId:input_type -> database.CampusloginRequest
-	57, // 43: database.DatabaseService.UpsertCampuslogin:input_type -> database.UpsertCampusloginRequest
-	59, // 44: database.DatabaseService.SetCampusloginFlags:input_type -> database.SetCampusloginFlagsRequest
-	0,  // 45: database.DatabaseService.DeleteAllChatsAndMessages:input_type -> database.DeleteAllChatsAndMessagesRequest
-	63, // 46: database.DatabaseService.DeleteChatAndMessages:input_type -> database.DeleteChatAndMessagesRequest
-	65, // 47: database.DatabaseService.UpdateChatIsEnd:input_type -> database.UpdateChatIsEndRequest
-	67, // 48: database.DatabaseService.UpdateChatIsReviewed:input_type -> database.UpdateChatIsReviewedRequest
-	68, // 49: database.DatabaseService.GetUnreviewedActiveChats:input_type -> database.GetUnreviewedActiveChatsRequest
-	69, // 50: database.DatabaseService.GetPeriodMetrics:input_type -> database.GetPeriodMetricsRequest
-	72, // 51: database.DatabaseService.GetWeeklyChatsStarted:input_type -> database.GetWeeklyChatsStartedRequest
-	74, // 52: database.DatabaseService.IsCustomerBlocked:input_type -> database.IsCustomerBlockedRequest
-	4,  // 53: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
-	4,  // 54: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
-	7,  // 55: database.DatabaseService.CreateUser:output_type -> database.UserResponse
-	7,  // 56: database.DatabaseService.GetUser:output_type -> database.UserResponse
-	7,  // 57: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
-	7,  // 58: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
-	24, // 59: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
-	9,  // 60: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
-	11, // 61: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
-	13, // 62: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
-	42, // 63: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
-	42, // 64: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
-	42, // 65: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
-	42, // 66: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
-	47, // 67: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
-	49, // 68: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
-	15, // 69: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
-	15, // 70: database.DatabaseService.GetChat:output_type -> database.ChatResponse
-	27, // 71: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
-	15, // 72: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
-	30, // 73: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
-	17, // 74: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
-	20, // 75: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
-	20, // 76: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
-	17, // 77: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
-	33, // 78: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
-	35, // 79: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
-	27, // 80: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
-	35, // 81: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
-	27, // 82: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
-	40, // 83: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
-	15, // 84: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
-	53, // 85: database.DatabaseService.SaveTwilioConfig:output_type -> database.TwilioConfigResponse
-	53, // 86: database.DatabaseService.GetTwilioConfig:output_type -> database.TwilioConfigResponse
-	55, // 87: database.DatabaseService.DeleteTwilioConfig:output_type -> database.DeleteTwilioConfigResponse
-	27, // 88: database.DatabaseService.GetChatsForFollowup:output_type -> database.ChatsResponse
-	15, // 89: database.DatabaseService.UpdateChatFollowupStage:output_type -> database.ChatResponse
-	58, // 90: database.DatabaseService.GetCampusloginByUserId:output_type -> database.CampusloginResponse
-	62, // 91: database.DatabaseService.UpsertCampuslogin:output_type -> database.UpsertCampusloginResponse
-	60, // 92: database.DatabaseService.SetCampusloginFlags:output_type -> database.SetCampusloginFlagsResponse
-	1,  // 93: database.DatabaseService.DeleteAllChatsAndMessages:output_type -> database.DeleteAllChatsAndMessagesResponse
-	64, // 94: database.DatabaseService.DeleteChatAndMessages:output_type -> database.DeleteChatAndMessagesResponse
-	15, // 95: database.DatabaseService.UpdateChatIsEnd:output_type -> database.ChatResponse
-	15, // 96: database.DatabaseService.UpdateChatIsReviewed:output_type -> database.ChatResponse
-	27, // 97: database.DatabaseService.GetUnreviewedActiveChats:output_type -> database.ChatsResponse
-	70, // 98: database.DatabaseService.GetPeriodMetrics:output_type -> database.GetPeriodMetricsResponse
-	73, // 99: database.DatabaseService.GetWeeklyChatsStarted:output_type -> database.GetWeeklyChatsStartedResponse
-	75, // 100: database.DatabaseService.IsCustomerBlocked:output_type -> database.IsCustomerBlockedResponse
-	53, // [53:101] is the sub-list for method output_type
-	5,  // [5:53] is the sub-list for method input_type
+	60, // 40: database.DatabaseService.GetChatsForFollowup:input_type -> database.GetChatsForFollowupRequest
+	56, // 41: database.DatabaseService.UpdateChatFollowupStage:input_type -> database.UpdateChatFollowupStageRequest
+	0,  // 42: database.DatabaseService.DeleteAllChatsAndMessages:input_type -> database.DeleteAllChatsAndMessagesRequest
+	57, // 43: database.DatabaseService.DeleteChatAndMessages:input_type -> database.DeleteChatAndMessagesRequest
+	59, // 44: database.DatabaseService.UpdateChatIsEnd:input_type -> database.UpdateChatIsEndRequest
+	61, // 45: database.DatabaseService.UpdateChatIsReviewed:input_type -> database.UpdateChatIsReviewedRequest
+	62, // 46: database.DatabaseService.GetUnreviewedActiveChats:input_type -> database.GetUnreviewedActiveChatsRequest
+	63, // 47: database.DatabaseService.GetPeriodMetrics:input_type -> database.GetPeriodMetricsRequest
+	66, // 48: database.DatabaseService.GetWeeklyChatsStarted:input_type -> database.GetWeeklyChatsStartedRequest
+	68, // 49: database.DatabaseService.IsCustomerBlocked:input_type -> database.IsCustomerBlockedRequest
+	4,  // 50: database.DatabaseService.GetAnalytics:output_type -> database.AnalyticsResponse
+	4,  // 51: database.DatabaseService.GetAnalyticsByAssistant:output_type -> database.AnalyticsResponse
+	7,  // 52: database.DatabaseService.CreateUser:output_type -> database.UserResponse
+	7,  // 53: database.DatabaseService.GetUser:output_type -> database.UserResponse
+	7,  // 54: database.DatabaseService.GetUserByEmail:output_type -> database.UserResponse
+	7,  // 55: database.DatabaseService.UpdateUser:output_type -> database.UserResponse
+	24, // 56: database.DatabaseService.DeleteUser:output_type -> database.DeleteUserResponse
+	9,  // 57: database.DatabaseService.SaveRefreshToken:output_type -> database.SaveRefreshTokenResponse
+	11, // 58: database.DatabaseService.GetRefreshToken:output_type -> database.RefreshTokenResponse
+	13, // 59: database.DatabaseService.DeleteRefreshToken:output_type -> database.DeleteRefreshTokenResponse
+	42, // 60: database.DatabaseService.CreateAssistant:output_type -> database.AssistantResponse
+	42, // 61: database.DatabaseService.GetAssistant:output_type -> database.AssistantResponse
+	42, // 62: database.DatabaseService.GetAssistantByAPIToken:output_type -> database.AssistantResponse
+	42, // 63: database.DatabaseService.UpdateAssistant:output_type -> database.AssistantResponse
+	47, // 64: database.DatabaseService.DeleteAssistant:output_type -> database.DeleteAssistantResponse
+	49, // 65: database.DatabaseService.GetAssistantsByUserID:output_type -> database.AssistantsResponse
+	15, // 66: database.DatabaseService.CreateChat:output_type -> database.ChatResponse
+	15, // 67: database.DatabaseService.GetChat:output_type -> database.ChatResponse
+	27, // 68: database.DatabaseService.GetChatsByUser:output_type -> database.ChatsResponse
+	15, // 69: database.DatabaseService.UpdateChat:output_type -> database.ChatResponse
+	30, // 70: database.DatabaseService.DeleteChat:output_type -> database.DeleteChatResponse
+	17, // 71: database.DatabaseService.SaveMessage:output_type -> database.MessageResponse
+	20, // 72: database.DatabaseService.GetChatMessages:output_type -> database.MessagesResponse
+	20, // 73: database.DatabaseService.GetAllChatMessages:output_type -> database.MessagesResponse
+	17, // 74: database.DatabaseService.UpdateMessage:output_type -> database.MessageResponse
+	33, // 75: database.DatabaseService.DeleteMessage:output_type -> database.DeleteMessageResponse
+	35, // 76: database.DatabaseService.GetChatPagesCount:output_type -> database.ChatPagesCountResponse
+	27, // 77: database.DatabaseService.GetChatPage:output_type -> database.ChatsResponse
+	35, // 78: database.DatabaseService.GetChatPagesCountByUserID:output_type -> database.ChatPagesCountResponse
+	27, // 79: database.DatabaseService.GetChatPageByUserID:output_type -> database.ChatsResponse
+	40, // 80: database.DatabaseService.SearchChatsByCustomer:output_type -> database.SearchChatsByCustomerResponse
+	15, // 81: database.DatabaseService.GetLatestChatByCustomer:output_type -> database.ChatResponse
+	53, // 82: database.DatabaseService.SaveTwilioConfig:output_type -> database.TwilioConfigResponse
+	53, // 83: database.DatabaseService.GetTwilioConfig:output_type -> database.TwilioConfigResponse
+	55, // 84: database.DatabaseService.DeleteTwilioConfig:output_type -> database.DeleteTwilioConfigResponse
+	27, // 85: database.DatabaseService.GetChatsForFollowup:output_type -> database.ChatsResponse
+	15, // 86: database.DatabaseService.UpdateChatFollowupStage:output_type -> database.ChatResponse
+	1,  // 87: database.DatabaseService.DeleteAllChatsAndMessages:output_type -> database.DeleteAllChatsAndMessagesResponse
+	58, // 88: database.DatabaseService.DeleteChatAndMessages:output_type -> database.DeleteChatAndMessagesResponse
+	15, // 89: database.DatabaseService.UpdateChatIsEnd:output_type -> database.ChatResponse
+	15, // 90: database.DatabaseService.UpdateChatIsReviewed:output_type -> database.ChatResponse
+	27, // 91: database.DatabaseService.GetUnreviewedActiveChats:output_type -> database.ChatsResponse
+	64, // 92: database.DatabaseService.GetPeriodMetrics:output_type -> database.GetPeriodMetricsResponse
+	67, // 93: database.DatabaseService.GetWeeklyChatsStarted:output_type -> database.GetWeeklyChatsStartedResponse
+	69, // 94: database.DatabaseService.IsCustomerBlocked:output_type -> database.IsCustomerBlockedResponse
+	50, // [50:95] is the sub-list for method output_type
+	5,  // [5:50] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
 	5,  // [5:5] is the sub-list for extension extendee
 	0,  // [0:5] is the sub-list for field type_name
@@ -4822,7 +4417,7 @@ func file_proto_database_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_database_proto_rawDesc), len(file_proto_database_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   76,
+			NumMessages:   70,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

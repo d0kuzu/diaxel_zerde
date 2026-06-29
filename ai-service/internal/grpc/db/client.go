@@ -347,38 +347,7 @@ func (c *Client) SaveTwilioConfig(assistantID, userID, twilioNumber, accountSID,
 	return c.DB.SaveTwilioConfig(ctx, req)
 }
 
-func (c *Client) GetCampusloginByUserId(userID string) (*dbpb.CampusloginResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
 
-	req := &dbpb.CampusloginRequest{
-		UserId: userID,
-	}
-
-	resp, err := c.DB.GetCampusloginByUserId(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return resp, nil
-}
-
-func (c *Client) UpsertCampuslogin(userID string, contactID int, programID int, isGrade11OrLower bool, isInternationalStudent bool, firstName string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	req := &dbpb.UpsertCampusloginRequest{
-		UserId:                 userID,
-		ContactId:              int32(contactID),
-		ProgramId:              int32(programID),
-		IsGrade11OrLower:       isGrade11OrLower,
-		IsInternationalStudent: isInternationalStudent,
-		FirstName:              firstName,
-	}
-
-	_, err := c.DB.UpsertCampuslogin(ctx, req)
-	return err
-}
 
 func (c *Client) DeleteAllChatsAndMessages() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -464,19 +433,7 @@ func (c *Client) UpdateChatFollowupStage(chatID string, stage int32) (*dbpb.Chat
 	return c.DB.UpdateChatFollowupStage(ctx, req)
 }
 
-func (c *Client) SetCampusloginFlags(userID string, isGrade11OrLower bool, isInternationalStudent bool) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
 
-	req := &dbpb.SetCampusloginFlagsRequest{
-		UserId:                 userID,
-		IsGrade11OrLower:       isGrade11OrLower,
-		IsInternationalStudent: isInternationalStudent,
-	}
-
-	_, err := c.DB.SetCampusloginFlags(ctx, req)
-	return err
-}
 
 func (c *Client) GetPeriodMetrics(assistantID, startTime, endTime string) (*dbpb.GetPeriodMetricsResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

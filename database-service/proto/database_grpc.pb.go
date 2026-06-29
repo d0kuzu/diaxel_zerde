@@ -56,9 +56,6 @@ const (
 	DatabaseService_DeleteTwilioConfig_FullMethodName        = "/database.DatabaseService/DeleteTwilioConfig"
 	DatabaseService_GetChatsForFollowup_FullMethodName       = "/database.DatabaseService/GetChatsForFollowup"
 	DatabaseService_UpdateChatFollowupStage_FullMethodName   = "/database.DatabaseService/UpdateChatFollowupStage"
-	DatabaseService_GetCampusloginByUserId_FullMethodName    = "/database.DatabaseService/GetCampusloginByUserId"
-	DatabaseService_UpsertCampuslogin_FullMethodName         = "/database.DatabaseService/UpsertCampuslogin"
-	DatabaseService_SetCampusloginFlags_FullMethodName       = "/database.DatabaseService/SetCampusloginFlags"
 	DatabaseService_DeleteAllChatsAndMessages_FullMethodName = "/database.DatabaseService/DeleteAllChatsAndMessages"
 	DatabaseService_DeleteChatAndMessages_FullMethodName     = "/database.DatabaseService/DeleteChatAndMessages"
 	DatabaseService_UpdateChatIsEnd_FullMethodName           = "/database.DatabaseService/UpdateChatIsEnd"
@@ -110,9 +107,6 @@ type DatabaseServiceClient interface {
 	DeleteTwilioConfig(ctx context.Context, in *DeleteTwilioConfigRequest, opts ...grpc.CallOption) (*DeleteTwilioConfigResponse, error)
 	GetChatsForFollowup(ctx context.Context, in *GetChatsForFollowupRequest, opts ...grpc.CallOption) (*ChatsResponse, error)
 	UpdateChatFollowupStage(ctx context.Context, in *UpdateChatFollowupStageRequest, opts ...grpc.CallOption) (*ChatResponse, error)
-	GetCampusloginByUserId(ctx context.Context, in *CampusloginRequest, opts ...grpc.CallOption) (*CampusloginResponse, error)
-	UpsertCampuslogin(ctx context.Context, in *UpsertCampusloginRequest, opts ...grpc.CallOption) (*UpsertCampusloginResponse, error)
-	SetCampusloginFlags(ctx context.Context, in *SetCampusloginFlagsRequest, opts ...grpc.CallOption) (*SetCampusloginFlagsResponse, error)
 	DeleteAllChatsAndMessages(ctx context.Context, in *DeleteAllChatsAndMessagesRequest, opts ...grpc.CallOption) (*DeleteAllChatsAndMessagesResponse, error)
 	DeleteChatAndMessages(ctx context.Context, in *DeleteChatAndMessagesRequest, opts ...grpc.CallOption) (*DeleteChatAndMessagesResponse, error)
 	UpdateChatIsEnd(ctx context.Context, in *UpdateChatIsEndRequest, opts ...grpc.CallOption) (*ChatResponse, error)
@@ -501,36 +495,6 @@ func (c *databaseServiceClient) UpdateChatFollowupStage(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *databaseServiceClient) GetCampusloginByUserId(ctx context.Context, in *CampusloginRequest, opts ...grpc.CallOption) (*CampusloginResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CampusloginResponse)
-	err := c.cc.Invoke(ctx, DatabaseService_GetCampusloginByUserId_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *databaseServiceClient) UpsertCampuslogin(ctx context.Context, in *UpsertCampusloginRequest, opts ...grpc.CallOption) (*UpsertCampusloginResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpsertCampusloginResponse)
-	err := c.cc.Invoke(ctx, DatabaseService_UpsertCampuslogin_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *databaseServiceClient) SetCampusloginFlags(ctx context.Context, in *SetCampusloginFlagsRequest, opts ...grpc.CallOption) (*SetCampusloginFlagsResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetCampusloginFlagsResponse)
-	err := c.cc.Invoke(ctx, DatabaseService_SetCampusloginFlags_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *databaseServiceClient) DeleteAllChatsAndMessages(ctx context.Context, in *DeleteAllChatsAndMessagesRequest, opts ...grpc.CallOption) (*DeleteAllChatsAndMessagesResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteAllChatsAndMessagesResponse)
@@ -652,9 +616,6 @@ type DatabaseServiceServer interface {
 	DeleteTwilioConfig(context.Context, *DeleteTwilioConfigRequest) (*DeleteTwilioConfigResponse, error)
 	GetChatsForFollowup(context.Context, *GetChatsForFollowupRequest) (*ChatsResponse, error)
 	UpdateChatFollowupStage(context.Context, *UpdateChatFollowupStageRequest) (*ChatResponse, error)
-	GetCampusloginByUserId(context.Context, *CampusloginRequest) (*CampusloginResponse, error)
-	UpsertCampuslogin(context.Context, *UpsertCampusloginRequest) (*UpsertCampusloginResponse, error)
-	SetCampusloginFlags(context.Context, *SetCampusloginFlagsRequest) (*SetCampusloginFlagsResponse, error)
 	DeleteAllChatsAndMessages(context.Context, *DeleteAllChatsAndMessagesRequest) (*DeleteAllChatsAndMessagesResponse, error)
 	DeleteChatAndMessages(context.Context, *DeleteChatAndMessagesRequest) (*DeleteChatAndMessagesResponse, error)
 	UpdateChatIsEnd(context.Context, *UpdateChatIsEndRequest) (*ChatResponse, error)
@@ -783,15 +744,6 @@ func (UnimplementedDatabaseServiceServer) GetChatsForFollowup(context.Context, *
 }
 func (UnimplementedDatabaseServiceServer) UpdateChatFollowupStage(context.Context, *UpdateChatFollowupStageRequest) (*ChatResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateChatFollowupStage not implemented")
-}
-func (UnimplementedDatabaseServiceServer) GetCampusloginByUserId(context.Context, *CampusloginRequest) (*CampusloginResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method GetCampusloginByUserId not implemented")
-}
-func (UnimplementedDatabaseServiceServer) UpsertCampuslogin(context.Context, *UpsertCampusloginRequest) (*UpsertCampusloginResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method UpsertCampuslogin not implemented")
-}
-func (UnimplementedDatabaseServiceServer) SetCampusloginFlags(context.Context, *SetCampusloginFlagsRequest) (*SetCampusloginFlagsResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method SetCampusloginFlags not implemented")
 }
 func (UnimplementedDatabaseServiceServer) DeleteAllChatsAndMessages(context.Context, *DeleteAllChatsAndMessagesRequest) (*DeleteAllChatsAndMessagesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAllChatsAndMessages not implemented")
@@ -1504,60 +1456,6 @@ func _DatabaseService_UpdateChatFollowupStage_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DatabaseService_GetCampusloginByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CampusloginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DatabaseServiceServer).GetCampusloginByUserId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DatabaseService_GetCampusloginByUserId_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).GetCampusloginByUserId(ctx, req.(*CampusloginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DatabaseService_UpsertCampuslogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpsertCampusloginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DatabaseServiceServer).UpsertCampuslogin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DatabaseService_UpsertCampuslogin_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).UpsertCampuslogin(ctx, req.(*UpsertCampusloginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DatabaseService_SetCampusloginFlags_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SetCampusloginFlagsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DatabaseServiceServer).SetCampusloginFlags(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: DatabaseService_SetCampusloginFlags_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).SetCampusloginFlags(ctx, req.(*SetCampusloginFlagsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DatabaseService_DeleteAllChatsAndMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteAllChatsAndMessagesRequest)
 	if err := dec(in); err != nil {
@@ -1856,18 +1754,6 @@ var DatabaseService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateChatFollowupStage",
 			Handler:    _DatabaseService_UpdateChatFollowupStage_Handler,
-		},
-		{
-			MethodName: "GetCampusloginByUserId",
-			Handler:    _DatabaseService_GetCampusloginByUserId_Handler,
-		},
-		{
-			MethodName: "UpsertCampuslogin",
-			Handler:    _DatabaseService_UpsertCampuslogin_Handler,
-		},
-		{
-			MethodName: "SetCampusloginFlags",
-			Handler:    _DatabaseService_SetCampusloginFlags_Handler,
 		},
 		{
 			MethodName: "DeleteAllChatsAndMessages",
