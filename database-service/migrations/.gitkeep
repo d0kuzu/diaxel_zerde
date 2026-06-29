@@ -1,0 +1,2 @@
+# This file keeps the migrations directory tracked by git.
+# Migrations are handled automatically by GORM AutoMigrate at runtime.
