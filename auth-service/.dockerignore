@@ -4,5 +4,4 @@
 *.md
 docker-compose*.yml
 server
-auth-service
 *.exe

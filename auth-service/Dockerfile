@@ -1,26 +1,15 @@
-# Используем максимально легкий образ
-FROM golang:1.24-alpine AS builder
-
-WORKDIR /app
-
-# Устанавливаем сертификаты (нужны для внешних API)
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o auth-service .
-
+# Use a lightweight Alpine base
 FROM alpine:latest
 
 WORKDIR /app
 
-# Устанавливаем сертификаты (нужны для внешних API)
+# Install CA certificates for HTTPS requests
 RUN apk --no-cache add ca-certificates
 
-# Просто копируем ваш уже готовый файл server
-COPY --from=builder /app/auth-service .
+# Copy the pre-built auth-service binary into the image
+COPY auth-service .
 
-# Даем права на запуск (на всякий случай)
+# Ensure the binary is executable
 RUN chmod +x auth-service
 
 EXPOSE 8080
