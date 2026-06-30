@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   app:
+    image: diaxel-ai-service-v2
     build: .
     container_name: ai-service-v2
     ports:

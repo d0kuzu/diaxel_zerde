@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   app:
+    image: diaxel-api-gateway-v2
     build: .
     container_name: api-gateway-service-v2
     ports:

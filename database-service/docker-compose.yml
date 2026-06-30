@@ -2,6 +2,7 @@ version: "3.9"
 
 services:
   database-service:
+    image: diaxel-database-service-v2
     build: .
     container_name: database-service-v2
     networks:

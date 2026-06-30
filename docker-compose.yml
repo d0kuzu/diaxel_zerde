@@ -26,6 +26,7 @@ services:
       - microservices-net-v2
 
   database-service:
+    image: diaxel-database-service-v2
     build: ./database-service
     container_name: database-service-v2
     depends_on:
@@ -40,6 +41,7 @@ services:
       - microservices-net-v2
 
   auth-service:
+    image: diaxel-auth-service-v2
     build: ./auth-service
     container_name: auth-service-v2
     ports:
@@ -53,6 +55,7 @@ services:
       - microservices-net-v2
 
   ai-service:
+    image: diaxel-ai-service-v2
     build: ./ai-service
     container_name: ai-service-v2
     ports:
@@ -66,6 +69,7 @@ services:
       - microservices-net-v2
 
   api-gateway:
+    image: diaxel-api-gateway-v2
     build: ./api-gateway
     container_name: api-gateway-service-v2
     ports:
