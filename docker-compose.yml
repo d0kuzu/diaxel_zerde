@@ -5,7 +5,7 @@ networks:
     external: true
 
 services:
-  postgres:
+  postgres-v2:
     image: postgres:16-alpine
     container_name: database-postgres-v2
     restart: unless-stopped
@@ -25,12 +25,12 @@ services:
     networks:
       - microservices-net-v2
 
-  database-service:
+  database-service-v2:
     image: diaxel-database-service-v2
     build: ./database-service
     container_name: database-service-v2
     depends_on:
-      postgres:
+      postgres-v2:
         condition: service_healthy
     ports:
       - "50052:50051"
@@ -40,44 +40,44 @@ services:
     networks:
       - microservices-net-v2
 
-  auth-service:
+  auth-service-v2:
     image: diaxel-auth-service-v2
     build: ./auth-service
     container_name: auth-service-v2
     ports:
       - "8092:8080"
     depends_on:
-      - database-service
+      - database-service-v2
     env_file:
       - ./auth-service/.env
     restart: unless-stopped
     networks:
       - microservices-net-v2
 
-  ai-service:
+  ai-service-v2:
     image: diaxel-ai-service-v2
     build: ./ai-service
     container_name: ai-service-v2
     ports:
       - "8091:8080"
     depends_on:
-      - database-service
+      - database-service-v2
     env_file:
       - ./ai-service/.env
     restart: unless-stopped
     networks:
       - microservices-net-v2
 
-  api-gateway:
+  api-gateway-v2:
     image: diaxel-api-gateway-v2
     build: ./api-gateway
     container_name: api-gateway-service-v2
     ports:
       - "8095:8080"
     depends_on:
-      - database-service
-      - auth-service
-      - ai-service
+      - database-service-v2
+      - auth-service-v2
+      - ai-service-v2
     env_file:
       - ./api-gateway/.env
     restart: unless-stopped
